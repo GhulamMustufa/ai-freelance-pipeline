@@ -18,18 +18,18 @@ if (!GMAIL_USER || !GMAIL_PASS) {
   process.exit(1);
 }
 
-const client = new ImapFlow({
-  host: 'imap.gmail.com',
-  port: 993,
-  secure: true,
-  auth: {
-    user: GMAIL_USER,
-    pass: GMAIL_PASS
-  },
-  logger: false
-});
+async function startListener() {
+  const client = new ImapFlow({
+    host: 'imap.gmail.com',
+    port: 993,
+    secure: true,
+    auth: {
+      user: GMAIL_USER,
+      pass: GMAIL_PASS
+    },
+    logger: false
+  });
 
-async function main() {
   console.log('🔄 Connecting to Gmail IMAP...');
   await client.connect();
   console.log('✅ Connected. Waiting for Upwork Job Alerts...');
@@ -91,15 +91,26 @@ async function main() {
     // The lock holds the INBOX open for IDLE
     console.log('📡 IDLE mode active. Press Ctrl+C to exit.');
     
-    // We never release the lock here so it stays listening infinitely
-    await new Promise(() => {}); 
+    // Listen infinitely, but reject if connection drops so we can reconnect
+    await new Promise((resolve, reject) => {
+      client.on('error', reject);
+      client.on('close', reject);
+    }); 
     
   } finally {
     lock.release();
   }
 }
 
-main().catch(err => {
-  console.error("Fatal Error:", err);
-  process.exit(1);
-});
+async function main() {
+  while (true) {
+    try {
+      await startListener();
+    } catch (err) {
+      console.error("❌ IMAP Listener crashed or dropped connection. Reconnecting in 10s...", (err as Error).message);
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    }
+  }
+}
+
+main();
