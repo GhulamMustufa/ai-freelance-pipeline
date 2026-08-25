@@ -38,52 +38,70 @@ async function startListener() {
   const lock = await client.getMailboxLock('INBOX');
   
   try {
-    // Listen for new messages in INBOX
+    const processMessage = async (msg: any) => {
+      const fromAddress = msg.envelope?.from?.[0]?.address || '';
+      if (fromAddress.includes('upwork.com')) {
+        console.log(`🚀 Processing Upwork Email: ${msg.envelope?.subject || 'Unknown Subject'}`);
+        
+        if (!msg.source) return;
+        
+        const parsed = await simpleParser(msg.source);
+        const body = (parsed.text || '') + ' ' + (parsed.html || '');
+        
+        const match = body.match(/~[0-9a-zA-Z]+/);
+        if (match) {
+          const jobId = match[0];
+          console.log(`✨ Found Job ID: ${jobId}`);
+          
+          const existing = await prisma.job.findUnique({ where: { id: jobId } });
+          if (!existing) {
+            await prisma.job.create({
+              data: {
+                id: jobId,
+                title: 'Pending Fetch from MCP...',
+                description: 'Waiting for AI agent to fetch deep metrics...',
+                skills: '',
+                postedAt: new Date(),
+                score: null,
+              }
+            });
+            console.log(`💾 Saved ${jobId} as pending. Agent will fetch deep metrics shortly!`);
+          } else {
+            console.log(`⏭️ Job ${jobId} already exists in DB.`);
+          }
+        } else {
+          console.log('⚠️ Could not find a Job ID in this email.');
+        }
+      }
+    };
+
+    // 1. Fetch any unread emails we might have missed while offline
+    console.log('🔍 Checking for missed unread Upwork emails...');
+    try {
+      const searchRes = await client.search({ unseen: true, from: 'upwork.com' });
+      if (searchRes && searchRes.length > 0) {
+        for await (const msg of client.fetch(searchRes, { source: true, envelope: true })) {
+          await processMessage(msg);
+          // Mark as seen so we don't process it again on next restart
+          await client.messageFlagsAdd({ seq: msg.seq }, ['\\Seen']);
+        }
+      } else {
+        console.log('✅ No missed Upwork emails found.');
+      }
+    } catch(err) {
+      console.log('⚠️ Error searching for missed emails:', (err as Error).message);
+    }
+
+    // 2. Listen for new messages in INBOX
     client.on('exists', async (data) => {
       console.log(`📬 New email arrived! (Total messages: ${data.count})`);
       
-      // Fetch the newest message
-      for await (const msg of client.fetch(data.count.toString(), { source: true, envelope: true })) {
-        
-        // Filter by Upwork
-        const fromAddress = msg.envelope?.from?.[0]?.address || '';
-        if (fromAddress.includes('upwork.com')) {
-          console.log(`🚀 Processing Upwork Email: ${msg.envelope?.subject || 'Unknown Subject'}`);
-          
-          if (!msg.source) continue;
-          
-          const parsed = await simpleParser(msg.source);
-          const body = parsed.text || '';
-          
-          // Try to extract the job ID
-          // Upwork job URLs usually look like: https://www.upwork.com/jobs/~01xyz123456
-          const match = body.match(/~01[a-zA-Z0-9]+/);
-          if (match) {
-            const jobId = match[0];
-            console.log(`✨ Found Job ID: ${jobId}`);
-            
-            // Deduplicate
-            const existing = await prisma.job.findUnique({ where: { id: jobId } });
-            if (!existing) {
-              // Create a pending job record
-              await prisma.job.create({
-                data: {
-                  id: jobId,
-                  title: 'Pending Fetch from MCP...',
-                  description: 'Waiting for AI agent to fetch deep metrics...',
-                  skills: '',
-                  postedAt: new Date(),
-                  score: null,
-                }
-              });
-              console.log(`💾 Saved ${jobId} as pending. Agent will fetch deep metrics shortly!`);
-            } else {
-              console.log(`⏭️ Job ${jobId} already exists in DB.`);
-            }
-          } else {
-            console.log('⚠️ Could not find a Job ID in this email.');
-          }
+      try {
+        for await (const msg of client.fetch(data.count.toString(), { source: true, envelope: true })) {
+          await processMessage(msg);
         }
+      } catch (err) {
+        console.error('Error fetching new message:', err);
       }
     });
 
@@ -91,10 +109,19 @@ async function startListener() {
     // The lock holds the INBOX open for IDLE
     console.log('📡 IDLE mode active. Press Ctrl+C to exit.');
     
+    // Keep the event loop alive
+    const keepAlive = setInterval(() => {}, 60000);
+    
     // Listen infinitely, but reject if connection drops so we can reconnect
     await new Promise((resolve, reject) => {
-      client.on('error', reject);
-      client.on('close', reject);
+      client.on('error', (err) => {
+        clearInterval(keepAlive);
+        reject(err);
+      });
+      client.on('close', () => {
+        clearInterval(keepAlive);
+        reject(new Error('Connection closed'));
+      });
     }); 
     
   } finally {
