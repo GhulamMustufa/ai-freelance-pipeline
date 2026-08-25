@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { google } = require('@ai-sdk/google');
 const { generateObject } = require('ai');
 const { z } = require('zod');

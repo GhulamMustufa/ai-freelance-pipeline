@@ -25,6 +25,7 @@ export async function POST(req: Request) {
           budget: job.budget ? parseFloat(job.budget) : null,
           hourlyMin: job.hourly_budget?.min ? parseFloat(job.hourly_budget.min) : null,
           hourlyMax: job.hourly_budget?.max ? parseFloat(job.hourly_budget.max) : null,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           skills: job.skills ? job.skills.map((s: any) => s.name || s).join(', ') : '',
           postedAt: new Date(job.created_date || job.created_on || Date.now()),
           clientHistory: clientHistoryStr,

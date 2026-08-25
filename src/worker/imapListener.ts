@@ -35,7 +35,7 @@ async function main() {
   console.log('✅ Connected. Waiting for Upwork Job Alerts...');
 
   // Select INBOX
-  let lock = await client.getMailboxLock('INBOX');
+  const lock = await client.getMailboxLock('INBOX');
   
   try {
     // Listen for new messages in INBOX
@@ -43,7 +43,7 @@ async function main() {
       console.log(`📬 New email arrived! (Total messages: ${data.count})`);
       
       // Fetch the newest message
-      for await (let msg of client.fetch(data.count.toString(), { source: true, envelope: true })) {
+      for await (const msg of client.fetch(data.count.toString(), { source: true, envelope: true })) {
         
         // Filter by Upwork
         const fromAddress = msg.envelope?.from?.[0]?.address || '';

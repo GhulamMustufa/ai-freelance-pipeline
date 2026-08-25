@@ -53,6 +53,7 @@ async function main() {
             });
 
             // Extract the text
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const textContent = (result.content as any).find((c: any) => c.type === 'text')?.text;
             if (!textContent) {
               console.error(`❌ No text content returned from MCP for ${job.id}`);
@@ -130,6 +131,7 @@ async function main() {
             console.log(`✅ Fetched successfully. Sending to AI Scorer (Client Status: ${clientRecord.status})...`);
             
             // Pass client status to the scoring API so it can boost Favorites
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (payload as any).clientStatus = clientRecord.status;
             
             // POST to Next.js Scoring API

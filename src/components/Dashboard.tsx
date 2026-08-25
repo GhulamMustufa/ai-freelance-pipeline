@@ -2,6 +2,7 @@
 import { useState, useTransition, useEffect } from 'react';
 import { updateClientStatus, updateProposalDraft } from '@/app/actions';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
   const [filterType, setFilterType] = useState<'ALL' | 'GOLDEN' | 'SUBMITTED'>('ALL');
   
@@ -13,7 +14,7 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
 
   const [selectedJobId, setSelectedJobId] = useState<string | null>(filteredJobs[0]?.id || null);
   const [isMobileDetailsOpen, setIsMobileDetailsOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [isGenerating, setIsGenerating] = useState(false);
   const [draftContent, setDraftContent] = useState('');
 
@@ -21,6 +22,7 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
 
   // Sync draft content when job changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDraftContent(selectedJob?.proposalDraft?.content || '');
   }, [selectedJobId, selectedJob?.proposalDraft?.content]);
 
@@ -354,7 +356,7 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
                             )}
                           </>
                         );
-                      } catch (e) {
+                      } catch {
                         return null;
                       }
                     })()}
@@ -466,7 +468,7 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
                   </div>
                   <h3 className="text-slate-300 font-medium mb-1">Draft Locked</h3>
                   <p className="text-slate-500 text-xs max-w-[200px] leading-relaxed">
-                    This job did not meet the 'Golden' criteria. Draft generation was skipped.
+                    This job did not meet the &apos;Golden&apos; criteria. Draft generation was skipped.
                   </p>
                 </>
               )}
