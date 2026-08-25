@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Job {
+  id              String   @id // The upwork job ID (ciphertext)
+  title           String
+  description     String
+  budget          Float?
+  hourlyMin       Float?
+  hourlyMax       Float?
+  skills          String   // Comma separated
+  postedAt        DateTime
+  clientHistory   String?  // JSON string of client history
+  clientAvgPay    Float?
+  clientTotalSpend Float?
+  clientTotalHours Float?
+  clientAvgHourlyRate Float?
+  clientTotalContracts Int?
+  clientActiveContracts Int?
+  clientFeedbackScore Float?
+  clientFeedbackCount Int?
+  clientLocation   String?
+  jobInvitesSent   Int?
+  jobInterviewing  Int?
+  jobAvgBid        Float?
+  jobConnectsCost  Int?
+  
+  // AI fields
+  score           Float?
+  reason          String?
+  isGolden        Boolean  @default(false)
+  
+  proposalDraft   ProposalDraft?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  clientId        String?
+  client          Client?  @relation(fields: [clientId], references: [id])
+}
+
+model Client {
+  id              String   @id // pseudo-hash or actual company_id
+  name            String?
+  status          String   @default("NEUTRAL") // NEUTRAL, FAVORITE, BLACKLISTED
+  notes           String?
+  
+  totalSpend      Float?
+  avgHourlyRate   Float?
+  feedbackScore   Float?
+  location        String?
+  
+  jobs            Job[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ProposalDraft {
+  id              String   @id @default(uuid())
+  jobId           String   @unique
+  job             Job      @relation(fields: [jobId], references: [id])
+  content         String
+  status          String   @default("draft") // draft, submitted
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
