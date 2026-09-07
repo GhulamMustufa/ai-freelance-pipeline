@@ -1,10 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
@@ -12,67 +10,199 @@ datasource db {
   provider = "sqlite"
 }
 
-model Job {
-  id              String   @id // The upwork job ID (ciphertext)
-  title           String
-  description     String
-  budget          Float?
-  hourlyMin       Float?
-  hourlyMax       Float?
-  skills          String   // Comma separated
-  postedAt        DateTime
-  clientHistory   String?  // JSON string of client history
-  clientAvgPay    Float?
-  clientTotalSpend Float?
-  clientTotalHours Float?
-  clientAvgHourlyRate Float?
-  clientTotalContracts Int?
-  clientActiveContracts Int?
-  clientFeedbackScore Float?
-  clientFeedbackCount Int?
-  clientLocation   String?
+// -----------------------------------------------------------------------------
+// CORE DOMAIN: Opportunity
+// -----------------------------------------------------------------------------
+
+model Opportunity {
+  id             String    @id @default(uuid())
+  platformId     String    @unique // e.g. Upwork job ID
+  platform       String    @default("UPWORK") // UPWORK, LINKEDIN, etc.
+  status         String    @default("PENDING") // PENDING, EVALUATING, APPLIED, REJECTED
+  
+  jobPosting     JobPosting?
+  score          OpportunityScore?
+  decision       OpportunityDecision?
+  proposal       Proposal?
+  
+  clientId       String?
+  client         Client?   @relation(fields: [clientId], references: [id])
+  
+  pipelineRuns   PipelineRun[]
+  agentRuns      AgentRun[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model JobPosting {
+  id               String      @id @default(uuid())
+  opportunityId    String      @unique
+  opportunity      Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  
+  title            String
+  description      String
+  budget           Float?
+  hourlyMin        Float?
+  hourlyMax        Float?
+  skills           String      // Comma separated
+  postedAt         DateTime
+  
+  // Platform specific raw metrics (to be normalized later if needed)
   jobInvitesSent   Int?
   jobInterviewing  Int?
   jobAvgBid        Float?
   jobConnectsCost  Int?
   
-  // AI fields
-  score           Float?
-  reason          String?
-  isGolden        Boolean  @default(false)
-  
-  proposalDraft   ProposalDraft?
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  clientId        String?
-  client          Client?  @relation(fields: [clientId], references: [id])
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 }
+
+// -----------------------------------------------------------------------------
+// CORE DOMAIN: Client
+// -----------------------------------------------------------------------------
 
 model Client {
-  id              String   @id // pseudo-hash or actual company_id
-  name            String?
-  status          String   @default("NEUTRAL") // NEUTRAL, FAVORITE, BLACKLISTED
-  notes           String?
+  id             String         @id @default(uuid())
+  platformId     String         @unique // pseudo-hash or actual company_id
+  platform       String         @default("UPWORK")
   
-  totalSpend      Float?
-  avgHourlyRate   Float?
-  feedbackScore   Float?
-  location        String?
+  name           String?
+  status         String         @default("NEUTRAL") // NEUTRAL, FAVORITE, BLACKLISTED
+  notes          String?
   
-  jobs            Job[]
+  profile        ClientProfile?
+  opportunities  Opportunity[]
   
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
 
-model ProposalDraft {
-  id              String   @id @default(uuid())
-  jobId           String   @unique
-  job             Job      @relation(fields: [jobId], references: [id])
-  content         String
-  status          String   @default("draft") // draft, submitted
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+model ClientProfile {
+  id               String   @id @default(uuid())
+  clientId         String   @unique
+  client           Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  totalSpend       Float?
+  avgHourlyRate    Float?
+  feedbackScore    Float?
+  totalContracts   Int?
+  activeContracts  Int?
+  location         String?
+  
+  historyJson      String?  // Store raw history array if needed
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// CORE DOMAIN: Scoring & Decisions
+// -----------------------------------------------------------------------------
+
+model OpportunityScore {
+  id                  String      @id @default(uuid())
+  opportunityId       String      @unique
+  opportunity         Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  
+  skillMatch          Float
+  portfolioFit        Float
+  projectQuality      Float
+  longTermPotential   Float
+  
+  redFlags            String      // JSON Array
+  missingRequirements String      // JSON Array
+  
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+}
+
+model OpportunityDecision {
+  id             String      @id @default(uuid())
+  opportunityId  String      @unique
+  opportunity    Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  
+  recommendation String      // APPLY, MAYBE, SKIP
+  reason         String
+  
+  createdAt      DateTime    @default(now())
+}
+
+model Proposal {
+  id             String      @id @default(uuid())
+  opportunityId  String      @unique
+  opportunity    Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  
+  content        String
+  status         String      @default("DRAFT") // DRAFT, SUBMITTED
+  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// PIPELINE & TELEMETRY
+// -----------------------------------------------------------------------------
+
+model PipelineRun {
+  id             String      @id @default(uuid())
+  opportunityId  String
+  opportunity    Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  
+  stage          String      // INGEST, NORMALIZE, DEDUPLICATE, ENRICH, ANALYZE, SCORE, DECIDE, PROPOSAL
+  status         String      // PENDING, PROCESSING, COMPLETED, FAILED
+  
+  error          String?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  
+  @@index([opportunityId, stage])
+  @@index([status])
+}
+
+model AgentRun {
+  id             String       @id @default(uuid())
+  opportunityId  String?
+  opportunity    Opportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  
+  agentName      String
+  provider       String       // gemini, openai
+  model          String
+  
+  promptTokens   Int?
+  completionTokens Int?
+  durationMs     Int?
+  
+  inputPayload   String       // JSON
+  outputPayload  String?      // JSON
+  error          String?
+  
+  createdAt      DateTime     @default(now())
+}
+
+// -----------------------------------------------------------------------------
+// EVALUATION
+// -----------------------------------------------------------------------------
+
+model Evidence {
+  id             String       @id @default(uuid())
+  type           String       // PORTFOLIO_PROJECT, WORK_HISTORY
+  title          String
+  description    String
+  metrics        String       // JSON Array of verified metrics
+  
+  createdAt      DateTime     @default(now())
+}
+
+model Evaluation {
+  id             String       @id @default(uuid())
+  agentRunId     String       @unique
+  
+  isAccurate     Boolean
+  humanFeedback  String?
+  
+  createdAt      DateTime     @default(now())
 }

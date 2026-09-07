@@ -7,9 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "worker:imap": "npx tsx src/worker/imapListener.ts",
-    "worker:loop": "npx tsx src/worker/agentLoop.ts",
-    "dev:all": "concurrently \"npm run dev\" \"npm run worker:imap\" \"npm run worker:loop\""
+    "test": "npx tsx --test __tests__/*.test.ts",
+    "worker:ingestion": "npx tsx src/workers/ingestion.ts",
+    "worker:pipeline": "npx tsx src/workers/pipelineProcessor.ts",
+    "dev:all": "concurrently \"npm run dev\" \"npm run worker:ingestion\" \"npm run worker:pipeline\""
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.111",
