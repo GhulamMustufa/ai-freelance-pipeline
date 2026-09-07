@@ -46,6 +46,15 @@ export enum ProposalStatus {
 }
 
 // Basic types for passing data through pipeline
+export interface OpportunityDecision {
+  recommendation: 'APPLY' | 'MAYBE' | 'SKIP';
+  reason: string;
+  confidence?: number;
+  positiveEvidence?: string[];
+  negativeEvidence?: string[];
+  missingInformation?: string[];
+}
+
 export interface RawOpportunityPayload {
   platform: Platform;
   platformId: string;
@@ -62,6 +71,50 @@ export interface RawOpportunityPayload {
     location?: string;
     name?: string;
   };
+}
+
+// -----------------------------------------------------------------------------
+// Phase 2: Specialized Agent Output Domain Models
+// -----------------------------------------------------------------------------
+
+export interface JobAnalysis {
+  actualProblem: string;
+  technicalRequirements: string[];
+  seniority: 'JUNIOR' | 'MID' | 'SENIOR' | 'EXPERT';
+  hiddenRequirements: string[];
+  deliverables: string[];
+  ambiguity: 'LOW' | 'MEDIUM' | 'HIGH';
+  projectMaturity: 'IDEA' | 'MVP' | 'PRODUCTION' | 'LEGACY';
+}
+
+export interface ClientAnalysis {
+  quality: 'LOW' | 'MEDIUM' | 'HIGH';
+  spendingBehavior: string;
+  hiringHistory: string;
+  feedbackSummary: string;
+  riskSignals: string[];
+}
+
+export interface CompetitionAnalysis {
+  interviewIntensity: 'LOW' | 'MEDIUM' | 'HIGH';
+  jobAttractiveness: 'LOW' | 'MEDIUM' | 'HIGH';
+  likelyCompetition: string;
+  biddingDifficulty: 'EASY' | 'MODERATE' | 'HARD';
+}
+
+export interface FitAnalysis {
+  matchScore: number; // 0-100
+  positiveMatches: string[]; // Evidence-backed matches
+  missingRequirements: string[];
+  redFlags: string[];
+}
+
+export interface EconomicAnalysis {
+  expectedValue: number;
+  budgetQuality: 'LOW' | 'FAIR' | 'GOOD' | 'EXCELLENT';
+  effortRisk: 'LOW' | 'MEDIUM' | 'HIGH';
+  opportunityCost: string;
+  clientRisk: 'LOW' | 'MEDIUM' | 'HIGH';
 }
 
 export interface EnrichedOpportunityData extends RawOpportunityPayload {

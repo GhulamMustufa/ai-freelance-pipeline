@@ -118,14 +118,19 @@ model OpportunityScore {
 }
 
 model OpportunityDecision {
-  id             String      @id @default(uuid())
-  opportunityId  String      @unique
-  opportunity    Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  id                  String      @id @default(uuid())
+  opportunityId       String      @unique
+  opportunity         Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   
-  recommendation String      // APPLY, MAYBE, SKIP
-  reason         String
+  recommendation      String      // APPLY, MAYBE, SKIP
+  reason              String
+  confidence          Float?
   
-  createdAt      DateTime    @default(now())
+  positiveEvidence    String?     // JSON Array
+  negativeEvidence    String?     // JSON Array
+  missingInformation  String?     // JSON Array
+  
+  createdAt           DateTime    @default(now())
 }
 
 model Proposal {

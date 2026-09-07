@@ -8,7 +8,12 @@ import {
   EnrichedOpportunityData
 } from '../../domain/models';
 import { AgentExecutor } from '../../ai/agent';
-import { buildScoringPrompt, buildDraftingPrompt } from '../../ai/prompts/scoringPrompt';
+import { JobIntelligenceAgent } from '../../ai/agents/JobIntelligenceAgent';
+import { ClientIntelligenceAgent } from '../../ai/agents/ClientIntelligenceAgent';
+import { CompetitionAgent } from '../../ai/agents/CompetitionAgent';
+import { FreelancerFitAgent } from '../../ai/agents/FreelancerFitAgent';
+import { EconomicAgent } from '../../ai/agents/EconomicAgent';
+import { DecisionEngine } from '../engine/DecisionEngine';
 import { z } from 'zod';
 import { UpworkMCPClient } from '../../integrations/upwork/mcpClient';
 
@@ -29,11 +34,25 @@ const draftingSchema = z.object({
 });
 
 export class OpportunityPipeline {
-  private agent: AgentExecutor;
+  private executor: AgentExecutor;
+  
+  private jobAgent: JobIntelligenceAgent;
+  private clientAgent: ClientIntelligenceAgent;
+  private competitionAgent: CompetitionAgent;
+  private fitAgent: FreelancerFitAgent;
+  private economicAgent: EconomicAgent;
+  private decisionEngine: DecisionEngine;
   private mcpClient: UpworkMCPClient;
 
   constructor() {
-    this.agent = new AgentExecutor({ provider: 'gemini', model: 'gemini-3.6-flash' });
+    this.executor = new AgentExecutor();
+    
+    this.jobAgent = new JobIntelligenceAgent(this.executor);
+    this.clientAgent = new ClientIntelligenceAgent(this.executor);
+    this.competitionAgent = new CompetitionAgent(this.executor);
+    this.fitAgent = new FreelancerFitAgent(this.executor);
+    this.economicAgent = new EconomicAgent(this.executor);
+    this.decisionEngine = new DecisionEngine(this.executor);
     this.mcpClient = new UpworkMCPClient();
   }
 
@@ -42,10 +61,11 @@ export class OpportunityPipeline {
 
     try {
       const enrichedData = await this.enrich(opp.id, payload);
-      const scoreData = await this.analyzeAndScore(opp.id, enrichedData);
-      const decision = await this.decide(opp.id, scoreData);
+      await this.analyzeAndScore(opp.id);
+      
+      const decision = await prisma.opportunityDecision.findFirst({ where: { opportunityId: opp.id } });
 
-      if (decision === DecisionRecommendation.APPLY) {
+      if (decision?.recommendation === 'APPLY') {
         await this.generateProposal(opp.id, enrichedData);
       }
     } catch (error) {
@@ -57,12 +77,7 @@ export class OpportunityPipeline {
   async resumeJob(opportunityId: string, payload: RawOpportunityPayload) {
     try {
       const enrichedData = await this.enrich(opportunityId, payload);
-      const scoreData = await this.analyzeAndScore(opportunityId, enrichedData);
-      const decision = await this.decide(opportunityId, scoreData);
-
-      if (decision === DecisionRecommendation.APPLY) {
-        await this.generateProposal(opportunityId, enrichedData);
-      }
+      await this.analyzeAndScore(opportunityId);
     } catch (error) {
       console.error(`Pipeline failed to resume for ${opportunityId}:`, error);
       await this.logRun(opportunityId, PipelineStage.ENRICH, PipelineStatus.FAILED, String(error));
@@ -70,7 +85,6 @@ export class OpportunityPipeline {
   }
 
   private async ingest(payload: RawOpportunityPayload) {
-    // DEDUPLICATE implicitly through upsert
     let opp = await prisma.opportunity.findUnique({
       where: { platformId: payload.platformId }
     });
@@ -80,7 +94,6 @@ export class OpportunityPipeline {
       return opp;
     }
 
-    // INGEST
     opp = await prisma.opportunity.create({
       data: {
         platformId: payload.platformId,
@@ -110,10 +123,8 @@ export class OpportunityPipeline {
   private async enrich(opportunityId: string, payload: RawOpportunityPayload): Promise<EnrichedOpportunityData> {
     await this.logRun(opportunityId, PipelineStage.ENRICH, PipelineStatus.PROCESSING);
     
-    // Abstracted MCP call
     const clientData = await this.mcpClient.getClientMetrics(payload.platformId);
     
-    // NORMALIZE
     let clientId = payload.client?.platformId || clientData?.id;
     if (!clientId) {
       clientId = Buffer.from(`${payload.platformId}-fallback`).toString('base64');
@@ -175,69 +186,90 @@ export class OpportunityPipeline {
     };
   }
 
-  private async analyzeAndScore(opportunityId: string, job: EnrichedOpportunityData) {
-    await this.logRun(opportunityId, PipelineStage.SCORE, PipelineStatus.PROCESSING);
-    
-    const client = await prisma.client.findFirst({
-      where: { platformId: job.client?.platformId }
-    });
-    
-    const prompt = buildScoringPrompt(job, client?.status || 'NEUTRAL');
-    const result = await this.agent.executeStructured(
-      'AnalyzerAgent',
-      opportunityId,
-      prompt,
-      scoringSchema
-    );
-
-    await prisma.opportunityScore.create({
-      data: {
-        opportunityId,
-        skillMatch: result.skillMatch,
-        portfolioFit: result.portfolioFit,
-        projectQuality: result.projectQuality,
-        longTermPotential: result.longTermPotential,
-        redFlags: JSON.stringify(result.redFlags),
-        missingRequirements: JSON.stringify(result.missingRequirements)
-      }
+  async analyzeAndScore(id: string): Promise<void> {
+    const opp = await prisma.opportunity.findUnique({
+      where: { id },
+      include: { client: true, jobPosting: true, pipelineRun: true }
     });
 
-    await this.logRun(opportunityId, PipelineStage.SCORE, PipelineStatus.COMPLETED);
-    return result;
-  }
+    if (!opp || !opp.jobPosting) return;
 
-  private async decide(opportunityId: string, scoreData: any) {
-    await this.logRun(opportunityId, PipelineStage.DECIDE, PipelineStatus.PROCESSING);
+    await this.logRun(id, PipelineStage.SCORE, PipelineStatus.PROCESSING);
 
-    await prisma.opportunityDecision.create({
-      data: {
-        opportunityId,
-        recommendation: scoreData.recommendation,
-        reason: scoreData.reason
-      }
-    });
+    try {
+      const [jobAnalysis, clientAnalysis, competitionAnalysis] = await Promise.all([
+        this.jobAgent.analyze(opp.jobPosting.title, opp.jobPosting.description),
+        this.clientAgent.analyze(opp.client ? opp.client : undefined),
+        this.competitionAgent.analyze(null, opp.jobPosting.budget ?? undefined, opp.jobPosting.hourlyMax ?? undefined)
+      ]);
 
-    const status = scoreData.recommendation === 'APPLY' ? OpportunityStatus.EVALUATING : OpportunityStatus.REJECTED;
-    
-    await prisma.opportunity.update({
-      where: { id: opportunityId },
-      data: { status }
-    });
+      const [fitAnalysis, economicAnalysis] = await Promise.all([
+        this.fitAgent.analyze(jobAnalysis),
+        this.economicAgent.analyze(
+          opp.jobPosting.budget ?? undefined, 
+          opp.jobPosting.hourlyMin ?? undefined, 
+          opp.jobPosting.hourlyMax ?? undefined, 
+          clientAnalysis, 
+          competitionAnalysis
+        )
+      ]);
 
-    await this.logRun(opportunityId, PipelineStage.DECIDE, PipelineStatus.COMPLETED);
-    return scoreData.recommendation;
+      await this.logRun(id, PipelineStage.SCORE, PipelineStatus.COMPLETED);
+
+      const decision = await this.decisionEngine.decide(
+        jobAnalysis,
+        clientAnalysis,
+        competitionAnalysis,
+        fitAnalysis,
+        economicAnalysis
+      );
+
+      await prisma.opportunityScore.create({
+        data: {
+          opportunityId: id,
+          skillMatch: fitAnalysis.matchScore,
+          portfolioFit: 0,
+          projectQuality: 0,
+          longTermPotential: 0,
+          redFlags: "",
+          missingRequirements: ""
+        }
+      });
+
+      await prisma.opportunityDecision.create({
+        data: {
+          opportunityId: id,
+          recommendation: decision.recommendation,
+          reason: decision.reason,
+          confidence: decision.confidence,
+          positiveEvidence: decision.positiveEvidence ? JSON.stringify(decision.positiveEvidence) : null,
+          negativeEvidence: decision.negativeEvidence ? JSON.stringify(decision.negativeEvidence) : null,
+          missingInformation: decision.missingInformation ? JSON.stringify(decision.missingInformation) : null,
+        }
+      });
+
+      await this.logRun(id, PipelineStage.DECIDE, PipelineStatus.COMPLETED);
+      await prisma.opportunity.update({
+        where: { id },
+        data: { status: 'DECIDED' }
+      });
+      
+    } catch (error: any) {
+      console.error(`Error analyzing opportunity ${id}:`, error);
+      await this.logRun(id, PipelineStage.SCORE, PipelineStatus.FAILED, error.message);
+    }
   }
 
   private async generateProposal(opportunityId: string, job: EnrichedOpportunityData) {
     await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.PROCESSING);
     
-    const prompt = buildDraftingPrompt();
-    const result = await this.agent.executeStructured(
-      'DraftingAgent',
-      opportunityId,
-      `Job Description:\n${job.description}\n\n${prompt}`,
-      draftingSchema
-    );
+    const result = await this.executor.executeStructured<z.infer<typeof draftingSchema>>({
+      agentName: 'DraftingAgent',
+      prompt: `Write a compelling proposal draft hook for the following job description:\n${job.description}`,
+      schema: draftingSchema,
+      schemaName: 'ProposalDraft',
+      schemaDescription: 'Draft proposal hook'
+    });
 
     await prisma.proposal.create({
       data: {
