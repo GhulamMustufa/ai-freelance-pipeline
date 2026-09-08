@@ -16,7 +16,7 @@ export default async function DashboardOverview() {
 
   return (
     <div className="p-8 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">AI Pipeline Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-8">OmniBid Intelligence Engine</h1>
       
       <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm">
         <table className="min-w-full divide-y divide-gray-200">

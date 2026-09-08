@@ -1,4 +1,4 @@
-# Interview Guide: AI Freelance Intelligence Pipeline
+# Interview Guide: OmniBid Intelligence Engine
 
 This guide prepares for technical interview questions a hiring manager or AI engineer might ask about this project.
 

@@ -1,4 +1,4 @@
-# AI Freelance Intelligence Pipeline
+# OmniBid Intelligence Engine
 
 > **An autonomous, multi-agent AI system that discovers freelance opportunities, reasons over their viability, generates evidence-grounded proposals, and learns from real-world outcomes.**
 

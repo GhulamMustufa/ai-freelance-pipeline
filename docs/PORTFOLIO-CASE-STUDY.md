@@ -1,4 +1,4 @@
-# Portfolio Case Study: AI Freelance Intelligence Pipeline
+# Portfolio Case Study: OmniBid Intelligence Engine
 
 ## Problem
 
