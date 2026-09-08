@@ -236,8 +236,17 @@ export class OpportunityPipeline {
         economicAnalysis
       );
 
-      await prisma.opportunityScore.create({
-        data: {
+      await prisma.opportunityScore.upsert({
+        where: { opportunityId: id },
+        update: {
+          skillMatch: fitAnalysis.matchScore,
+          portfolioFit: 0,
+          projectQuality: 0,
+          longTermPotential: 0,
+          redFlags: "",
+          missingRequirements: ""
+        },
+        create: {
           opportunityId: id,
           skillMatch: fitAnalysis.matchScore,
           portfolioFit: 0,
@@ -248,8 +257,17 @@ export class OpportunityPipeline {
         }
       });
 
-      await prisma.opportunityDecision.create({
-        data: {
+      await prisma.opportunityDecision.upsert({
+        where: { opportunityId: id },
+        update: {
+          recommendation: decision.recommendation,
+          reason: decision.reason,
+          confidence: decision.confidence,
+          positiveEvidence: decision.positiveEvidence ? JSON.stringify(decision.positiveEvidence) : null,
+          negativeEvidence: decision.negativeEvidence ? JSON.stringify(decision.negativeEvidence) : null,
+          missingInformation: decision.missingInformation ? JSON.stringify(decision.missingInformation) : null,
+        },
+        create: {
           opportunityId: id,
           recommendation: decision.recommendation,
           reason: decision.reason,
@@ -311,8 +329,13 @@ export class OpportunityPipeline {
         }
       }
 
-      await prisma.proposal.create({
-        data: {
+      await prisma.proposal.upsert({
+        where: { opportunityId },
+        update: {
+          content: finalContent,
+          evidenceUsed: JSON.stringify(usedEvidence),
+        },
+        create: {
           opportunityId,
           content: finalContent,
           evidenceUsed: JSON.stringify(usedEvidence),

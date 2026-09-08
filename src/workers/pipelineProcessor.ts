@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+
 import { prisma } from '../lib/prisma';
 import { OpportunityPipeline } from '../application/pipeline/OpportunityPipeline';
 import { OpportunityStatus, Platform } from '../domain/models';

@@ -29,26 +29,26 @@ export class ModelRouter {
       if (costPref === 'BEST' || complexity === 'HIGH') {
         return {
           primary: { provider: 'openai', model: 'gpt-4o' },
-          fallbacks: [{ provider: 'gemini', model: 'gemini-1.5-pro' }]
+          fallbacks: [{ provider: 'deepseek', model: 'deepseek-chat' }]
         };
       }
       return {
         primary: { provider: 'openai', model: 'gpt-4o-mini' },
-        fallbacks: [{ provider: 'gemini', model: 'gemini-1.5-flash' }]
+        fallbacks: [{ provider: 'deepseek', model: 'deepseek-chat' }]
       };
     }
     
     if (request.type === TaskType.REASONING) {
       if (costPref === 'CHEAP') {
         return {
-          primary: { provider: 'gemini', model: 'gemini-1.5-flash' },
+          primary: { provider: 'deepseek', model: 'deepseek-chat' },
           fallbacks: [{ provider: 'openai', model: 'gpt-4o-mini' }]
         };
       }
       return {
         primary: { provider: 'openai', model: 'gpt-4o' },
         fallbacks: [
-          { provider: 'gemini', model: 'gemini-1.5-pro' },
+          { provider: 'deepseek', model: 'deepseek-chat' },
           { provider: 'openai', model: 'gpt-4o-mini' } // Degradation fallback
         ]
       };
@@ -58,11 +58,11 @@ export class ModelRouter {
       if (costPref === 'CHEAP') {
         return {
           primary: { provider: 'openai', model: 'gpt-4o-mini' },
-          fallbacks: [{ provider: 'gemini', model: 'gemini-1.5-flash' }]
+          fallbacks: [{ provider: 'deepseek', model: 'deepseek-chat' }]
         };
       }
       return {
-        primary: { provider: 'gemini', model: 'gemini-1.5-pro' }, // Gemini often has larger context for generation
+        primary: { provider: 'deepseek', model: 'deepseek-chat' },
         fallbacks: [{ provider: 'openai', model: 'gpt-4o' }]
       };
     }
@@ -70,7 +70,7 @@ export class ModelRouter {
     // Default catch-all
     return {
       primary: { provider: 'openai', model: 'gpt-4o-mini' },
-      fallbacks: [{ provider: 'gemini', model: 'gemini-1.5-flash' }]
+      fallbacks: [{ provider: 'deepseek', model: 'deepseek-chat' }]
     };
   }
 }

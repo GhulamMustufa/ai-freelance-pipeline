@@ -1,10 +1,10 @@
-import { google } from '@ai-sdk/google';
+import { deepseek } from '@ai-sdk/deepseek';
 import { openai } from '@ai-sdk/openai';
 import { generateObject, generateText, LanguageModel } from 'ai';
 import type { UIMessage } from 'ai';
 import { z } from 'zod';
 
-export type AIProviderName = 'gemini' | 'openai';
+export type AIProviderName = 'deepseek' | 'openai';
 
 export interface AIProviderConfig {
   provider: AIProviderName;
@@ -14,8 +14,8 @@ export interface AIProviderConfig {
 export class AIProvider {
   private static getModel(config: AIProviderConfig): LanguageModel {
     switch (config.provider) {
-      case 'gemini':
-        return google(config.model);
+      case 'deepseek':
+        return deepseek(config.model);
       case 'openai':
         return openai(config.model);
       default:

@@ -20,17 +20,17 @@ export const MODEL_PRICING: Record<string, ModelPricing> = {
     costPer1kInputTokens: 0.0025,
     costPer1kOutputTokens: 0.010,
   },
-  'gemini-1.5-flash': {
-    provider: 'gemini',
-    model: 'gemini-1.5-flash',
-    costPer1kInputTokens: 0.000075,
-    costPer1kOutputTokens: 0.0003,
+  'deepseek-chat': {
+    provider: 'deepseek',
+    model: 'deepseek-chat',
+    costPer1kInputTokens: 0.00014,
+    costPer1kOutputTokens: 0.00028,
   },
-  'gemini-1.5-pro': {
-    provider: 'gemini',
-    model: 'gemini-1.5-pro',
-    costPer1kInputTokens: 0.00125,
-    costPer1kOutputTokens: 0.005,
+  'deepseek-reasoner': {
+    provider: 'deepseek',
+    model: 'deepseek-reasoner',
+    costPer1kInputTokens: 0.00055,
+    costPer1kOutputTokens: 0.00219,
   }
 };
 

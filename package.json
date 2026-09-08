@@ -19,6 +19,7 @@
     "dev:all": "concurrently \"npm run dev\" \"npm run worker:ingestion\" \"npm run worker:pipeline\""
   },
   "dependencies": {
+    "@ai-sdk/deepseek": "^2.0.62",
     "@ai-sdk/google": "^3.0.111",
     "@ai-sdk/openai": "^3.0.99",
     "@base-ui/react": "^1.7.0",
