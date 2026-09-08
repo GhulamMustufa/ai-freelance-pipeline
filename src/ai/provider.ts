@@ -55,4 +55,17 @@ export class AIProvider {
     
     return { text, usage };
   }
+
+  static async generateEmbedding(text: string): Promise<number[]> {
+    // We will hardcode OpenAI text-embedding-3-small for simplicity in Phase 3
+    // but this can be abstracted later if needed.
+    const { embed } = await import('ai');
+    
+    const { embedding } = await embed({
+      model: openai.embedding('text-embedding-3-small'),
+      value: text,
+    });
+    
+    return embedding;
+  }
 }

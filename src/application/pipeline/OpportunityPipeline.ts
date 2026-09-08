@@ -14,6 +14,10 @@ import { CompetitionAgent } from '../../ai/agents/CompetitionAgent';
 import { FreelancerFitAgent } from '../../ai/agents/FreelancerFitAgent';
 import { EconomicAgent } from '../../ai/agents/EconomicAgent';
 import { DecisionEngine } from '../engine/DecisionEngine';
+import { SemanticRetriever } from '../../ai/rag/SemanticRetriever';
+import { EvidenceRankingAgent } from '../../ai/agents/EvidenceRankingAgent';
+import { ProposalDraftingAgent } from '../../ai/agents/ProposalDraftingAgent';
+import { ClaimVerificationAgent } from '../../ai/agents/ClaimVerificationAgent';
 import { z } from 'zod';
 import { UpworkMCPClient } from '../../integrations/upwork/mcpClient';
 
@@ -42,6 +46,10 @@ export class OpportunityPipeline {
   private fitAgent: FreelancerFitAgent;
   private economicAgent: EconomicAgent;
   private decisionEngine: DecisionEngine;
+  private semanticRetriever: SemanticRetriever;
+  private evidenceRanker: EvidenceRankingAgent;
+  private proposalDrafter: ProposalDraftingAgent;
+  private claimVerifier: ClaimVerificationAgent;
   private mcpClient: UpworkMCPClient;
 
   constructor() {
@@ -53,6 +61,10 @@ export class OpportunityPipeline {
     this.fitAgent = new FreelancerFitAgent(this.executor);
     this.economicAgent = new EconomicAgent(this.executor);
     this.decisionEngine = new DecisionEngine(this.executor);
+    this.semanticRetriever = new SemanticRetriever();
+    this.evidenceRanker = new EvidenceRankingAgent(this.executor);
+    this.proposalDrafter = new ProposalDraftingAgent(this.executor);
+    this.claimVerifier = new ClaimVerificationAgent(this.executor);
     this.mcpClient = new UpworkMCPClient();
   }
 
@@ -263,22 +275,55 @@ export class OpportunityPipeline {
   private async generateProposal(opportunityId: string, job: EnrichedOpportunityData) {
     await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.PROCESSING);
     
-    const result = await this.executor.executeStructured<z.infer<typeof draftingSchema>>({
-      agentName: 'DraftingAgent',
-      prompt: `Write a compelling proposal draft hook for the following job description:\n${job.description}`,
-      schema: draftingSchema,
-      schemaName: 'ProposalDraft',
-      schemaDescription: 'Draft proposal hook'
-    });
+    try {
+      // 1. Requirement Extraction (Re-use Job Intelligence or run again, here we just run it again for simplicity, 
+      // or we can fetch the JobAnalysis if we stored it, but we didn't store the full JSON. We'll run it again)
+      const jobAnalysis = await this.jobAgent.analyze(job.title, job.description);
 
-    await prisma.proposal.create({
-      data: {
-        opportunityId,
-        content: result.draftHook
+      // 2. Evidence Retrieval
+      const query = `Problem: ${jobAnalysis.actualProblem}. Tech: ${jobAnalysis.technicalRequirements.join(', ')}`;
+      const retrieved = await this.semanticRetriever.retrieve(query, 10);
+
+      // 3. Evidence Ranking
+      const rankedEvidence = await this.evidenceRanker.rank(jobAnalysis, retrieved);
+
+      // 4. Draft -> Verify Loop (Anti-Hallucination)
+      let finalContent = '';
+      let usedEvidence: string[] = [];
+      let attempts = 0;
+      let isGrounded = false;
+
+      while (!isGrounded && attempts < 3) {
+        attempts++;
+        const draft = await this.proposalDrafter.draft(job.description, rankedEvidence);
+        
+        const verification = await this.claimVerifier.verify(draft.content, rankedEvidence);
+        
+        if (verification.isGrounded) {
+          isGrounded = true;
+          finalContent = draft.content;
+          usedEvidence = draft.evidenceUsed;
+        } else {
+          console.warn(`[Pipeline] Hallucination detected on attempt ${attempts}:`, verification.feedback);
+          if (attempts === 3) {
+            throw new Error(`Failed to generate grounded proposal after 3 attempts. Feedback: ${verification.feedback}`);
+          }
+        }
       }
-    });
 
-    await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.COMPLETED);
+      await prisma.proposal.create({
+        data: {
+          opportunityId,
+          content: finalContent,
+          evidenceUsed: JSON.stringify(usedEvidence),
+        }
+      });
+
+      await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.COMPLETED);
+    } catch (error: any) {
+      console.error(`Error generating proposal for ${opportunityId}:`, error);
+      await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.FAILED, error.message);
+    }
   }
 
   private async logRun(opportunityId: string, stage: PipelineStage, status: PipelineStatus, error?: string) {

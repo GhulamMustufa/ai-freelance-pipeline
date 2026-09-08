@@ -139,10 +139,24 @@ model Proposal {
   opportunity    Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   
   content        String
+  evidenceUsed   String?     // JSON array of FreelancerEvidence IDs used
   status         String      @default("DRAFT") // DRAFT, SUBMITTED
   
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
+}
+
+model FreelancerEvidence {
+  id              String   @id @default(uuid())
+  type            String   // PROJECT, TECHNOLOGY, ACHIEVEMENT, CASE_STUDY, METRIC
+  title           String
+  description     String
+  technologies    String   // Comma-separated
+  url             String?  // Proof/Source
+  embedding       String?  // Stored as JSON string of float array
+  verification    String   // e.g., "Verified via GitHub", "Verified via Upwork"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 // -----------------------------------------------------------------------------
