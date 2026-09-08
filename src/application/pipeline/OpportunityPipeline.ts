@@ -260,7 +260,7 @@ export class OpportunityPipeline {
         }
       });
 
-      await this.logRun(id, PipelineStage.DECIDE, PipelineStatus.COMPLETED);
+      await this.logRun(id, PipelineStage.DECIDE, PipelineStatus.COMPLETED, undefined, { recommendation: decision.recommendation, confidence: decision.confidence });
       await prisma.opportunity.update({
         where: { id },
         data: { status: 'DECIDED' }
@@ -268,7 +268,7 @@ export class OpportunityPipeline {
       
     } catch (error: any) {
       console.error(`Error analyzing opportunity ${id}:`, error);
-      await this.logRun(id, PipelineStage.SCORE, PipelineStatus.FAILED, error.message);
+      await this.logRun(id, PipelineStage.SCORE, PipelineStatus.FAILED, error.message, { stack: error.stack });
     }
   }
 
@@ -319,16 +319,24 @@ export class OpportunityPipeline {
         }
       });
 
-      await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.COMPLETED);
+      await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.COMPLETED, undefined, { attempts });
     } catch (error: any) {
       console.error(`Error generating proposal for ${opportunityId}:`, error);
-      await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.FAILED, error.message);
+      await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.FAILED, error.message, { stack: error.stack });
     }
   }
 
-  private async logRun(opportunityId: string, stage: PipelineStage, status: PipelineStatus, error?: string) {
+  private async logRun(opportunityId: string, stage: PipelineStage, status: PipelineStatus, error?: string, metadata?: Record<string, any>) {
     await prisma.pipelineRun.create({
-      data: { opportunityId, stage, status, error }
+      data: { 
+        opportunityId, 
+        stage, 
+        status, 
+        error,
+        metadata: metadata ? JSON.stringify(metadata) : null,
+        startedAt: status === PipelineStatus.PROCESSING || status === PipelineStatus.PENDING ? new Date() : undefined,
+        completedAt: status === PipelineStatus.COMPLETED || status === PipelineStatus.FAILED ? new Date() : undefined,
+      }
     });
   }
 }

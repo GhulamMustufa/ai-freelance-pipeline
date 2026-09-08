@@ -172,6 +172,7 @@ model PipelineRun {
   status         String      // PENDING, PROCESSING, COMPLETED, FAILED
   
   error          String?
+  metadata       String?     // JSON string for stage context
   startedAt      DateTime?
   completedAt    DateTime?
   
@@ -190,6 +191,8 @@ model AgentRun {
   agentName      String
   provider       String       // gemini, openai
   model          String
+  schemaVersion  String       @default("1.0")
+  retries        Int          @default(0)
   
   promptTokens   Int?
   completionTokens Int?

@@ -16,12 +16,16 @@ export class AgentExecutor {
   constructor(private config: AIProviderConfig = { provider: 'openai', model: 'gpt-4o-mini' }) {}
 
   async executeStructured<T>(options: ExecuteOptions<T>): Promise<T> {
-    const { agentName, opportunityId = null, prompt, schema, systemPrompt } = options;
+    const { agentName, opportunityId = null, prompt, schema, systemPrompt, schemaName } = options;
     const startTime = Date.now();
     let result: T | null = null;
     let errorStr: string | null = null;
     let usage: any = null;
+    let retries = 0;
 
+    // A simple retry loop could be implemented here, but for now we just track it.
+    // The Proposal drafting agent handles its own logical retries via the while loop,
+    // but if the Vercel AI SDK throws an error (e.g. rate limit), we could retry here.
     try {
       const response = await AIProvider.generateStructuredData<T>(
         this.config,
@@ -45,6 +49,8 @@ export class AgentExecutor {
           agentName,
           provider: this.config.provider,
           model: this.config.model,
+          schemaVersion: schemaName ?? '1.0',
+          retries,
           promptTokens: usage?.promptTokens,
           completionTokens: usage?.completionTokens,
           durationMs,

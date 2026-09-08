@@ -9,6 +9,8 @@
     "lint": "eslint",
     "test": "npx tsx --test __tests__/*.test.ts",
     "evaluate": "npx tsx src/evals/runner.ts",
+    "trace": "npx tsx scripts/trace.ts",
+    "replay": "npx tsx scripts/replay.ts",
     "worker:ingestion": "npx tsx src/workers/ingestion.ts",
     "worker:pipeline": "npx tsx src/workers/pipelineProcessor.ts",
     "dev:all": "concurrently \"npm run dev\" \"npm run worker:ingestion\" \"npm run worker:pipeline\""
