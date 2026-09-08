@@ -24,6 +24,8 @@ model Opportunity {
   score          OpportunityScore?
   decision       OpportunityDecision?
   proposal       Proposal?
+  outcome        OpportunityOutcome?
+  feedback       UserFeedback?
   
   clientId       String?
   client         Client?   @relation(fields: [clientId], references: [id])
@@ -229,3 +231,41 @@ model Evaluation {
   
   createdAt      DateTime     @default(now())
 }
+
+// -----------------------------------------------------------------------------
+// PHASE 7: FEEDBACK LOOP & OUTCOMES
+// -----------------------------------------------------------------------------
+
+model OpportunityOutcome {
+  id               String      @id @default(uuid())
+  opportunityId    String      @unique
+  opportunity      Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  
+  applied          Boolean     @default(false)
+  proposalEdited   Boolean     @default(false)
+  clientViewed     Boolean     @default(false)
+  responseReceived Boolean     @default(false)
+  interview        Boolean     @default(false)
+  contractWon      Boolean     @default(false)
+  rejected         Boolean     @default(false)
+  
+  reasonLost       String?     // If rejected/lost
+  
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model UserFeedback {
+  id                  String      @id @default(uuid())
+  opportunityId       String      @unique
+  opportunity         Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  
+  decisionCorrect     Boolean
+  proposalQuality     Int?        // Score 1-5
+  opportunityValuable Boolean
+  notes               String?
+  
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+}
+

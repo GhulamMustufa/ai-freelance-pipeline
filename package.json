@@ -10,6 +10,7 @@
     "test": "npx tsx --test __tests__/*.test.ts",
     "evaluate": "npx tsx src/evals/runner.ts",
     "experiment": "npx tsx scripts/experiment.ts",
+    "golden-dataset": "npx tsx scripts/generate-golden-dataset.ts",
     "trace": "npx tsx scripts/trace.ts",
     "replay": "npx tsx scripts/replay.ts",
     "worker:ingestion": "npx tsx src/workers/ingestion.ts",
