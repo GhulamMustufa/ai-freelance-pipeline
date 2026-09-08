@@ -1,0 +1,316 @@
+{
+  "summary": {
+    "totalCases": 30,
+    "successfulRuns": 0,
+    "errors": 30,
+    "precision": 0,
+    "recall": 0,
+    "f1": 0,
+    "falsePositives": 0,
+    "falseNegatives": 0,
+    "avgLatencyMs": 0,
+    "avgTokens": 0
+  },
+  "results": [
+    {
+      "id": "eval-000",
+      "category": "excellent_match",
+      "expectedRecommendation": "APPLY",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 1358,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-001",
+      "category": "poor_technical_match",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 167,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-002",
+      "category": "excellent_client_poor_job",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 96,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-003",
+      "category": "poor_client_excellent_technical_match",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 45,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-004",
+      "category": "high_competition",
+      "expectedRecommendation": "MAYBE",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 16,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-005",
+      "category": "hallucination_trap",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 13,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-006",
+      "category": "excellent_match",
+      "expectedRecommendation": "APPLY",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 18,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-007",
+      "category": "poor_technical_match",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 14,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-008",
+      "category": "excellent_client_poor_job",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 16,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-009",
+      "category": "poor_client_excellent_technical_match",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 10,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-010",
+      "category": "high_competition",
+      "expectedRecommendation": "MAYBE",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 9,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-011",
+      "category": "hallucination_trap",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 13,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-012",
+      "category": "excellent_match",
+      "expectedRecommendation": "APPLY",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 71,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-013",
+      "category": "poor_technical_match",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 11,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-014",
+      "category": "excellent_client_poor_job",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 27,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-015",
+      "category": "poor_client_excellent_technical_match",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 34,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-016",
+      "category": "high_competition",
+      "expectedRecommendation": "MAYBE",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 12,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-017",
+      "category": "hallucination_trap",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 12,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-018",
+      "category": "excellent_match",
+      "expectedRecommendation": "APPLY",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 34,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-019",
+      "category": "poor_technical_match",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 19,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-020",
+      "category": "excellent_client_poor_job",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 27,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-021",
+      "category": "poor_client_excellent_technical_match",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 29,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-022",
+      "category": "high_competition",
+      "expectedRecommendation": "MAYBE",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 8,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-023",
+      "category": "hallucination_trap",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 27,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-024",
+      "category": "excellent_match",
+      "expectedRecommendation": "APPLY",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 27,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-025",
+      "category": "poor_technical_match",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 37,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-026",
+      "category": "excellent_client_poor_job",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 11,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-027",
+      "category": "poor_client_excellent_technical_match",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 144,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-028",
+      "category": "high_competition",
+      "expectedRecommendation": "MAYBE",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 7,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    },
+    {
+      "id": "eval-029",
+      "category": "hallucination_trap",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "ERROR",
+      "latencyMs": 35,
+      "tokensUsed": 0,
+      "confidence": 0,
+      "error": "OpenAI API key is missing. Pass it using the 'apiKey' parameter or the OPENAI_API_KEY environment variable."
+    }
+  ]
+}

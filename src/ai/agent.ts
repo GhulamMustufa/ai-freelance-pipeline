@@ -2,16 +2,21 @@ import { AIProvider, AIProviderConfig } from './provider';
 import { prisma } from '../lib/prisma';
 import { z } from 'zod';
 
-export class AgentExecutor {
-  constructor(private config: AIProviderConfig) {}
+export interface ExecuteOptions<T> {
+  agentName: string;
+  opportunityId?: string | null;
+  prompt: string;
+  schema: z.ZodSchema<T>;
+  systemPrompt?: string;
+  schemaName?: string;
+  schemaDescription?: string;
+}
 
-  async executeStructured<T>(
-    agentName: string,
-    opportunityId: string | null,
-    prompt: string,
-    schema: z.ZodSchema<T>,
-    systemPrompt?: string
-  ): Promise<T> {
+export class AgentExecutor {
+  constructor(private config: AIProviderConfig = { provider: 'openai', model: 'gpt-4o-mini' }) {}
+
+  async executeStructured<T>(options: ExecuteOptions<T>): Promise<T> {
+    const { agentName, opportunityId = null, prompt, schema, systemPrompt } = options;
     const startTime = Date.now();
     let result: T | null = null;
     let errorStr: string | null = null;
