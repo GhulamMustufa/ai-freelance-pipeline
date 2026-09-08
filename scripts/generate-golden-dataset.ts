@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { prisma } from '../src/lib/prisma';
 import { EvalCase } from './generate-dataset';
+import { Platform } from '../src/domain/models';
 
 /**
  * generate-golden-dataset.ts
@@ -69,19 +70,21 @@ async function generateGoldenDataset() {
         recommendation: expectedRecommendation,
       },
       payload: {
-        platform: opp.platform,
+        platform: opp.platform as Platform,
+        platformId: opp.platformId,
+        postedAt: opp.jobPosting.postedAt,
         title: opp.jobPosting.title,
         description: opp.jobPosting.description,
         skills: opp.jobPosting.skills.split(','),
         budget: opp.jobPosting.budget ?? undefined,
         hourlyMin: opp.jobPosting.hourlyMin ?? undefined,
         hourlyMax: opp.jobPosting.hourlyMax ?? undefined,
-        client: {
+        client: opp.client ? {
           totalSpend: opp.client?.profile?.totalSpend ?? 0,
           avgHourlyRate: opp.client?.profile?.avgHourlyRate ?? 0,
           hires: opp.client?.profile?.totalContracts ?? 0,
           feedbackScore: opp.client?.profile?.feedbackScore ?? 0,
-        }
+        } : undefined
       }
     });
   }

@@ -17,7 +17,7 @@ const templates = [
   // Excellent match
   {
     category: 'excellent_match',
-    expected: { recommendation: 'APPLY', hasRedFlags: false },
+    expected: { recommendation: 'APPLY' as const, hasRedFlags: false },
     payload: {
       platform: 'upwork',
       title: 'Senior Node.js / React Backend Developer Needed',
@@ -32,7 +32,7 @@ const templates = [
   // Poor technical match
   {
     category: 'poor_technical_match',
-    expected: { recommendation: 'SKIP', hasRedFlags: false },
+    expected: { recommendation: 'SKIP' as const, hasRedFlags: false },
     payload: {
       platform: 'upwork',
       title: 'Rust Web3 Developer',
@@ -47,7 +47,7 @@ const templates = [
   // Excellent client / poor job
   {
     category: 'excellent_client_poor_job',
-    expected: { recommendation: 'SKIP', hasRedFlags: true },
+    expected: { recommendation: 'SKIP' as const, hasRedFlags: true },
     payload: {
       platform: 'upwork',
       title: 'Fix a typo on my HTML site',
@@ -62,7 +62,7 @@ const templates = [
   // Poor client / excellent technical match
   {
     category: 'poor_client_excellent_technical_match',
-    expected: { recommendation: 'SKIP', hasRedFlags: true },
+    expected: { recommendation: 'SKIP' as const, hasRedFlags: true },
     payload: {
       platform: 'upwork',
       title: 'Build a Node.js Backend immediately',
@@ -77,7 +77,7 @@ const templates = [
   // High competition
   {
     category: 'high_competition',
-    expected: { recommendation: 'MAYBE', hasRedFlags: false },
+    expected: { recommendation: 'MAYBE' as const, hasRedFlags: false },
     payload: {
       platform: 'upwork',
       title: 'React Dashboard',
@@ -93,7 +93,7 @@ const templates = [
   // Hallucination Trap
   {
     category: 'hallucination_trap',
-    expected: { recommendation: 'SKIP', isHallucinationTrap: true },
+    expected: { recommendation: 'SKIP' as const, isHallucinationTrap: true },
     payload: {
       platform: 'upwork',
       title: 'Quantum Computing React Framework Developer',

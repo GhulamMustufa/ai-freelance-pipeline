@@ -22,7 +22,7 @@ async function startListener() {
     host: 'imap.gmail.com',
     port: 993,
     secure: true,
-    auth: { user: GMAIL_USER, pass: GMAIL_PASS },
+    auth: { user: GMAIL_USER!, pass: GMAIL_PASS! },
     logger: false
   });
 
@@ -64,7 +64,7 @@ async function startListener() {
 
     // 1. Fetch unread
     try {
-      const searchRes = await client.search({ unseen: true, from: 'upwork.com' });
+      const searchRes = await client.search({ seen: false, from: 'upwork.com' });
       if (searchRes && searchRes.length > 0) {
         for await (const msg of client.fetch(searchRes, { source: true, envelope: true })) {
           await processMessage(msg);

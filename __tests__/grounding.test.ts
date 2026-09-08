@@ -34,7 +34,8 @@ test('Anti-Hallucination Pipeline', async (t) => {
     const originalExecute = executor.executeStructured;
     
     // Mock the verification response
-    executor.executeStructured = async (args: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (executor as any).executeStructured = async (args: any) => {
       if (args.agentName === 'ClaimVerification') {
         return {
           isGrounded: false,
@@ -59,7 +60,8 @@ test('Anti-Hallucination Pipeline', async (t) => {
     
     const originalExecute = executor.executeStructured;
     
-    executor.executeStructured = async (args: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (executor as any).executeStructured = async (args: any) => {
       if (args.agentName === 'ClaimVerification') {
         return {
           isGrounded: true,

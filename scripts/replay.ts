@@ -22,7 +22,7 @@ async function replay(opportunityId: string) {
   
   await prisma.opportunity.update({
     where: { id: opportunityId },
-    status: 'PENDING'
+    data: { status: 'PENDING' }
   });
 
   const payload: RawOpportunityPayload = {

@@ -201,7 +201,7 @@ export class OpportunityPipeline {
   async analyzeAndScore(id: string): Promise<void> {
     const opp = await prisma.opportunity.findUnique({
       where: { id },
-      include: { client: true, jobPosting: true, pipelineRun: true }
+      include: { client: true, jobPosting: true, pipelineRuns: true }
     });
 
     if (!opp || !opp.jobPosting) return;

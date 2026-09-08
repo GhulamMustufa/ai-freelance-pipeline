@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { AgentExecutor } from '../agent';
-import { ProposalDraft } from '../../domain/models';
 import { TaskType } from '../router';
 import { RetrievedEvidence } from '../rag/SemanticRetriever';
 

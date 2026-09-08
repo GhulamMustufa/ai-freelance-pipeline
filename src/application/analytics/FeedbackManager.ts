@@ -53,7 +53,7 @@ export class FeedbackManager {
   async getSystemMetrics() {
     const outcomes = await prisma.opportunityOutcome.findMany();
 
-    const totalApplied = outcomes.filter(o => o.applied).length;
+    const totalApplied = outcomes.filter((o: { applied: boolean }) => o.applied).length;
     if (totalApplied === 0) {
       return {
         totalApplied: 0,
@@ -63,9 +63,9 @@ export class FeedbackManager {
       };
     }
 
-    const totalResponses = outcomes.filter(o => o.applied && o.responseReceived).length;
-    const totalInterviews = outcomes.filter(o => o.applied && o.interview).length;
-    const totalContracts = outcomes.filter(o => o.applied && o.contractWon).length;
+    const totalResponses = outcomes.filter((o: { applied: boolean; responseReceived: boolean }) => o.applied && o.responseReceived).length;
+    const totalInterviews = outcomes.filter((o: { applied: boolean; interview: boolean }) => o.applied && o.interview).length;
+    const totalContracts = outcomes.filter((o: { applied: boolean; contractWon: boolean }) => o.applied && o.contractWon).length;
 
     return {
       totalApplied,
@@ -82,24 +82,26 @@ export class FeedbackManager {
     const opportunities = await prisma.opportunity.findMany({
       include: {
         score: true,
-        outcome: true,
       },
       where: {
-        outcome: {
-          isNot: null,
-        },
-        score: {
-          isNot: null,
-        }
+        score: { isNot: null },
       }
     });
 
-    const highScoring = opportunities.filter(o => (o.score?.skillMatch || 0) >= 80 && o.outcome?.applied);
-    const lowScoring = opportunities.filter(o => (o.score?.skillMatch || 0) < 80 && o.outcome?.applied);
+    const outcomes = await prisma.opportunityOutcome.findMany();
+    const outcomeMap = new Map(outcomes.map(o => [o.opportunityId, o]));
+
+    const withOutcomes = opportunities.filter(o => outcomeMap.has(o.id) && outcomeMap.get(o.id)?.applied);
+
+    const highScoring = withOutcomes.filter(o => (o.score?.skillMatch || 0) >= 80);
+    const lowScoring = withOutcomes.filter(o => (o.score?.skillMatch || 0) < 80);
 
     const getSuccessRate = (opps: typeof opportunities) => {
       if (opps.length === 0) return 0;
-      const successes = opps.filter(o => o.outcome?.contractWon || o.outcome?.interview).length;
+      const successes = opps.filter(o => {
+        const outcome = outcomeMap.get(o.id);
+        return outcome?.contractWon || outcome?.interview;
+      }).length;
       return (successes / opps.length) * 100;
     };
 

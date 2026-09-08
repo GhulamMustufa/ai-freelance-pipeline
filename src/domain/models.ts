@@ -70,6 +70,11 @@ export interface RawOpportunityPayload {
     platformId?: string;
     location?: string;
     name?: string;
+    // Optional fields used in evaluation scripts and test payloads
+    totalSpend?: number;
+    avgHourlyRate?: number;
+    hires?: number;
+    feedbackScore?: number;
   };
 }
 

@@ -1,6 +1,7 @@
 import { google } from '@ai-sdk/google';
 import { openai } from '@ai-sdk/openai';
-import { generateObject, generateText, LanguageModel, CoreMessage } from 'ai';
+import { generateObject, generateText, LanguageModel } from 'ai';
+import type { UIMessage } from 'ai';
 import { z } from 'zod';
 
 export type AIProviderName = 'gemini' | 'openai';
@@ -42,7 +43,8 @@ export class AIProvider {
   
   static async chat(
     config: AIProviderConfig,
-    messages: CoreMessage[],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    messages: any[],
     system?: string
   ) {
     const model = this.getModel(config);
