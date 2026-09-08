@@ -197,6 +197,7 @@ model AgentRun {
   promptTokens   Int?
   completionTokens Int?
   durationMs     Int?
+  estimatedCost  Float?       // Cost in USD
   
   inputPayload   String       // JSON
   outputPayload  String?      // JSON

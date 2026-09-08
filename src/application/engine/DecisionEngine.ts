@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { AgentExecutor } from '../../ai/agent';
 import { JobAnalysis, ClientAnalysis, CompetitionAnalysis, FitAnalysis, EconomicAnalysis, OpportunityDecision } from '../../domain/models';
+import { TaskType } from '../../ai/router';
 
 export const decisionSchema = z.object({
   score: z.number().min(0).max(100).describe('Final overall score for the opportunity (0-100)'),
@@ -80,11 +81,13 @@ export class DecisionEngine {
     `;
 
     const result = await this.executor.executeStructured<z.infer<typeof decisionSchema>>({
-      agentName: 'DecisionSynthesis',
+      agentName: 'DecisionEngine',
       prompt,
       schema: decisionSchema,
-      schemaName: 'OpportunityDecisionSynthesis',
-      schemaDescription: 'Final synthesized decision for an opportunity',
+      schemaName: 'OpportunityDecision',
+      schemaDescription: 'Final decision on whether to apply to an opportunity',
+      taskType: TaskType.REASONING,
+      complexity: 'HIGH'
     });
 
     return {

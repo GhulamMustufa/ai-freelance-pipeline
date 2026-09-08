@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { AgentExecutor } from '../agent';
 import { ClientAnalysis } from '../../domain/models';
+import { TaskType } from '../router';
 
 export const clientIntelligenceSchema = z.object({
   quality: z.enum(['LOW', 'MEDIUM', 'HIGH']).describe('Overall quality of the client based on history'),
@@ -42,6 +43,8 @@ export class ClientIntelligenceAgent {
       schema: clientIntelligenceSchema,
       schemaName: 'ClientIntelligenceAnalysis',
       schemaDescription: 'Structured analysis of a client profile',
+      taskType: TaskType.EXTRACTION,
+      complexity: 'LOW'
     });
 
     return result as ClientAnalysis;

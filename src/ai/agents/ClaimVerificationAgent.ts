@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { AgentExecutor } from '../agent';
 import { RetrievedEvidence } from '../rag/SemanticRetriever';
+import { TaskType } from '../router';
 
 export const verificationSchema = z.object({
   isGrounded: z.boolean().describe('True if all claims are backed by evidence, False if any hallucination exists'),
@@ -33,8 +34,10 @@ export class ClaimVerificationAgent {
       agentName: 'ClaimVerification',
       prompt,
       schema: verificationSchema,
-      schemaName: 'ClaimVerification',
-      schemaDescription: 'Verification of claims against evidence',
+      schemaName: 'ProposalVerification',
+      schemaDescription: 'Verification of proposal claims against evidence',
+      taskType: TaskType.REASONING,
+      complexity: 'HIGH'
     });
 
     let feedback = result.reasoning;

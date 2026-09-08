@@ -295,7 +295,7 @@ export class OpportunityPipeline {
 
       while (!isGrounded && attempts < 3) {
         attempts++;
-        const draft = await this.proposalDrafter.draft(job.description, rankedEvidence);
+        const draft = await this.proposalDrafter.draft(job.description, rankedEvidence, opportunityId);
         
         const verification = await this.claimVerifier.verify(draft.content, rankedEvidence);
         

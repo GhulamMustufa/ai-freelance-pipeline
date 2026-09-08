@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { AgentExecutor } from '../agent';
 import { ClientAnalysis, CompetitionAnalysis, EconomicAnalysis } from '../../domain/models';
+import { TaskType } from '../router';
 
 export const economicSchema = z.object({
   expectedValue: z.number().describe('Estimated monetary value of winning this job'),
@@ -32,11 +33,13 @@ export class EconomicAgent {
     `;
 
     const result = await this.executor.executeStructured<z.infer<typeof economicSchema>>({
-      agentName: 'EconomicRisk',
+      agentName: 'Economic',
       prompt,
       schema: economicSchema,
       schemaName: 'EconomicAnalysis',
-      schemaDescription: 'Structured economic and risk analysis',
+      schemaDescription: 'Structured analysis of economic viability',
+      taskType: TaskType.REASONING,
+      complexity: 'LOW'
     });
 
     return result as EconomicAnalysis;

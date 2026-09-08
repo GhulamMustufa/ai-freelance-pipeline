@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { AgentExecutor } from '../agent';
 import { CompetitionAnalysis } from '../../domain/models';
+import { TaskType } from '../router';
 
 export const competitionSchema = z.object({
   interviewIntensity: z.enum(['LOW', 'MEDIUM', 'HIGH']).describe('Intensity of the interview process based on current invites/interviews'),
@@ -41,7 +42,9 @@ export class CompetitionAgent {
       prompt,
       schema: competitionSchema,
       schemaName: 'CompetitionAnalysis',
-      schemaDescription: 'Structured analysis of job competition',
+      schemaDescription: 'Analysis of market competition',
+      taskType: TaskType.EXTRACTION,
+      complexity: 'LOW'
     });
 
     return result as CompetitionAnalysis;

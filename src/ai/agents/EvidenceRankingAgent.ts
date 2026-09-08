@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { AgentExecutor } from '../agent';
 import { RetrievedEvidence } from '../rag/SemanticRetriever';
+import { TaskType } from '../router';
 import { JobAnalysis } from '../../domain/models';
 
 export const rankedEvidenceSchema = z.object({
@@ -38,7 +39,9 @@ export class EvidenceRankingAgent {
       prompt,
       schema: rankedEvidenceSchema,
       schemaName: 'RankedEvidence',
-      schemaDescription: 'Ranked subset of evidence IDs',
+      schemaDescription: 'Ranked evidence items',
+      taskType: TaskType.REASONING,
+      complexity: 'LOW'
     });
 
     const rankedSet = new Set(result.rankedIds);

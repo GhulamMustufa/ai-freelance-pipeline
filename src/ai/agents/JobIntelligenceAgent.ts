@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { AgentExecutor } from '../agent';
 import { JobAnalysis } from '../../domain/models';
+import { TaskType } from '../router';
 
 export const jobIntelligenceSchema = z.object({
   actualProblem: z.string().describe('The underlying problem the client is trying to solve'),
@@ -33,6 +34,8 @@ export class JobIntelligenceAgent {
       schema: jobIntelligenceSchema,
       schemaName: 'JobIntelligenceAnalysis',
       schemaDescription: 'Structured analysis of a job posting',
+      taskType: TaskType.EXTRACTION,
+      complexity: 'LOW'
     });
 
     return result as JobAnalysis;

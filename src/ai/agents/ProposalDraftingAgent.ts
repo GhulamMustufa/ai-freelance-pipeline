@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { AgentExecutor } from '../agent';
+import { ProposalDraft } from '../../domain/models';
+import { TaskType } from '../router';
 import { RetrievedEvidence } from '../rag/SemanticRetriever';
 
 export const proposalDraftSchema = z.object({
@@ -10,7 +12,7 @@ export const proposalDraftSchema = z.object({
 export class ProposalDraftingAgent {
   constructor(private executor: AgentExecutor) {}
 
-  async draft(jobDescription: string, evidence: RetrievedEvidence[]): Promise<{ content: string, evidenceUsed: string[] }> {
+  async draft(jobDescription: string, evidence: RetrievedEvidence[], opportunityId: string): Promise<{ content: string, evidenceUsed: string[] }> {
     const evidenceStr = evidence.map(e => 
       `[Evidence ID: ${e.id}]\nTitle: ${e.title}\nDescription: ${e.description}\nTech: ${e.technologies}`
     ).join('\n\n');
@@ -34,10 +36,13 @@ export class ProposalDraftingAgent {
 
     const result = await this.executor.executeStructured<z.infer<typeof proposalDraftSchema>>({
       agentName: 'ProposalDrafting',
+      opportunityId,
       prompt,
       schema: proposalDraftSchema,
       schemaName: 'ProposalDraft',
       schemaDescription: 'Drafted proposal citing evidence',
+      taskType: TaskType.GENERATION,
+      complexity: 'HIGH'
     });
 
     return {

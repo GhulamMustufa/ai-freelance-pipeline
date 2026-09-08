@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { AgentExecutor } from '../agent';
 import { JobAnalysis, FitAnalysis } from '../../domain/models';
+import { TaskType } from '../router';
 
 export const fitSchema = z.object({
   matchScore: z.number().min(0).max(100).describe('Score from 0 to 100 on how well the freelancer fits the role'),
@@ -45,6 +46,8 @@ export class FreelancerFitAgent {
       schema: fitSchema,
       schemaName: 'FreelancerFitAnalysis',
       schemaDescription: 'Structured analysis of freelancer fit for a job',
+      taskType: TaskType.REASONING,
+      complexity: 'HIGH'
     });
 
     return result as FitAnalysis;
