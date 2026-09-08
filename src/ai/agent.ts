@@ -12,6 +12,7 @@ export interface ExecuteOptions<T> {
   systemPrompt?: string;
   schemaName?: string;
   schemaDescription?: string;
+  promptVersion?: string;
   
   // Routing hints
   taskType?: TaskType;
@@ -24,7 +25,7 @@ export class AgentExecutor {
   constructor(private defaultConfig: AIProviderConfig = { provider: 'openai', model: 'gpt-4o-mini' }) {}
 
   async executeStructured<T>(options: ExecuteOptions<T>): Promise<T> {
-    const { agentName, opportunityId = null, prompt, schema, systemPrompt, schemaName } = options;
+    const { agentName, opportunityId = null, prompt, schema, systemPrompt, schemaName, promptVersion = "1.0" } = options;
     const startTime = Date.now();
     let result: T | null = null;
     let errorStr: string | null = null;
@@ -77,6 +78,7 @@ export class AgentExecutor {
         provider: activeConfig.provider,
         model: activeConfig.model,
         schemaVersion: schemaName ?? '1.0',
+        promptVersion,
         retries,
         promptTokens: usage?.promptTokens,
         completionTokens: usage?.completionTokens,

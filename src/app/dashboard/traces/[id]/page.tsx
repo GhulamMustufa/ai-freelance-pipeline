@@ -1,5 +1,6 @@
 import { prisma } from '../../../../lib/prisma';
 import Link from 'next/link';
+import { FeedbackForm } from './FeedbackForm';
 
 export default async function TraceDetailPage({ params }: { params: { id: string } }) {
   const { id } = await params;
@@ -10,7 +11,11 @@ export default async function TraceDetailPage({ params }: { params: { id: string
       jobPosting: true,
       pipelineRuns: { orderBy: { createdAt: 'asc' } },
       agentRuns: { orderBy: { createdAt: 'asc' } },
-      decision: true
+      decision: true,
+      score: true,
+      proposal: true,
+      outcome: true,
+      feedback: true
     }
   });
 
@@ -112,6 +117,74 @@ export default async function TraceDetailPage({ params }: { params: { id: string
           </div>
         </div>
       </div>
+      
+      {/* AI Score & Proposal Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+        <div>
+          <h2 className="text-xl font-bold mb-4">AI Score Breakdown</h2>
+          {opportunity.score ? (
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between mb-1"><span className="text-sm font-medium">Skill Match</span><span className="text-sm font-bold">{opportunity.score.skillMatch}/100</span></div>
+                  <div className="w-full bg-gray-200 rounded-full h-2"><div className="bg-blue-600 h-2 rounded-full" style={{width: `${opportunity.score.skillMatch}%`}}></div></div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1"><span className="text-sm font-medium">Portfolio Fit</span><span className="text-sm font-bold">{opportunity.score.portfolioFit}/100</span></div>
+                  <div className="w-full bg-gray-200 rounded-full h-2"><div className="bg-blue-600 h-2 rounded-full" style={{width: `${opportunity.score.portfolioFit}%`}}></div></div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1"><span className="text-sm font-medium">Project Quality</span><span className="text-sm font-bold">{opportunity.score.projectQuality}/100</span></div>
+                  <div className="w-full bg-gray-200 rounded-full h-2"><div className="bg-blue-600 h-2 rounded-full" style={{width: `${opportunity.score.projectQuality}%`}}></div></div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1"><span className="text-sm font-medium">Long Term Potential</span><span className="text-sm font-bold">{opportunity.score.longTermPotential}/100</span></div>
+                  <div className="w-full bg-gray-200 rounded-full h-2"><div className="bg-blue-600 h-2 rounded-full" style={{width: `${opportunity.score.longTermPotential}%`}}></div></div>
+                </div>
+                
+                {opportunity.score.redFlags && JSON.parse(opportunity.score.redFlags).length > 0 && (
+                  <div className="mt-4 p-3 bg-red-50 text-red-800 rounded">
+                    <span className="font-bold text-sm block mb-1">Red Flags</span>
+                    <ul className="list-disc pl-5 text-sm space-y-1">
+                      {JSON.parse(opportunity.score.redFlags).map((flag: string, i: number) => <li key={i}>{flag}</li>)}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <p className="text-gray-500 italic">No score calculated.</p>
+          )}
+        </div>
+
+        <div>
+          <h2 className="text-xl font-bold mb-4">Generated Proposal</h2>
+          {opportunity.proposal ? (
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 h-full flex flex-col">
+              <span className={`self-start mb-4 px-2 py-1 text-xs font-bold rounded ${opportunity.proposal.status === 'SUBMITTED' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                {opportunity.proposal.status}
+              </span>
+              <div className="bg-gray-50 p-4 rounded text-sm text-gray-800 whitespace-pre-wrap flex-grow overflow-y-auto max-h-96">
+                {opportunity.proposal.content}
+              </div>
+              
+              {opportunity.proposal.evidenceUsed && JSON.parse(opportunity.proposal.evidenceUsed).length > 0 && (
+                <div className="mt-4 text-xs text-gray-500">
+                  <span className="font-bold">Evidence Cited:</span> {JSON.parse(opportunity.proposal.evidenceUsed).length} items from Knowledge Base
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="text-gray-500 italic">No proposal generated.</p>
+          )}
+        </div>
+      </div>
+
+      <FeedbackForm 
+        opportunityId={opportunity.id} 
+        initialOutcome={opportunity.outcome} 
+        initialFeedback={opportunity.feedback} 
+      />
     </div>
   );
 }

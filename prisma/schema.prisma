@@ -204,6 +204,7 @@ model AgentRun {
   inputPayload   String       // JSON
   outputPayload  String?      // JSON
   error          String?
+  promptVersion  String       @default("1.0")
   
   createdAt      DateTime     @default(now())
 }

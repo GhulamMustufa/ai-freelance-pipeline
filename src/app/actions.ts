@@ -13,11 +13,24 @@ export async function updateClientStatus(clientId: string, status: 'NEUTRAL' | '
 }
 
 export async function updateProposalDraft(jobId: string, content: string, status: string) {
-  await prisma.proposalDraft.upsert({
-    where: { jobId },
-    update: { content, status },
-    create: { jobId, content, status }
+  // Existing placeholder
+  await prisma.proposal.update({
+    where: { opportunityId: jobId },
+    data: { content, status }
   });
-  
+  revalidatePath('/');
+}
+
+import { FeedbackManager, OutcomeUpdate, FeedbackUpdate } from '@/application/analytics/FeedbackManager';
+
+const feedbackManager = new FeedbackManager();
+
+export async function logOpportunityFeedback(
+  opportunityId: string, 
+  outcome: OutcomeUpdate, 
+  feedback: FeedbackUpdate
+) {
+  await feedbackManager.logOutcome(opportunityId, outcome);
+  await feedbackManager.logFeedback(opportunityId, feedback);
   revalidatePath('/');
 }
