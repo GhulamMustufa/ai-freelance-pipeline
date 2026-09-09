@@ -82,10 +82,30 @@ export interface FreelancerProfile {
   bio: string;
   experienceYears: number;
   skills: string[];
+  primarySkills?: string[];
   preferredTechnologies: string[];
   excludedTechnologies: string[];
+  preferredProjectTypes?: string[];
+  preferredIndustries?: string[];
+  location?: string;
+  availability?: string;
   targetHourlyRate?: number;
   minProjectBudget?: number;
+  version?: number;
+  isDefault?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export type EvidenceState = 'VERIFIED' | 'INFERRED' | 'UNKNOWN' | 'CONTRADICTED';
+export type EvidenceSufficiency = 'SUFFICIENT' | 'PARTIAL' | 'INSUFFICIENT';
+
+export interface StructuredEvidenceItem {
+  claim: string;
+  state: EvidenceState;
+  evidenceId?: string;
+  source?: string;
+  notes?: string;
 }
 
 // Backward-compatible alias
@@ -165,6 +185,10 @@ export interface OpportunityDecision {
     estimatedEffort?: string;
     rationale: string;
   };
+  evidenceSufficiency?: EvidenceSufficiency;
+  evidenceTaxonomy?: StructuredEvidenceItem[];
+  policyVersion?: string;
+  profileVersion?: number;
 }
 
 export type TriageResult = OpportunityDecision;

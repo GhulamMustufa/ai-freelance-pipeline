@@ -95,9 +95,12 @@ export default function ManualJobAnalyzer() {
   const [profile, setProfile] = useState<any>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileSkills, setProfileSkills] = useState('');
+  const [profilePrimarySkills, setProfilePrimarySkills] = useState('');
   const [profileExcluded, setProfileExcluded] = useState('');
   const [profileTargetRate, setProfileTargetRate] = useState('75');
   const [profileMinBudget, setProfileMinBudget] = useState('1000');
+  const [profileLocation, setProfileLocation] = useState('');
+  const [profileAvailability, setProfileAvailability] = useState('FULL_TIME');
 
   // Loading & Execution states
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -143,9 +146,12 @@ export default function ManualJobAnalyzer() {
       if (data.success && data.profile) {
         setProfile(data.profile);
         setProfileSkills(data.profile.skills.join(', '));
+        setProfilePrimarySkills((data.profile.primarySkills || []).join(', '));
         setProfileExcluded(data.profile.excludedTechnologies.join(', '));
         setProfileTargetRate(String(data.profile.targetHourlyRate || 75));
         setProfileMinBudget(String(data.profile.minProjectBudget || 1000));
+        setProfileLocation(data.profile.location || '');
+        setProfileAvailability(data.profile.availability || 'FULL_TIME');
       }
     } catch (e) {
       console.warn('Could not load profile:', e);
@@ -164,10 +170,13 @@ export default function ManualJobAnalyzer() {
           bio: profile?.bio || '',
           experienceYears: profile?.experienceYears || 8,
           skills: profileSkills.split(',').map(s => s.trim()).filter(Boolean),
+          primarySkills: profilePrimarySkills.split(',').map(s => s.trim()).filter(Boolean),
           preferredTechnologies: profileSkills.split(',').map(s => s.trim()).slice(0, 5),
           excludedTechnologies: profileExcluded.split(',').map(s => s.trim()).filter(Boolean),
           targetHourlyRate: Number(profileTargetRate) || 75,
           minProjectBudget: Number(profileMinBudget) || 1000,
+          location: profileLocation || 'Remote / US Timezones',
+          availability: profileAvailability || 'FULL_TIME',
         })
       });
       const data = await res.json();
@@ -298,8 +307,13 @@ export default function ManualJobAnalyzer() {
                 👤
               </div>
               <div className="text-left">
-                <div className="text-xs font-semibold text-slate-900 dark:text-slate-200">
-                  {profile?.name || 'Loading Profile...'}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-200">
+                    {profile?.name || 'Loading Profile...'}
+                  </span>
+                  <span className="text-[10px] font-mono font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 px-1.5 py-0.2 rounded">
+                    v{profile?.version || 1}
+                  </span>
                 </div>
                 <div className="text-[11px] text-slate-500 dark:text-slate-400">
                   Target: <span className="text-amber-600 dark:text-amber-400 font-medium">${profileTargetRate}/hr</span> • Min: <span className="text-emerald-600 dark:text-emerald-400 font-medium">${profileMinBudget}</span>
@@ -319,11 +333,16 @@ export default function ManualJobAnalyzer() {
         {/* Profile Settings Modal */}
         {showProfileModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 dark:bg-black/70 backdrop-blur-sm p-4">
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl text-slate-900 dark:text-slate-100">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl text-slate-900 dark:text-slate-100 max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <span>⚙️</span> Customize Freelancer Profile
-                </h3>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>⚙️</span> Customize Freelancer Profile
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Currently active: <span className="font-mono font-bold text-amber-600 dark:text-amber-400">Profile v{profile?.version || 1}</span> (Saving bumps version and creates new snapshot)
+                  </p>
+                </div>
                 <button 
                   onClick={() => setShowProfileModal(false)}
                   className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white text-sm p-1"
@@ -347,6 +366,19 @@ export default function ManualJobAnalyzer() {
                 </div>
 
                 <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                    Primary / Top Strengths (Verified Claims Ceiling)
+                  </label>
+                  <input
+                    type="text"
+                    value={profilePrimarySkills}
+                    onChange={e => setProfilePrimarySkills(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 text-xs"
+                    placeholder="Next.js App Router, TypeScript, Multi-Agent Architecture, RAG"
+                  />
+                </div>
+
+                <div>
                   <label className="block text-xs font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider mb-1">
                     Excluded Technologies (Immediate SKIP Dealbreakers)
                   </label>
@@ -358,7 +390,7 @@ export default function ManualJobAnalyzer() {
                     placeholder="PHP, WordPress, Ruby, Web3, Smart Contracts"
                   />
                   <p className="text-[11px] text-slate-500 mt-1">
-                    Any job requiring these technologies will trigger an immediate deterministic auto-SKIP.
+                    Any job requiring these technologies triggers an immediate deterministic auto-SKIP before LLM inference.
                   </p>
                 </div>
 
@@ -386,6 +418,35 @@ export default function ManualJobAnalyzer() {
                     />
                   </div>
                 </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                      Location / Timezone
+                    </label>
+                    <input
+                      type="text"
+                      value={profileLocation}
+                      onChange={e => setProfileLocation(e.target.value)}
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 text-xs"
+                      placeholder="Remote / US Timezones"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                      Availability
+                    </label>
+                    <select
+                      value={profileAvailability}
+                      onChange={e => setProfileAvailability(e.target.value)}
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 text-xs"
+                    >
+                      <option value="FULL_TIME">Full-time (30-40 hrs/wk)</option>
+                      <option value="PART_TIME">Part-time (10-20 hrs/wk)</option>
+                      <option value="PROJECT">Project-based</option>
+                    </select>
+                  </div>
+                </div>
               </div>
 
               <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
@@ -401,7 +462,7 @@ export default function ManualJobAnalyzer() {
                   onClick={handleSaveProfile}
                   className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow-lg shadow-amber-500/20"
                 >
-                  Save Profile Settings
+                  Save Profile (Bump to v{(profile?.version || 1) + 1})
                 </button>
               </div>
             </div>

@@ -43,21 +43,109 @@ export default async function TraceDetailPage({ params }: { params: { id: string
         </div>
 
       <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 mb-8">
-        <h1 className="text-2xl font-bold mb-2 text-slate-900 dark:text-white">{opportunity.jobPosting?.title || 'Unknown Job'}</h1>
-        <p className="text-slate-500 dark:text-slate-400 mb-4 text-sm font-mono">Opportunity ID: {opportunity.id}</p>
-        <div className="flex gap-4">
-          <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-full text-sm font-semibold">{opportunity.status}</span>
-          {opportunity.decision && (
-            <span className={`px-3 py-1 rounded-full text-sm font-bold ${
-              opportunity.decision.recommendation === 'APPLY' ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300' :
-              opportunity.decision.recommendation === 'MAYBE' ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300' :
-              'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300'
-            }`}>
-              Decision: {opportunity.decision.recommendation}
-            </span>
-          )}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{opportunity.jobPosting?.title || 'Unknown Job'}</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs font-mono mt-1">Opportunity ID: {opportunity.id}</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-full text-xs font-semibold">{opportunity.status}</span>
+            {opportunity.decision && (
+              <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                opportunity.decision.recommendation === 'APPLY' ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' :
+                opportunity.decision.recommendation === 'MAYBE' ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800' :
+                'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-800'
+              }`}>
+                {opportunity.decision.recommendation} ({Math.round((opportunity.decision.confidence || 0) * 100)}% Conf)
+              </span>
+            )}
+            {opportunity.decision?.evidenceSufficiency && (
+              <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                opportunity.decision.evidenceSufficiency === 'SUFFICIENT' ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900' :
+                opportunity.decision.evidenceSufficiency === 'PARTIAL' ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900' :
+                'bg-purple-50 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-900'
+              }`}>
+                Evidence: {opportunity.decision.evidenceSufficiency}
+              </span>
+            )}
+          </div>
         </div>
+
+        {/* Telemetry Overview Ribbon */}
+        {(() => {
+          const totalDuration = opportunity.agentRuns.reduce((acc, r) => acc + (r.durationMs || 0), 0);
+          const totalTokens = opportunity.agentRuns.reduce((acc, r) => acc + (r.promptTokens || 0) + (r.completionTokens || 0), 0);
+          const totalCost = opportunity.agentRuns.reduce((acc, r) => acc + (r.estimatedCost || 0), 0);
+          
+          return (
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 text-xs">
+              <div>
+                <span className="text-slate-400 dark:text-slate-500 block uppercase font-medium">Policy Engine</span>
+                <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">{opportunity.decision?.policyVersion || 'decision-policy@v1.1'}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 dark:text-slate-500 block uppercase font-medium">Profile Snapshot</span>
+                <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">
+                  {opportunity.profileVersion ? `v${opportunity.profileVersion}` : 'v1.0 (Default)'}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-400 dark:text-slate-500 block uppercase font-medium">Total Latency</span>
+                <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">{totalDuration > 0 ? `${(totalDuration / 1000).toFixed(2)}s` : 'Deterministic Gate (<5ms)'}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 dark:text-slate-500 block uppercase font-medium">Total Tokens</span>
+                <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">{totalTokens.toLocaleString()} tokens</span>
+              </div>
+              <div>
+                <span className="text-slate-400 dark:text-slate-500 block uppercase font-medium">Estimated Cost</span>
+                <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">${totalCost.toFixed(4)} USD</span>
+              </div>
+            </div>
+          );
+        })()}
       </div>
+
+      {/* Structured Evidence & 4-Tier Taxonomy Card */}
+      {opportunity.decision?.evidenceTaxonomyJson && (() => {
+        try {
+          const items = JSON.parse(opportunity.decision.evidenceTaxonomyJson);
+          if (Array.isArray(items) && items.length > 0) {
+            return (
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 mb-8">
+                <h2 className="text-lg font-bold mb-3 text-slate-900 dark:text-white flex items-center gap-2">
+                  <span>🔬</span> 4-Tier Evidence Taxonomy & Claim Verification
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {items.map((item: any, idx: number) => {
+                    const badgeColor = 
+                      item.state === 'VERIFIED' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' :
+                      item.state === 'INFERRED' ? 'bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800' :
+                      item.state === 'UNKNOWN' ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800' :
+                      'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800';
+
+                    return (
+                      <div key={idx} className={`p-3 rounded-lg border text-xs flex items-start justify-between gap-3 ${badgeColor}`}>
+                        <div>
+                          <div className="font-semibold">{item.claim}</div>
+                          {item.notes && <div className="text-[11px] opacity-80 mt-1">{item.notes}</div>}
+                          {item.source && <div className="text-[10px] opacity-70 mt-0.5">Source: {item.source}</div>}
+                        </div>
+                        <span className="font-mono font-bold uppercase tracking-wider text-[10px] shrink-0 px-1.5 py-0.5 rounded bg-white/60 dark:bg-slate-900/60">
+                          {item.state}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          }
+        } catch (e) {
+          return null;
+        }
+        return null;
+      })()}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Pipeline Execution Trace */}

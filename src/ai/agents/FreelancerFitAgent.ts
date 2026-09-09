@@ -39,18 +39,25 @@ export class FreelancerFitAgent {
 
     // 2. LLM REASONING: Semantic fit analysis
     const profileSummary = `
-    Role: ${profile.headline}
+    Candidate Profile (CANDIDATE FACTS ONLY - DO NOT INVENT EXTENSIONS):
+    Headline: ${profile.headline}
     Experience: ${profile.experienceYears} years
-    Bio: ${profile.bio}
-    Skills: ${profile.skills.join(', ')}
+    Primary Skills: ${(profile.primarySkills && profile.primarySkills.length > 0 ? profile.primarySkills : profile.skills).join(', ')}
+    All Verified Skills: ${profile.skills.join(', ')}
     Preferred Tech: ${profile.preferredTechnologies.join(', ')}
     Excluded Tech: ${profile.excludedTechnologies.join(', ')}
+    Preferred Project Types: ${(profile.preferredProjectTypes || []).join(', ') || 'General software engineering'}
+    Preferred Industries: ${(profile.preferredIndustries || []).join(', ') || 'General software'}
     `;
 
     const prompt = `
-    Analyze the fit between the Freelancer Profile and the Job Analysis.
+    Analyze the technical and domain fit between the Candidate Profile and the Job Requirements.
     
-    CRITICAL INSTRUCTION: NEVER INVENT EXPERIENCE. ONLY MATCH AGAINST WHAT IS EXPLICITLY STATED IN THE FREELANCER PROFILE.
+    CRITICAL ANTI-HALLUCINATION POLICY:
+    1. The candidate profile above defines the STRICT CEILING of the freelancer's capabilities.
+    2. NEVER invent, infer, or assume skills, technologies, years of experience, certifications, or past achievements not explicitly listed above.
+    3. If the job requires a skill NOT in Verified Skills, it MUST be classified under 'missingRequirements', NOT positiveMatches.
+    4. Provide honest, conservative match scoring.
     
     Freelancer Profile:
     ${profileSummary}
@@ -63,7 +70,7 @@ export class FreelancerFitAgent {
     Project Maturity: ${jobAnalysis.projectMaturity}
     Scope Complexity: ${jobAnalysis.scopeComplexity}
     
-    Provide an evidence-backed fit analysis. Calculate a match score (0-100), list positive evidence-backed matches, missing requirements, and any red flags (e.g. asking for skills not in the profile).
+    Provide an evidence-backed fit analysis. Calculate a match score (0-100), list positive evidence-backed matches, missing requirements, and any red flags.
     `;
 
     const result = await this.executor.executeStructured<z.infer<typeof fitSchema>>({

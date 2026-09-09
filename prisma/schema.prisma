@@ -30,8 +30,10 @@ model Opportunity {
   clientId       String?
   client         Client?   @relation(fields: [clientId], references: [id])
   
-  profileId      String?
-  profile        FreelancerProfile? @relation(fields: [profileId], references: [id])
+  profileId           String?
+  profile             FreelancerProfile? @relation(fields: [profileId], references: [id])
+  profileVersion      Int?
+  profileSnapshotJson String?
   
   pipelineRuns   PipelineRun[]
   agentRuns      AgentRun[]
@@ -139,6 +141,9 @@ model OpportunityDecision {
   unknowns            String?     // JSON Array of explicit unknown variables
   scoresJson          String?     // JSON object of pillar scores
   economicDetails     String?     // JSON object of economic breakdown
+  evidenceSufficiency String?     // SUFFICIENT, PARTIAL, INSUFFICIENT
+  policyVersion       String?     // e.g. decision-policy@v1.1
+  evidenceTaxonomyJson String?    // JSON array of StructuredEvidenceItem
 
   createdAt           DateTime    @default(now())
 }
@@ -150,10 +155,16 @@ model FreelancerProfile {
   bio                   String
   experienceYears       Int                  @default(5)
   skills                String               // Comma-separated or JSON
+  primarySkills         String               @default("")
   preferredTechnologies String               // Comma-separated or JSON
   excludedTechnologies  String               @default("") // Comma-separated
+  preferredProjectTypes String               @default("")
+  preferredIndustries   String               @default("")
+  location              String?
+  availability          String?
   targetHourlyRate      Float?
   minProjectBudget      Float?
+  version               Int                  @default(1)
   isDefault             Boolean              @default(false)
   
   evidenceItems         FreelancerEvidence[]

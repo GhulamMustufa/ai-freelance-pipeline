@@ -66,11 +66,17 @@ export class OpportunityPipeline {
           headline: dbProfile.headline,
           bio: dbProfile.bio,
           experienceYears: dbProfile.experienceYears,
-          skills: dbProfile.skills.split(',').map(s => s.trim()),
-          preferredTechnologies: dbProfile.preferredTechnologies.split(',').map(s => s.trim()),
+          skills: dbProfile.skills ? dbProfile.skills.split(',').map(s => s.trim()).filter(Boolean) : [],
+          primarySkills: dbProfile.primarySkills ? dbProfile.primarySkills.split(',').map(s => s.trim()).filter(Boolean) : [],
+          preferredTechnologies: dbProfile.preferredTechnologies ? dbProfile.preferredTechnologies.split(',').map(s => s.trim()).filter(Boolean) : [],
           excludedTechnologies: dbProfile.excludedTechnologies ? dbProfile.excludedTechnologies.split(',').map(s => s.trim()).filter(Boolean) : [],
+          preferredProjectTypes: dbProfile.preferredProjectTypes ? dbProfile.preferredProjectTypes.split(',').map(s => s.trim()).filter(Boolean) : [],
+          preferredIndustries: dbProfile.preferredIndustries ? dbProfile.preferredIndustries.split(',').map(s => s.trim()).filter(Boolean) : [],
+          location: dbProfile.location || '',
+          availability: dbProfile.availability || '',
           targetHourlyRate: dbProfile.targetHourlyRate ?? 75,
           minProjectBudget: dbProfile.minProjectBudget ?? 1000,
+          version: dbProfile.version || 1,
         };
       } else {
         // Fallback default
@@ -81,16 +87,22 @@ export class OpportunityPipeline {
           bio: 'Senior Engineer with 8 years of experience building web platforms and multi-agent AI pipelines.',
           experienceYears: 8,
           skills: ['Next.js', 'React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Prisma', 'OpenAI', 'DeepSeek', 'Multi-Agent Systems', 'RAG'],
+          primarySkills: ['Next.js', 'TypeScript', 'Node.js', 'AI Systems'],
           preferredTechnologies: ['Next.js', 'TypeScript', 'PostgreSQL', 'OpenAI', 'DeepSeek'],
           excludedTechnologies: ['PHP', 'WordPress', 'Ruby', 'Web3'],
+          preferredProjectTypes: ['Full-stack web applications', 'AI pipelines', 'API backends'],
+          preferredIndustries: ['SaaS', 'Fintech', 'Enterprise Tools'],
+          location: 'Remote',
+          availability: 'Immediate',
           targetHourlyRate: 75,
           minProjectBudget: 1000,
+          version: 1,
         };
       }
     }
 
-    // 2. Ingest
-    const opp = await this.ingest(payload, activeProfile.id);
+    // 2. Ingest with profile snapshot
+    const opp = await this.ingest(payload, activeProfile);
 
     try {
       // 3. Enrich Client if data present
@@ -149,7 +161,7 @@ export class OpportunityPipeline {
     }
   }
 
-  private async ingest(payload: NormalizedOpportunity, profileId?: string) {
+  private async ingest(payload: NormalizedOpportunity, profile?: FreelancerProfile) {
     const platformId = payload.platformId || `man-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     const platform = (payload.platform as Platform) || Platform.MANUAL;
 
@@ -165,7 +177,9 @@ export class OpportunityPipeline {
       data: {
         platformId,
         platform,
-        profileId,
+        profileId: profile?.id,
+        profileVersion: profile?.version || 1,
+        profileSnapshotJson: profile ? JSON.stringify(profile) : null,
         status: OpportunityStatus.PENDING,
         jobPosting: {
           create: {
@@ -317,6 +331,9 @@ export class OpportunityPipeline {
           risks: decision.risks ? JSON.stringify(decision.risks) : null,
           scoresJson: decision.scores ? JSON.stringify(decision.scores) : null,
           economicDetails: decision.economics ? JSON.stringify(decision.economics) : null,
+          evidenceSufficiency: decision.evidenceSufficiency || null,
+          policyVersion: decision.policyVersion || null,
+          evidenceTaxonomyJson: decision.evidenceTaxonomy ? JSON.stringify(decision.evidenceTaxonomy) : null,
         },
         create: {
           opportunityId: id,
@@ -331,6 +348,9 @@ export class OpportunityPipeline {
           risks: decision.risks ? JSON.stringify(decision.risks) : null,
           scoresJson: decision.scores ? JSON.stringify(decision.scores) : null,
           economicDetails: decision.economics ? JSON.stringify(decision.economics) : null,
+          evidenceSufficiency: decision.evidenceSufficiency || null,
+          policyVersion: decision.policyVersion || null,
+          evidenceTaxonomyJson: decision.evidenceTaxonomy ? JSON.stringify(decision.evidenceTaxonomy) : null,
         }
       });
 

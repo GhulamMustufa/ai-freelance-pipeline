@@ -7,9 +7,16 @@ import {
   FitAnalysis, 
   EconomicAnalysis, 
   OpportunityDecision,
-  FreelancerProfile 
+  FreelancerProfile,
+  EvidenceSufficiency,
+  StructuredEvidenceItem
 } from '../../domain/models';
 import { TaskType } from '../../ai/router';
+
+export const DECISION_POLICY_VERSION = 'decision-policy@v1.1';
+export const PROMPT_SET_VERSION = 'omni-prompts@v1.1';
+export const RETRIEVER_VERSION = 'evidence-retriever@v1.1';
+export const EVAL_DATASET_VERSION = 'freelance-eval@v1.1';
 
 export const decisionSchema = z.object({
   score: z.number().min(0).max(100).describe('Final overall score for the opportunity (0-100)'),
@@ -79,7 +86,10 @@ export class DecisionEngine {
           status: economicAnalysis.status,
           effectiveHourlyRate: economicAnalysis.effectiveHourlyRate,
           rationale: economicAnalysis.rationale,
-        }
+        },
+        evidenceSufficiency: 'SUFFICIENT' as const,
+        policyVersion: DECISION_POLICY_VERSION,
+        profileVersion: profile?.version || 1,
       };
     }
 
@@ -111,7 +121,10 @@ export class DecisionEngine {
           status: economicAnalysis.status,
           effectiveHourlyRate: 0,
           rationale: 'Rejected due to scam / policy violation flags.',
-        }
+        },
+        evidenceSufficiency: 'SUFFICIENT' as const,
+        policyVersion: DECISION_POLICY_VERSION,
+        profileVersion: profile?.version || 1,
       };
     }
 
@@ -141,7 +154,10 @@ export class DecisionEngine {
           status: 'OBSERVED',
           effectiveHourlyRate: budget / 20,
           rationale: `Budget $${budget} significantly below minimum threshold of $${profile.minProjectBudget}.`,
-        }
+        },
+        evidenceSufficiency: 'SUFFICIENT' as const,
+        policyVersion: DECISION_POLICY_VERSION,
+        profileVersion: profile?.version || 1,
       };
     }
 
@@ -204,6 +220,27 @@ export class DecisionEngine {
     // Merge deterministic unknowns
     const allUnknowns = Array.from(new Set([...deterministicUnknowns, ...(result.unknowns || [])]));
 
+    // Determine evidence sufficiency
+    let missingDimensionsCount = 0;
+    if (clientAnalysis.quality === 'UNKNOWN') missingDimensionsCount++;
+    if (economicAnalysis.status !== 'OBSERVED') missingDimensionsCount++;
+    if (jobAnalysis.ambiguity === 'HIGH') missingDimensionsCount++;
+
+    const evidenceSufficiency: EvidenceSufficiency = 
+      missingDimensionsCount >= 2 ? 'INSUFFICIENT' :
+      missingDimensionsCount === 1 ? 'PARTIAL' : 'SUFFICIENT';
+
+    // Calibrate recommendation & confidence under insufficient evidence
+    let finalRecommendation = result.recommendation as 'APPLY' | 'MAYBE' | 'SKIP';
+    let finalConfidence = result.confidence;
+    let finalSummary = result.summary;
+
+    if (evidenceSufficiency === 'INSUFFICIENT' && finalRecommendation === 'APPLY') {
+      finalRecommendation = 'MAYBE';
+      finalConfidence = Math.min(finalConfidence, 0.65);
+      finalSummary = `Calibrated to MAYBE: Strong technical fit detected, but critical variables (${allUnknowns.slice(0, 2).join('; ')}) remain unconfirmed.`;
+    }
+
     // Map scores
     const technicalFit = fitAnalysis.matchScore;
     const economicQuality = economicAnalysis.budgetQuality === 'EXCELLENT' ? 95 :
@@ -214,10 +251,34 @@ export class DecisionEngine {
     const scopeClarity = jobAnalysis.ambiguity === 'LOW' ? 'HIGH' :
                          jobAnalysis.ambiguity === 'MEDIUM' ? 'MEDIUM' : 'LOW';
 
+    // 4-Tier Evidence Taxonomy
+    const evidenceTaxonomy: StructuredEvidenceItem[] = [
+      ...(fitAnalysis.positiveMatches || []).map(claim => ({
+        claim,
+        state: 'VERIFIED' as const,
+        source: 'Profile Skills & Past Projects'
+      })),
+      ...(jobAnalysis.hiddenRequirements || []).map(claim => ({
+        claim,
+        state: 'INFERRED' as const,
+        notes: 'Inferred from stack dependencies and architecture'
+      })),
+      ...allUnknowns.map(claim => ({
+        claim,
+        state: 'UNKNOWN' as const,
+        notes: 'Variable unstated or unverified in job description'
+      })),
+      ...(fitAnalysis.missingRequirements || []).map(claim => ({
+        claim,
+        state: 'CONTRADICTED' as const,
+        notes: 'Candidate profile explicitly lacks this requirement'
+      }))
+    ];
+
     return {
-      recommendation: result.recommendation as 'APPLY' | 'MAYBE' | 'SKIP',
-      confidence: result.confidence,
-      summary: result.summary,
+      recommendation: finalRecommendation,
+      confidence: finalConfidence,
+      summary: finalSummary,
       reason: result.reason,
       reasons: result.reasons || [result.reason],
       positiveEvidence: result.positiveEvidence || fitAnalysis.positiveMatches,
@@ -235,7 +296,11 @@ export class DecisionEngine {
         effectiveHourlyRate: economicAnalysis.effectiveHourlyRate,
         estimatedEffort: economicAnalysis.effortRisk === 'LOW' ? '< 20 hrs' : (economicAnalysis.effortRisk === 'MEDIUM' ? '20-60 hrs' : '60+ hrs'),
         rationale: economicAnalysis.rationale,
-      }
+      },
+      evidenceSufficiency,
+      evidenceTaxonomy,
+      policyVersion: DECISION_POLICY_VERSION,
+      profileVersion: profile?.version || 1,
     };
   }
 }
