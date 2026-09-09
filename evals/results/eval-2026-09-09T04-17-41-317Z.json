@@ -1,0 +1,43 @@
+{
+  "summary": {
+    "totalCases": 3,
+    "successfulRuns": 3,
+    "errors": 0,
+    "precision": 1,
+    "recall": 1,
+    "f1": 1,
+    "falsePositives": 0,
+    "falseNegatives": 0,
+    "avgLatencyMs": 6834,
+    "avgTokens": 1500
+  },
+  "results": [
+    {
+      "id": "eval-000",
+      "category": "excellent_match",
+      "expectedRecommendation": "APPLY",
+      "actualRecommendation": "APPLY",
+      "latencyMs": 9714,
+      "tokensUsed": 1500,
+      "confidence": 0.9
+    },
+    {
+      "id": "eval-001",
+      "category": "poor_technical_match",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "SKIP",
+      "latencyMs": 7587,
+      "tokensUsed": 1500,
+      "confidence": 1
+    },
+    {
+      "id": "eval-002",
+      "category": "excellent_client_poor_job",
+      "expectedRecommendation": "SKIP",
+      "actualRecommendation": "SKIP",
+      "latencyMs": 3201,
+      "tokensUsed": 1500,
+      "confidence": 0.95
+    }
+  ]
+}

@@ -11,6 +11,7 @@ export const jobIntelligenceSchema = z.object({
   deliverables: z.array(z.string()).describe('Concrete deliverables expected from this job'),
   ambiguity: z.enum(['LOW', 'MEDIUM', 'HIGH']).describe('Level of ambiguity in the job description'),
   projectMaturity: z.enum(['IDEA', 'MVP', 'PRODUCTION', 'LEGACY']).describe('Maturity of the project described'),
+  scopeComplexity: z.enum(['LOW', 'MEDIUM', 'HIGH']).describe('Estimated complexity of the required work'),
 });
 
 export class JobIntelligenceAgent {

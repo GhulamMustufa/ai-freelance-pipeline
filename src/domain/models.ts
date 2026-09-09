@@ -1,6 +1,8 @@
 export enum Platform {
+  MANUAL = 'MANUAL',
   UPWORK = 'UPWORK',
-  LINKEDIN = 'LINKEDIN'
+  LINKEDIN = 'LINKEDIN',
+  BATCH = 'BATCH'
 }
 
 export enum OpportunityStatus {
@@ -45,41 +47,52 @@ export enum ProposalStatus {
   SUBMITTED = 'SUBMITTED'
 }
 
-// Basic types for passing data through pipeline
-export interface OpportunityDecision {
-  recommendation: 'APPLY' | 'MAYBE' | 'SKIP';
-  reason: string;
-  confidence?: number;
-  positiveEvidence?: string[];
-  negativeEvidence?: string[];
-  missingInformation?: string[];
-}
+// -----------------------------------------------------------------------------
+// MVP DOMAIN MODELS: Normalized Opportunity & Freelancer Profile
+// -----------------------------------------------------------------------------
 
-export interface RawOpportunityPayload {
-  platform: Platform;
-  platformId: string;
+export interface NormalizedOpportunity {
+  id?: string;
   title: string;
   description: string;
-  postedAt: Date;
   skills: string[];
+  platform?: Platform | string;
+  platformId?: string;
+  postedAt?: Date;
   budget?: number;
   hourlyMin?: number;
   hourlyMax?: number;
-  rawMetrics?: Record<string, any>;
   client?: {
     platformId?: string;
     location?: string;
     name?: string;
-    // Optional fields used in evaluation scripts and test payloads
     totalSpend?: number;
     avgHourlyRate?: number;
     hires?: number;
     feedbackScore?: number;
   };
+  rawMetrics?: Record<string, any>;
+  sourceUrl?: string;
 }
 
+export interface FreelancerProfile {
+  id: string;
+  name: string;
+  headline: string;
+  bio: string;
+  experienceYears: number;
+  skills: string[];
+  preferredTechnologies: string[];
+  excludedTechnologies: string[];
+  targetHourlyRate?: number;
+  minProjectBudget?: number;
+}
+
+// Backward-compatible alias
+export type RawOpportunityPayload = NormalizedOpportunity;
+
 // -----------------------------------------------------------------------------
-// Phase 2: Specialized Agent Output Domain Models
+// MVP Agent Output Domain Models
 // -----------------------------------------------------------------------------
 
 export interface JobAnalysis {
@@ -90,21 +103,23 @@ export interface JobAnalysis {
   deliverables: string[];
   ambiguity: 'LOW' | 'MEDIUM' | 'HIGH';
   projectMaturity: 'IDEA' | 'MVP' | 'PRODUCTION' | 'LEGACY';
+  scopeComplexity: 'LOW' | 'MEDIUM' | 'HIGH';
 }
 
 export interface ClientAnalysis {
-  quality: 'LOW' | 'MEDIUM' | 'HIGH';
+  quality: 'LOW' | 'MEDIUM' | 'HIGH' | 'UNKNOWN';
   spendingBehavior: string;
   hiringHistory: string;
   feedbackSummary: string;
   riskSignals: string[];
+  isVerified: boolean;
 }
 
 export interface CompetitionAnalysis {
-  interviewIntensity: 'LOW' | 'MEDIUM' | 'HIGH';
+  interviewIntensity: 'LOW' | 'MEDIUM' | 'HIGH' | 'UNKNOWN';
   jobAttractiveness: 'LOW' | 'MEDIUM' | 'HIGH';
   likelyCompetition: string;
-  biddingDifficulty: 'EASY' | 'MODERATE' | 'HARD';
+  biddingDifficulty: 'EASY' | 'MODERATE' | 'HARD' | 'UNKNOWN';
 }
 
 export interface FitAnalysis {
@@ -112,17 +127,49 @@ export interface FitAnalysis {
   positiveMatches: string[]; // Evidence-backed matches
   missingRequirements: string[];
   redFlags: string[];
+  deterministicConstraintViolated?: boolean;
+  violationReason?: string;
 }
 
 export interface EconomicAnalysis {
+  status: 'OBSERVED' | 'ESTIMATED' | 'UNKNOWN';
   expectedValue: number;
-  budgetQuality: 'LOW' | 'FAIR' | 'GOOD' | 'EXCELLENT';
+  budgetQuality: 'LOW' | 'FAIR' | 'GOOD' | 'EXCELLENT' | 'UNKNOWN';
+  effectiveHourlyRate?: number;
   effortRisk: 'LOW' | 'MEDIUM' | 'HIGH';
   opportunityCost: string;
-  clientRisk: 'LOW' | 'MEDIUM' | 'HIGH';
+  clientRisk: 'LOW' | 'MEDIUM' | 'HIGH' | 'UNKNOWN';
+  rationale: string;
 }
 
-export interface EnrichedOpportunityData extends RawOpportunityPayload {
+export interface OpportunityDecision {
+  recommendation: 'APPLY' | 'MAYBE' | 'SKIP';
+  reason: string;
+  reasons?: string[];
+  confidence?: number;
+  summary?: string;
+  positiveEvidence?: string[];
+  negativeEvidence?: string[];
+  missingInformation?: string[];
+  unknowns?: string[];
+  risks?: string[];
+  scores?: {
+    technicalFit: number;
+    economicQuality: number;
+    clientRisk: 'LOW' | 'MEDIUM' | 'HIGH' | 'UNKNOWN';
+    scopeClarity: 'LOW' | 'MEDIUM' | 'HIGH';
+  };
+  economics?: {
+    status: 'OBSERVED' | 'ESTIMATED' | 'UNKNOWN';
+    effectiveHourlyRate?: number;
+    estimatedEffort?: string;
+    rationale: string;
+  };
+}
+
+export type TriageResult = OpportunityDecision;
+
+export interface EnrichedOpportunityData extends NormalizedOpportunity {
   clientProfile?: {
     totalSpend: number;
     avgHourlyRate: number;

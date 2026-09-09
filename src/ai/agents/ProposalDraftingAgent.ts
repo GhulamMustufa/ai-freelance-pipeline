@@ -13,7 +13,7 @@ export class ProposalDraftingAgent {
 
   async draft(jobDescription: string, evidence: RetrievedEvidence[], opportunityId: string, feedback?: string): Promise<{ content: string, evidenceUsed: string[] }> {
     const evidenceStr = evidence.map(e => 
-      `[Evidence ID: ${e.id}]\nTitle: ${e.title}\nDescription: ${e.description}\nTech: ${e.technologies}`
+      `[Evidence ID: ${e.evidenceId || e.id}]\nTitle: ${e.title}\nDescription: ${e.description}\nTech: ${e.technologies}`
     ).join('\n\n');
 
     const feedbackStr = feedback ? `
@@ -29,7 +29,7 @@ export class ProposalDraftingAgent {
     1. You MUST ONLY use the provided Evidence to back up claims of your past work and experience.
     2. NEVER invent experience, metrics, projects, or technologies not in the Allowed Evidence.
     3. If the job requires a skill not present in the evidence, do not claim past experience in it; explain how your verified core strengths transfer.
-    4. You MUST cite your claims using the [Evidence ID] inline. (e.g., "I built an autonomous multi-agent pipeline with Next.js and DeepSeek [Evidence ID: abc]").
+    4. You MUST cite your claims using the [Evidence ID] inline. (e.g., "I built an autonomous multi-agent pipeline with Next.js and DeepSeek [Evidence ID: ${evidence[0]?.evidenceId || 'EV-001'}]").
     
     Job Description:
     ${jobDescription}

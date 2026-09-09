@@ -49,7 +49,7 @@ async function main() {
             budget: opp.jobPosting.budget ?? undefined,
             hourlyMin: opp.jobPosting.hourlyMin ?? undefined,
             hourlyMax: opp.jobPosting.hourlyMax ?? undefined,
-          }).catch(e => console.error(`Error in resumeJob for ${opp.platformId}`, e));
+          }).catch((e: any) => console.error(`Error in resumeJob for ${opp.platformId}`, e));
         }
       }
     } catch (err) {

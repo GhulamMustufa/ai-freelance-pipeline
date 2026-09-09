@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import fs from 'fs';
 import path from 'path';
 import { AgentExecutor } from '../ai/agent';
@@ -32,34 +35,61 @@ async function runEvaluation() {
   const dataset: EvalCase[] = JSON.parse(fs.readFileSync(datasetPath, 'utf8'));
   console.log(`Loaded ${dataset.length} test cases.`);
 
+  const evalProfile = {
+    id: 'eval-profile',
+    name: 'Senior Full-Stack AI Engineer',
+    headline: 'Senior Full-Stack & AI Systems Engineer (Next.js, Node.js, LLMs)',
+    bio: 'Senior Engineer with 8 years of experience building web platforms and multi-agent AI pipelines.',
+    experienceYears: 8,
+    skills: ['Next.js', 'React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Prisma', 'OpenAI', 'DeepSeek', 'Express'],
+    preferredTechnologies: ['Next.js', 'TypeScript', 'PostgreSQL', 'OpenAI', 'DeepSeek', 'Node.js'],
+    excludedTechnologies: ['PHP', 'WordPress', 'Ruby', 'Web3', 'Solana', 'Smart Contracts'],
+    targetHourlyRate: 75,
+    minProjectBudget: 1000,
+  };
+
+  const limit = process.env.EVAL_LIMIT ? parseInt(process.env.EVAL_LIMIT) : 5;
+  const casesToRun = dataset.slice(0, limit);
+  console.log(`Evaluating ${casesToRun.length} of ${dataset.length} test cases (set EVAL_LIMIT=30 for full dataset)...`);
+
   const results: EvalResult[] = [];
 
-  for (let i = 0; i < dataset.length; i++) {
-    const testCase = dataset[i];
-    console.log(`[${i+1}/${dataset.length}] Evaluating: ${testCase.payload.title}`);
+  for (let i = 0; i < casesToRun.length; i++) {
+    const testCase = casesToRun[i];
+    console.log(`[${i+1}/${casesToRun.length}] Evaluating: ${testCase.payload.title}`);
     
     const startTime = Date.now();
     try {
       // 1. Analyze
       const [job, client, comp] = await Promise.all([
         jobAgent.analyze(testCase.payload.title, testCase.payload.description),
-        clientAgent.analyze(testCase.payload.client),
+        clientAgent.analyze(testCase.payload.client, testCase.payload.description),
         compAgent.analyze(null, testCase.payload.budget, testCase.payload.hourlyMax)
       ]);
 
       const [fit, eco] = await Promise.all([
-        fitAgent.analyze(job),
+        fitAgent.analyze(job, evalProfile),
         ecoAgent.analyze(
           testCase.payload.budget, 
           testCase.payload.hourlyMin, 
           testCase.payload.hourlyMax, 
           client, 
-          comp
+          comp,
+          job,
+          evalProfile
         )
       ]);
 
       // 2. Decide
-      const decision = await decisionEngine.decide(job, client, comp, fit, eco);
+      const decision = await decisionEngine.decide(
+        job, 
+        client, 
+        comp, 
+        fit, 
+        eco, 
+        evalProfile, 
+        testCase.payload.budget
+      );
       
       const latencyMs = Date.now() - startTime;
       

@@ -14,7 +14,7 @@ export class ClaimVerificationAgent {
 
   async verify(draftContent: string, allowedEvidence: RetrievedEvidence[]): Promise<{ isGrounded: boolean, feedback: string }> {
     const evidenceStr = allowedEvidence.map(e => 
-      `[ID: ${e.id}] ${e.title}: ${e.description}`
+      `[ID: ${e.evidenceId || e.id}] ${e.title}: ${e.description}`
     ).join('\n\n');
 
     const prompt = `

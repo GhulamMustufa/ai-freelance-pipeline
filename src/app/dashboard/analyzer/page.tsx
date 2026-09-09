@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
 
@@ -11,25 +11,23 @@ interface Preset {
   data: {
     title: string;
     description: string;
-    platform: 'UPWORK' | 'LINKEDIN' | 'MANUAL';
-    skills: string;
     budget?: number;
     hourlyMin?: number;
     hourlyMax?: number;
-    client: {
-      location: string;
-      totalSpend: number;
-      feedbackScore: number;
-      hires: number;
+    client?: {
+      location?: string;
+      totalSpend?: number;
+      feedbackScore?: number;
+      hires?: number;
     };
   };
 }
 
 const PRESETS: Preset[] = [
   {
-    label: 'AI & Next.js Agent Engineer',
+    label: 'AI & Next.js Systems Engineer',
     badge: 'High Fit (APPLY)',
-    badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
     data: {
       title: 'Full-Stack AI Engineer — Next.js, Multi-Agent Systems & DeepSeek',
       description: `We are looking for a Senior AI & Full-Stack Engineer to architect an autonomous agent workflow. 
@@ -40,8 +38,6 @@ Requirements:
 - Clean code architecture, database persistence (Prisma / SQL), and background worker orchestration.
 
 Please provide examples of production AI systems or pipelines you have built.`,
-      platform: 'UPWORK',
-      skills: 'Next.js, TypeScript, OpenAI, DeepSeek, Multi-Agent Systems, RAG, Prisma',
       budget: 4500,
       hourlyMin: 60,
       hourlyMax: 85,
@@ -54,656 +50,840 @@ Please provide examples of production AI systems or pipelines you have built.`,
     }
   },
   {
-    label: 'React & Webhook Integration',
-    badge: 'Mid Tier (MAYBE)',
-    badgeColor: 'bg-amber-100 text-amber-800 border-amber-200',
+    label: 'React Webhook Integration (JD Only)',
+    badge: 'Marginal (MAYBE)',
+    badgeColor: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
     data: {
-      title: 'React Developer to connect webhook endpoints and real-time dashboard',
+      title: '',
       description: `Need a frontend developer to connect our webhook endpoints to a responsive React dashboard. 
 The backend is already running on Node.js. Your job is to format tables, handle optimistic updates, and display real-time status notifications.
-Budget is fixed at $800.`,
-      platform: 'UPWORK',
-      skills: 'React, TypeScript, TailwindCSS, REST API',
+Budget is fixed at $800. Timeline is approximately 2 weeks.`,
       budget: 800,
       hourlyMin: undefined,
       hourlyMax: undefined,
-      client: {
-        location: 'United Kingdom',
-        totalSpend: 4200,
-        feedbackScore: 4.6,
-        hires: 4
-      }
+      client: undefined // Demonstrates RAW JD with NO client data
     }
   },
   {
-    label: 'Unrealistic $30 Scope Task',
-    badge: 'Low Quality (SKIP)',
-    badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
+    label: 'Excluded Tech: WordPress Task ($30)',
+    badge: 'Dealbreaker (SKIP)',
+    badgeColor: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
     data: {
-      title: 'Need complete AI platform clone built in 24 hours cheap',
-      description: `Clone complete freelance platform with full AI agents, payment gateway, mobile app, and backend. 
-Total budget is $30. Must be finished by tomorrow morning. Do not bid higher or you will be reported.`,
-      platform: 'UPWORK',
-      skills: 'Python, AI, Mobile App, Everything',
+      title: 'Need complete WordPress custom plugin in 24 hours cheap',
+      description: `Need an expert in PHP and WordPress to build a custom membership plugin with payment gateway. Total budget is $30. Must be finished by tomorrow morning. Do not bid higher or you will be reported.`,
       budget: 30,
       hourlyMin: undefined,
       hourlyMax: undefined,
-      client: {
-        location: 'Unknown',
-        totalSpend: 0,
-        feedbackScore: 2.1,
-        hires: 0
-      }
+      client: undefined
     }
   }
 ];
 
-export default function ManualJobAnalyzerPage() {
+export default function ManualJobAnalyzer() {
+  // Input states
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [platform, setPlatform] = useState<'UPWORK' | 'LINKEDIN' | 'MANUAL'>('UPWORK');
-  const [skills, setSkills] = useState('');
   const [budget, setBudget] = useState<string>('');
   const [hourlyMin, setHourlyMin] = useState<string>('');
   const [hourlyMax, setHourlyMax] = useState<string>('');
-  const [showClientDetails, setShowClientDetails] = useState(false);
-  const [clientLocation, setClientLocation] = useState('United States');
-  const [clientTotalSpend, setClientTotalSpend] = useState('15000');
-  const [clientFeedbackScore, setClientFeedbackScore] = useState('4.9');
-  const [clientHires, setClientHires] = useState('8');
-  const [forceProposal, setForceProposal] = useState(true);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [clientLocation, setClientLocation] = useState('');
+  const [clientSpend, setClientSpend] = useState('');
+  const [clientRating, setClientRating] = useState('');
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentStage, setCurrentStage] = useState<string>('');
+  // Profile state
+  const [profile, setProfile] = useState<any>(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profileSkills, setProfileSkills] = useState('');
+  const [profileExcluded, setProfileExcluded] = useState('');
+  const [profileTargetRate, setProfileTargetRate] = useState('75');
+  const [profileMinBudget, setProfileMinBudget] = useState('1000');
+
+  // Loading & Execution states
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<any | null>(null);
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<'decision' | 'proposal' | 'trace'>('decision');
 
-  const applyPreset = (preset: Preset) => {
-    setTitle(preset.data.title);
-    setDescription(preset.data.description);
-    setPlatform(preset.data.platform);
-    setSkills(preset.data.skills);
-    setBudget(preset.data.budget ? String(preset.data.budget) : '');
-    setHourlyMin(preset.data.hourlyMin ? String(preset.data.hourlyMin) : '');
-    setHourlyMax(preset.data.hourlyMax ? String(preset.data.hourlyMax) : '');
-    setClientLocation(preset.data.client.location);
-    setClientTotalSpend(String(preset.data.client.totalSpend));
-    setClientFeedbackScore(String(preset.data.client.feedbackScore));
-    setClientHires(String(preset.data.client.hires));
-    setShowClientDetails(true);
-    setResult(null);
-    setError(null);
+  // Fetch active default profile on mount
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const res = await fetch('/api/profile');
+      const data = await res.json();
+      if (data.success && data.profile) {
+        setProfile(data.profile);
+        setProfileSkills(data.profile.skills.join(', '));
+        setProfileExcluded(data.profile.excludedTechnologies.join(', '));
+        setProfileTargetRate(String(data.profile.targetHourlyRate || 75));
+        setProfileMinBudget(String(data.profile.minProjectBudget || 1000));
+      }
+    } catch (e) {
+      console.warn('Could not load profile:', e);
+    }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim() || !description.trim()) {
-      setError('Please provide both a Job Title and Description.');
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-    setResult(null);
-    setCurrentStage('Ingesting job details & initializing multi-agent pipeline...');
-
-    // Progress simulation while server processes
-    const stages = [
-      'Normalizing job specifications & extracting technical ambiguity...',
-      'Client Intelligence Agent analyzing client spend & hiring reputation...',
-      'Freelancer Fit & Economic Agents calculating profit margins & match...',
-      'Decision Engine weighing competitive signals & deciding viability...',
-      'Retrieving verified knowledge base proof points & drafting proposal...',
-      'Claim Verification Agent running anti-hallucination check...'
-    ];
-
-    let stageIdx = 0;
-    const interval = setInterval(() => {
-      stageIdx++;
-      if (stageIdx < stages.length) {
-        setCurrentStage(stages[stageIdx]);
-      }
-    }, 2800);
-
+  const handleSaveProfile = async () => {
     try {
-      const res = await fetch('/api/opportunities/analyze', {
+      const res = await fetch('/api/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title,
-          description,
-          platform,
-          skills,
-          budget: budget ? parseFloat(budget) : undefined,
-          hourlyMin: hourlyMin ? parseFloat(hourlyMin) : undefined,
-          hourlyMax: hourlyMax ? parseFloat(hourlyMax) : undefined,
-          client: showClientDetails ? {
-            location: clientLocation,
-            totalSpend: clientTotalSpend ? parseFloat(clientTotalSpend) : 0,
-            feedbackScore: clientFeedbackScore ? parseFloat(clientFeedbackScore) : 0,
-            hires: clientHires ? parseInt(clientHires, 10) : 0,
-          } : undefined,
-          forceProposal,
-        }),
+          id: profile?.id || 'default-profile',
+          name: profile?.name || 'Senior Full-Stack AI Engineer',
+          headline: profile?.headline || 'Senior Full-Stack & AI Systems Engineer',
+          bio: profile?.bio || '',
+          experienceYears: profile?.experienceYears || 8,
+          skills: profileSkills.split(',').map(s => s.trim()).filter(Boolean),
+          preferredTechnologies: profileSkills.split(',').map(s => s.trim()).slice(0, 5),
+          excludedTechnologies: profileExcluded.split(',').map(s => s.trim()).filter(Boolean),
+          targetHourlyRate: Number(profileTargetRate) || 75,
+          minProjectBudget: Number(profileMinBudget) || 1000,
+        })
       });
+      const data = await res.json();
+      if (data.success) {
+        setShowProfileModal(false);
+        fetchProfile();
+      }
+    } catch (e) {
+      alert('Failed to update profile');
+    }
+  };
 
-      clearInterval(interval);
+  const loadPreset = (preset: Preset) => {
+    setTitle(preset.data.title);
+    setDescription(preset.data.description);
+    setBudget(preset.data.budget ? String(preset.data.budget) : '');
+    setHourlyMin(preset.data.hourlyMin ? String(preset.data.hourlyMin) : '');
+    setHourlyMax(preset.data.hourlyMax ? String(preset.data.hourlyMax) : '');
+    
+    if (preset.data.client) {
+      setClientLocation(preset.data.client.location || '');
+      setClientSpend(preset.data.client.totalSpend ? String(preset.data.client.totalSpend) : '');
+      setClientRating(preset.data.client.feedbackScore ? String(preset.data.client.feedbackScore) : '');
+    } else {
+      setClientLocation('');
+      setClientSpend('');
+      setClientRating('');
+    }
+    setResult(null);
+    setError(null);
+  };
+
+  const handleAnalyze = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!description.trim()) {
+      setError('Please paste a job description.');
+      return;
+    }
+
+    setIsAnalyzing(true);
+    setError(null);
+    setResult(null);
+    setCopied(false);
+
+    try {
+      const payload = {
+        title: title.trim() || undefined,
+        description: description.trim(),
+        platform: 'MANUAL',
+        budget: budget ? parseFloat(budget) : undefined,
+        hourlyMin: hourlyMin ? parseFloat(hourlyMin) : undefined,
+        hourlyMax: hourlyMax ? parseFloat(hourlyMax) : undefined,
+        client: (clientLocation || clientSpend || clientRating) ? {
+          location: clientLocation || undefined,
+          totalSpend: clientSpend ? parseFloat(clientSpend) : undefined,
+          feedbackScore: clientRating ? parseFloat(clientRating) : undefined,
+        } : undefined,
+        profile: profile ? {
+          ...profile,
+          skills: profileSkills.split(',').map(s => s.trim()).filter(Boolean),
+          excludedTechnologies: profileExcluded.split(',').map(s => s.trim()).filter(Boolean),
+          targetHourlyRate: Number(profileTargetRate) || 75,
+          minProjectBudget: Number(profileMinBudget) || 1000,
+        } : undefined,
+      };
+
+      const res = await fetch('/api/opportunities/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to analyze opportunity');
+        throw new Error(data.error || 'Pipeline execution failed');
       }
 
-      setResult(data.opportunity);
-      setCurrentStage('');
+      setResult(data);
+      setActiveTab('decision');
     } catch (err: any) {
-      clearInterval(interval);
-      console.error(err);
-      setError(err.message || 'An unexpected error occurred during execution.');
+      setError(err.message || 'An error occurred during analysis');
     } finally {
-      setIsLoading(false);
+      setIsAnalyzing(false);
     }
   };
 
-  const handleCopyProposal = () => {
+  const copyProposalToClipboard = () => {
     if (result?.proposal?.content) {
       navigator.clipboard.writeText(result.proposal.content);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), 2500);
     }
   };
 
+  const recommendation = result?.recommendation;
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
+    <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-amber-500 selection:text-slate-950">
       <Navigation />
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
-        {/* Header */}
-        <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-amber-600 uppercase tracking-wider mb-1">
-            <span>⚡ Interactive Sandbox</span>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Top Header & Active Profile Banner */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-slate-900/80 p-6 rounded-2xl border border-slate-800 shadow-xl backdrop-blur-md">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
+                Zero-Friction Decision Engine
+              </span>
+              <span className="text-xs text-slate-400">Zero integrations required</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              Opportunity Intelligence Workspace
+            </h1>
+            <p className="text-sm text-slate-400 max-w-2xl">
+              Paste any job description to determine whether it is worth your time, understand why, and generate an evidence-grounded proposal.
+            </p>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
-            Manual Job Analyzer
-          </h1>
-          <p className="text-slate-600 text-sm mt-1 max-w-2xl">
-            Test the multi-agent decision engine against any job posting. Evaluate skill match, economic viability, red flags, and review an evidence-grounded proposal draft.
-          </p>
+
+          {/* Active Profile Pill / Customizer */}
+          <div className="flex items-center gap-3">
+            <div className="bg-slate-800/80 border border-slate-700/80 p-3 rounded-xl flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm border border-amber-500/30">
+                👤
+              </div>
+              <div className="text-left">
+                <div className="text-xs font-semibold text-slate-200">
+                  {profile?.name || 'Loading Profile...'}
+                </div>
+                <div className="text-[11px] text-slate-400">
+                  Target: <span className="text-amber-400 font-medium">${profileTargetRate}/hr</span> • Min: <span className="text-emerald-400 font-medium">${profileMinBudget}</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowProfileModal(true)}
+                className="ml-2 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 transition-all"
+              >
+                ⚙️ Edit
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* Quick Sample Presets */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Load Sample Scenarios
-            </span>
-            <span className="text-xs text-slate-400">Click any card to pre-fill test data</span>
-          </div>
+        {/* Profile Settings Modal */}
+        {showProfileModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <span>⚙️</span> Customize Freelancer Profile
+                </h3>
+                <button 
+                  onClick={() => setShowProfileModal(false)}
+                  className="text-slate-400 hover:text-white text-sm p-1"
+                >
+                  ✕
+                </button>
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="space-y-4 text-sm">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                    Core Skills (Comma separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={profileSkills}
+                    onChange={e => setProfileSkills(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500 text-xs"
+                    placeholder="Next.js, TypeScript, Node.js, OpenAI, PostgreSQL"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-rose-400 uppercase tracking-wider mb-1">
+                    Excluded Technologies (Immediate SKIP Dealbreakers)
+                  </label>
+                  <input
+                    type="text"
+                    value={profileExcluded}
+                    onChange={e => setProfileExcluded(e.target.value)}
+                    className="w-full bg-slate-800 border border-rose-500/30 rounded-lg px-3 py-2 text-rose-200 focus:outline-none focus:border-rose-500 text-xs"
+                    placeholder="PHP, WordPress, Ruby, Web3, Smart Contracts"
+                  />
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    Any job requiring these technologies will trigger an immediate deterministic auto-SKIP.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                      Target Hourly Rate ($/hr)
+                    </label>
+                    <input
+                      type="number"
+                      value={profileTargetRate}
+                      onChange={e => setProfileTargetRate(e.target.value)}
+                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                      Minimum Fixed Budget ($)
+                    </label>
+                    <input
+                      type="number"
+                      value={profileMinBudget}
+                      onChange={e => setProfileMinBudget(e.target.value)}
+                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500 text-xs"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setShowProfileModal(false)}
+                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveProfile}
+                  className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow-lg shadow-amber-500/20"
+                >
+                  Save Profile Settings
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Demo Presets Row */}
+        <div className="space-y-2">
+          <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+            <span>⚡ Test with 1-Click Golden Presets:</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {PRESETS.map((p, idx) => (
               <button
                 key={idx}
                 type="button"
-                onClick={() => applyPreset(p)}
-                className="text-left p-3.5 rounded-lg border border-slate-200 hover:border-amber-400 hover:bg-amber-50/40 transition-all group"
+                onClick={() => loadPreset(p)}
+                className="text-left p-3.5 rounded-xl bg-slate-900/60 hover:bg-slate-900 border border-slate-800/80 hover:border-slate-700 transition-all group flex flex-col justify-between"
               >
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${p.badgeColor}`}>
-                    {p.badge}
-                  </span>
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-bold text-slate-200 group-hover:text-amber-400 transition-colors">
+                      {p.label}
+                    </span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${p.badgeColor}`}>
+                      {p.badge}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 line-clamp-2">
+                    {p.data.description.substring(0, 100)}...
+                  </p>
                 </div>
-                <div className="text-sm font-bold text-slate-900 group-hover:text-amber-600 transition-colors">
-                  {p.label}
-                </div>
-                <div className="text-xs text-slate-500 mt-1 line-clamp-2">
-                  {p.data.description}
-                </div>
+                <span className="text-[11px] text-amber-500/80 font-medium mt-2 flex items-center gap-1">
+                  Load into analyzer →
+                </span>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Job Input Form */}
-        <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-xl p-6 sm:p-8 shadow-sm space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Title */}
-            <div className="md:col-span-2 space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Job Title <span className="text-rose-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Senior Next.js & AI Agent Engineer"
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
-              />
-            </div>
+        {/* Main Workspace Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* LEFT: Input Form (5 cols) */}
+          <div className="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
+            <h2 className="text-base font-bold text-white flex items-center justify-between">
+              <span>Paste Job Description</span>
+              <span className="text-xs text-slate-400 font-normal">Accepts raw text or URL</span>
+            </h2>
 
-            {/* Platform */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Platform Source
-              </label>
-              <select
-                value={platform}
-                onChange={(e) => setPlatform(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white transition"
-              >
-                <option value="UPWORK">Upwork</option>
-                <option value="LINKEDIN">LinkedIn</option>
-                <option value="MANUAL">Direct / Custom</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Description */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Full Job Description <span className="text-rose-500">*</span>
-              </label>
-              <span className="text-xs text-slate-400">{description.length} characters</span>
-            </div>
-            <textarea
-              required
-              rows={7}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Paste the full job posting text here..."
-              className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 font-mono transition"
-            />
-          </div>
-
-          {/* Skills & Budget */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Skills (Comma Separated)
-              </label>
-              <input
-                type="text"
-                value={skills}
-                onChange={(e) => setSkills(e.target.value)}
-                placeholder="Next.js, TypeScript, OpenAI"
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Fixed Budget ($)
-              </label>
-              <input
-                type="number"
-                min="0"
-                step="1"
-                value={budget}
-                onChange={(e) => setBudget(e.target.value)}
-                placeholder="e.g. 3500"
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Hourly Range ($/hr)
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  min="0"
-                  value={hourlyMin}
-                  onChange={(e) => setHourlyMin(e.target.value)}
-                  placeholder="Min (e.g. 50)"
-                  className="w-1/2 px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
-                />
-                <span className="text-slate-400">-</span>
-                <input
-                  type="number"
-                  min="0"
-                  value={hourlyMax}
-                  onChange={(e) => setHourlyMax(e.target.value)}
-                  placeholder="Max (e.g. 80)"
-                  className="w-1/2 px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
+            <form onSubmit={handleAnalyze} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                  Job Description (Required)
+                </label>
+                <textarea
+                  rows={8}
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                  placeholder="Paste the full job posting text here. You can include budget, requirements, or client text directly..."
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-amber-500 font-mono leading-relaxed"
                 />
               </div>
-            </div>
-          </div>
 
-          {/* Optional Client Intelligence Accordion */}
-          <div className="border-t border-slate-200 pt-4">
-            <button
-              type="button"
-              onClick={() => setShowClientDetails(!showClientDetails)}
-              className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 hover:text-slate-900 transition"
-            >
-              <span>{showClientDetails ? '▼' : '▶'}</span>
-              <span>Client Intelligence & Reputation Signals (Optional)</span>
-            </button>
-
-            {showClientDetails && (
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-4 gap-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-600">Client Country</label>
+              {/* Optional Quick Fields */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-medium text-slate-400 mb-1">
+                    Job Title (Optional)
+                  </label>
                   <input
                     type="text"
-                    value={clientLocation}
-                    onChange={(e) => setClientLocation(e.target.value)}
-                    placeholder="United States"
-                    className="w-full px-3 py-1.5 rounded border border-slate-300 text-xs bg-white"
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                    placeholder="e.g. Next.js Developer"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-600">Total Spend ($)</label>
-                  <input
-                    type="number"
-                    value={clientTotalSpend}
-                    onChange={(e) => setClientTotalSpend(e.target.value)}
-                    placeholder="25000"
-                    className="w-full px-3 py-1.5 rounded border border-slate-300 text-xs bg-white"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-600">Feedback Rating (0-5)</label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    max="5"
-                    value={clientFeedbackScore}
-                    onChange={(e) => setClientFeedbackScore(e.target.value)}
-                    placeholder="4.9"
-                    className="w-full px-3 py-1.5 rounded border border-slate-300 text-xs bg-white"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-600">Past Hires</label>
-                  <input
-                    type="number"
-                    value={clientHires}
-                    onChange={(e) => setClientHires(e.target.value)}
-                    placeholder="12"
-                    className="w-full px-3 py-1.5 rounded border border-slate-300 text-xs bg-white"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Options & Action Button */}
-          <div className="border-t border-slate-200 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-slate-700">
-              <input
-                type="checkbox"
-                checked={forceProposal}
-                onChange={(e) => setForceProposal(e.target.checked)}
-                className="rounded border-slate-300 text-amber-600 focus:ring-amber-500 h-4 w-4"
-              />
-              <span>Generate & verify proposal even if decision is MAYBE or SKIP</span>
-            </label>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? (
-                <>
-                  <svg className="animate-spin h-4 w-4 text-slate-950" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                  </svg>
-                  <span>Processing Multi-Agent Pipeline...</span>
-                </>
-              ) : (
-                <>
-                  <span>⚡</span>
-                  <span>Run Multi-Agent Analysis</span>
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-
-        {/* Loading Banner */}
-        {isLoading && (
-          <div className="bg-slate-900 text-white p-6 rounded-xl border border-slate-800 shadow-md space-y-3 animate-pulse">
-            <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-full bg-amber-400 animate-ping" />
-              <span className="text-sm font-bold tracking-wide text-amber-400 uppercase">
-                Active Reasoning Pipeline
-              </span>
-            </div>
-            <p className="text-sm font-mono text-slate-300">
-              {currentStage || 'Executing agents...'}
-            </p>
-          </div>
-        )}
-
-        {/* Error Alert */}
-        {error && (
-          <div className="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-xl text-sm space-y-1">
-            <div className="font-bold">Execution Failed</div>
-            <div>{error}</div>
-          </div>
-        )}
-
-        {/* Results Showcase */}
-        {result && (
-          <div className="space-y-6 pt-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-extrabold text-slate-900">Analysis Results & Synthesis</h2>
-              <Link
-                href={`/dashboard/traces/${result.id}`}
-                className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline"
-              >
-                Inspect Telemetry Trace →
-              </Link>
-            </div>
-
-            {/* Decision Hero Card */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`text-lg font-black px-4 py-1.5 rounded-full border ${
-                      result.decision?.recommendation === 'APPLY'
-                        ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
-                        : result.decision?.recommendation === 'MAYBE'
-                        ? 'bg-amber-100 text-amber-800 border-amber-300'
-                        : 'bg-rose-100 text-rose-800 border-rose-300'
-                    }`}
-                  >
-                    {result.decision?.recommendation || 'UNKNOWN'}
-                  </span>
-                  <div>
-                    <div className="text-xs uppercase font-bold text-slate-400">Recommendation</div>
-                    <div className="text-sm font-bold text-slate-800">
-                      Confidence: {result.decision?.confidence ? `${Math.round(result.decision.confidence * 100)}%` : 'N/A'}
-                    </div>
-                  </div>
-                </div>
-
-                <Link
-                  href={`/dashboard/traces/${result.id}`}
-                  className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
-                >
-                  View Trace #{result.id.slice(0, 8)}
-                </Link>
-              </div>
-
-              {result.decision?.reason && (
-                <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 text-sm text-slate-700 leading-relaxed">
-                  <span className="font-bold text-slate-900">Reasoning: </span>
-                  {result.decision.reason}
-                </div>
-              )}
-            </div>
-
-            {/* Scores & Red Flags Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Score Gauges */}
-              <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
-                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Viability Scores</h3>
-                
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold mb-1">
-                      <span>Skill Match</span>
-                      <span className="text-blue-600">{result.score?.skillMatch || 0}/100</span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                      <div
-                        className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${result.score?.skillMatch || 0}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold mb-1">
-                      <span>Portfolio Fit</span>
-                      <span className="text-indigo-600">{result.score?.portfolioFit || 0}/100</span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                      <div
-                        className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${result.score?.portfolioFit || 0}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold mb-1">
-                      <span>Project Quality</span>
-                      <span className="text-emerald-600">{result.score?.projectQuality || 0}/100</span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                      <div
-                        className="bg-emerald-600 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${result.score?.projectQuality || 0}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold mb-1">
-                      <span>Long-Term Potential</span>
-                      <span className="text-purple-600">{result.score?.longTermPotential || 0}/100</span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                      <div
-                        className="bg-purple-600 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${result.score?.longTermPotential || 0}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Signals & Evidence */}
-              <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4 flex flex-col justify-between">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Intelligence Signals</h3>
-                  
-                  {result.decision?.positiveEvidence && JSON.parse(result.decision.positiveEvidence)?.length > 0 && (
-                    <div className="mb-3">
-                      <span className="text-xs font-bold text-emerald-700 block mb-1">Positive Drivers:</span>
-                      <ul className="text-xs text-slate-600 space-y-1 list-disc pl-4">
-                        {JSON.parse(result.decision.positiveEvidence).map((e: string, i: number) => (
-                          <li key={i}>{e}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {result.decision?.negativeEvidence && JSON.parse(result.decision.negativeEvidence)?.length > 0 && (
-                    <div className="mb-3">
-                      <span className="text-xs font-bold text-rose-700 block mb-1">Risk Signals / Negative Evidence:</span>
-                      <ul className="text-xs text-slate-600 space-y-1 list-disc pl-4">
-                        {JSON.parse(result.decision.negativeEvidence).map((e: string, i: number) => (
-                          <li key={i}>{e}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {(!result.decision?.positiveEvidence || JSON.parse(result.decision.positiveEvidence).length === 0) &&
-                   (!result.decision?.negativeEvidence || JSON.parse(result.decision.negativeEvidence).length === 0) && (
-                    <p className="text-xs text-slate-400 italic">No significant risk flags detected.</p>
-                  )}
-                </div>
-
-                <div className="pt-3 border-t border-slate-100 text-xs text-slate-500 flex justify-between items-center">
-                  <span>Multi-Agent Stages Completed:</span>
-                  <span className="font-bold text-slate-800">{result.pipelineRuns?.length || 0} Runs</span>
+                  <label className="block text-[11px] font-medium text-slate-400 mb-1">
+                    Stated Fixed Budget ($)
+                  </label>
+                  <input
+                    type="number"
+                    value={budget}
+                    onChange={e => setBudget(e.target.value)}
+                    placeholder="e.g. 3500"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"
+                  />
                 </div>
               </div>
-            </div>
 
-            {/* Proposal Section */}
-            {result.proposal ? (
-              <div className="bg-white border border-slate-200 rounded-xl p-6 sm:p-8 shadow-sm space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-base font-extrabold text-slate-900">
-                        Evidence-Grounded Proposal Draft
-                      </h3>
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        Verified
-                      </span>
+              {/* Collapsible Advanced Info (Client / Hourly) */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  className="text-xs text-slate-400 hover:text-amber-400 flex items-center gap-1 font-medium transition-colors"
+                >
+                  <span>{showAdvanced ? '▾ Hide' : '▸ Add'} Optional Client / Hourly Info</span>
+                </button>
+
+                {showAdvanced && (
+                  <div className="mt-3 p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] text-slate-400 mb-1">Hourly Min ($/hr)</label>
+                        <input
+                          type="number"
+                          value={hourlyMin}
+                          onChange={e => setHourlyMin(e.target.value)}
+                          placeholder="45"
+                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] text-slate-400 mb-1">Hourly Max ($/hr)</label>
+                        <input
+                          type="number"
+                          value={hourlyMax}
+                          onChange={e => setHourlyMax(e.target.value)}
+                          placeholder="80"
+                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
+                        />
+                      </div>
                     </div>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      Synthesized from knowledge base proof points and verified against hallucinations.
-                    </p>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleCopyProposal}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-slate-300 hover:border-slate-400 bg-slate-50 text-slate-700 text-xs font-bold transition"
-                  >
-                    {copied ? (
-                      <>
-                        <span className="text-emerald-600 font-bold">✓</span>
-                        <span className="text-emerald-600">Copied to Clipboard!</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>📋</span>
-                        <span>Copy Proposal</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-
-                <div className="bg-slate-50 p-5 rounded-lg border border-slate-200 text-sm text-slate-800 whitespace-pre-wrap font-sans leading-relaxed">
-                  {result.proposal.content}
-                </div>
-
-                {result.proposal.evidenceUsed && JSON.parse(result.proposal.evidenceUsed)?.length > 0 && (
-                  <div className="bg-amber-50/60 border border-amber-200/80 rounded-lg p-3.5 text-xs text-amber-900">
-                    <span className="font-bold">Referenced Evidence Proof Points:</span>
-                    <ul className="list-disc pl-4 mt-1 space-y-0.5 text-amber-800">
-                      {JSON.parse(result.proposal.evidenceUsed).map((item: string, i: number) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div>
+                        <label className="block text-[10px] text-slate-400 mb-1">Client Location</label>
+                        <input
+                          type="text"
+                          value={clientLocation}
+                          onChange={e => setClientLocation(e.target.value)}
+                          placeholder="USA"
+                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] text-slate-400 mb-1">Client Spend ($)</label>
+                        <input
+                          type="number"
+                          value={clientSpend}
+                          onChange={e => setClientSpend(e.target.value)}
+                          placeholder="25000"
+                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] text-slate-400 mb-1">Rating (1-5)</label>
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={clientRating}
+                          onChange={e => setClientRating(e.target.value)}
+                          placeholder="4.9"
+                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
+                        />
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
-            ) : (
-              <div className="bg-slate-100 border border-slate-200 rounded-xl p-6 text-center text-slate-500 text-sm">
-                No proposal was generated for this opportunity (decision recommendation was {result.decision?.recommendation || 'SKIP'}).
+
+              {error && (
+                <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isAnalyzing}
+                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              >
+                {isAnalyzing ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 text-slate-950" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    <span>Synthesizing Multi-Agent Intelligence...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>⚡</span>
+                    <span>Triage Opportunity (Instant AI Decision)</span>
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* RIGHT: Triage Decision & Proposal Engine (7 cols) */}
+          <div className="lg:col-span-7 space-y-6">
+            
+            {/* Empty State when no analysis has run */}
+            {!result && !isAnalyzing && (
+              <div className="bg-slate-900/40 border border-dashed border-slate-800 rounded-2xl p-12 text-center space-y-4">
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-2xl font-bold shadow-inner">
+                  ⚡
+                </div>
+                <div className="max-w-md mx-auto space-y-2">
+                  <h3 className="text-lg font-bold text-white">
+                    Ready to Triage
+                  </h3>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Paste any job description on the left or select a golden preset above. OmniBid will synthesize technical fit, client risk, economics, and generate a grounded proposal.
+                  </p>
+                </div>
               </div>
             )}
+
+            {/* Loading Skeleton */}
+            {isAnalyzing && (
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-6 animate-pulse">
+                <div className="h-14 bg-slate-800 rounded-xl w-3/4"></div>
+                <div className="grid grid-cols-4 gap-3">
+                  <div className="h-20 bg-slate-800 rounded-xl"></div>
+                  <div className="h-20 bg-slate-800 rounded-xl"></div>
+                  <div className="h-20 bg-slate-800 rounded-xl"></div>
+                  <div className="h-20 bg-slate-800 rounded-xl"></div>
+                </div>
+                <div className="h-28 bg-slate-800 rounded-xl"></div>
+              </div>
+            )}
+
+            {/* Complete Result View */}
+            {result && !isAnalyzing && (
+              <div className="space-y-6">
+
+                {/* Tabs: Decision | Grounded Proposal | Agent Trace */}
+                <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
+                  <button
+                    onClick={() => setActiveTab('decision')}
+                    className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                      activeTab === 'decision'
+                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    }`}
+                  >
+                    🎯 1. Decision & Scorecard
+                  </button>
+
+                  {result.proposal && (
+                    <button
+                      onClick={() => setActiveTab('proposal')}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                        activeTab === 'proposal'
+                          ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                          : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      }`}
+                    >
+                      <span>📝 2. Grounded Proposal</span>
+                      <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.2 rounded border border-emerald-500/30">
+                        Verified
+                      </span>
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => setActiveTab('trace')}
+                    className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                      activeTab === 'trace'
+                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    }`}
+                  >
+                    🔍 3. Agent Execution Trace
+                  </button>
+                </div>
+
+                {/* TAB 1: DECISION & SCORECARD */}
+                {activeTab === 'decision' && (
+                  <div className="space-y-6">
+                    {/* Hero Decision Banner */}
+                    <div className={`p-6 rounded-2xl border shadow-xl ${
+                      recommendation === 'APPLY'
+                        ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
+                        : recommendation === 'MAYBE'
+                        ? 'bg-amber-950/40 border-amber-500/40 text-amber-300'
+                        : 'bg-rose-950/40 border-rose-500/40 text-rose-300'
+                    }`}>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <span className={`text-2xl sm:text-3xl font-black px-4 py-1.5 rounded-xl border ${
+                            recommendation === 'APPLY'
+                              ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-lg shadow-emerald-500/20'
+                              : recommendation === 'MAYBE'
+                              ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-lg shadow-amber-500/20'
+                              : 'bg-rose-600 text-white border-rose-400 shadow-lg shadow-rose-600/20'
+                          }`}>
+                            {recommendation}
+                          </span>
+                          <div>
+                            <div className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                              Recommendation Confidence
+                            </div>
+                            <div className="text-xl font-extrabold text-white">
+                              {Math.round((result.confidence || 0.9) * 100)}% Confidence
+                            </div>
+                          </div>
+                        </div>
+
+                        {recommendation === 'APPLY' && result.proposal && (
+                          <button
+                            onClick={() => setActiveTab('proposal')}
+                            className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-500/20"
+                          >
+                            View Verified Proposal →
+                          </button>
+                        )}
+                      </div>
+
+                      <p className="mt-4 text-sm font-medium text-slate-200 leading-relaxed border-t border-slate-800/60 pt-3">
+                        {result.summary || result.reason}
+                      </p>
+                    </div>
+
+                    {/* 4-Pillar Scorecard Grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {/* Technical Fit */}
+                      <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Technical Fit</div>
+                        <div className="text-2xl font-black text-amber-400">
+                          {result.scores?.technicalFit ?? 0}
+                          <span className="text-xs text-slate-500 font-normal"> / 100</span>
+                        </div>
+                        <div className="text-[11px] text-slate-400">
+                          {result.scores?.technicalFit > 75 ? 'Strong Match' : (result.scores?.technicalFit > 40 ? 'Moderate' : 'Disjoint')}
+                        </div>
+                      </div>
+
+                      {/* Economic Quality */}
+                      <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Economics</div>
+                        <div className="text-xl font-black text-emerald-400">
+                          {result.economics?.status === 'OBSERVED' ? 'OBSERVED' : (result.economics?.status || 'ESTIMATED')}
+                        </div>
+                        <div className="text-[11px] text-slate-400 truncate">
+                          {result.economics?.effectiveHourlyRate ? `~$${result.economics.effectiveHourlyRate}/hr` : 'Scope estimate'}
+                        </div>
+                      </div>
+
+                      {/* Client Risk */}
+                      <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Client Risk</div>
+                        <div className={`text-xl font-black ${
+                          result.scores?.clientRisk === 'UNKNOWN' ? 'text-slate-400' :
+                          result.scores?.clientRisk === 'HIGH' ? 'text-rose-400' : 'text-emerald-400'
+                        }`}>
+                          {result.scores?.clientRisk || 'UNKNOWN'}
+                        </div>
+                        <div className="text-[11px] text-slate-400">
+                          {result.scores?.clientRisk === 'UNKNOWN' ? 'No history provided' : 'Verified score'}
+                        </div>
+                      </div>
+
+                      {/* Scope Clarity */}
+                      <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Scope Clarity</div>
+                        <div className="text-xl font-black text-blue-400">
+                          {result.scores?.scopeClarity || 'MEDIUM'}
+                        </div>
+                        <div className="text-[11px] text-slate-400">
+                          Deliverable definition
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 3 Detail Cards: Why / Unknowns / Risks */}
+                    <div className="space-y-4">
+                      {/* WHY Drivers */}
+                      <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-2">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                          <span>✓</span> Why This Recommendation:
+                        </h4>
+                        <ul className="space-y-1.5 text-xs text-slate-300">
+                          {(result.positiveEvidence?.length > 0 ? result.positiveEvidence : result.reasons || [result.reason]).map((r: string, idx: number) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <span className="text-emerald-400 font-bold">•</span>
+                              <span>{r}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* UNKNOWNS Card */}
+                      {result.unknowns && result.unknowns.length > 0 && (
+                        <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-2">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                            <span>ℹ️</span> Unknown Variables (Preserved Without Penalties):
+                          </h4>
+                          <ul className="space-y-1.5 text-xs text-slate-400">
+                            {result.unknowns.map((u: string, idx: number) => (
+                              <li key={idx} className="flex items-start gap-2">
+                                <span className="text-slate-500 font-bold">•</span>
+                                <span>{u}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* RISKS Card */}
+                      {result.risks && result.risks.length > 0 && (
+                        <div className="bg-slate-900/90 border border-rose-500/20 rounded-xl p-5 space-y-2">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
+                            <span>⚠️</span> Project Risks & Watchouts:
+                          </h4>
+                          <ul className="space-y-1.5 text-xs text-slate-300">
+                            {result.risks.map((risk: string, idx: number) => (
+                              <li key={idx} className="flex items-start gap-2">
+                                <span className="text-rose-400 font-bold">•</span>
+                                <span>{risk}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 2: GROUNDED PROPOSAL */}
+                {activeTab === 'proposal' && result.proposal && (
+                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-4">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/20">
+                            ✓ Anti-Hallucination Verified
+                          </span>
+                          <span className="text-xs text-slate-400">Strictly grounded in your portfolio</span>
+                        </div>
+                        <h3 className="text-lg font-bold text-white mt-1">
+                          Tailored Bidding Proposal
+                        </h3>
+                      </div>
+
+                      <button
+                        onClick={copyProposalToClipboard}
+                        className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition-all shadow-md shadow-amber-500/10 flex items-center gap-1.5 self-start sm:self-auto"
+                      >
+                        {copied ? '✓ Copied to Clipboard!' : '📋 Copy Proposal Text'}
+                      </button>
+                    </div>
+
+                    {/* Proposal Body */}
+                    <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 text-slate-200 text-xs sm:text-sm font-mono whitespace-pre-wrap leading-relaxed">
+                      {result.proposal.content}
+                    </div>
+
+                    {/* Evidence Citations */}
+                    {result.proposal.evidenceUsed && (
+                      <div className="p-4 bg-slate-950/60 rounded-xl border border-slate-800/80 space-y-2">
+                        <div className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                          Portfolio Evidence Cited in this Draft:
+                        </div>
+                        <div className="text-xs text-slate-400">
+                          {result.proposal.evidenceUsed}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* TAB 3: AGENT EXECUTION TRACE */}
+                {activeTab === 'trace' && (
+                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
+                    <div className="border-b border-slate-800 pb-3 flex items-center justify-between">
+                      <div>
+                        <h3 className="text-base font-bold text-white">
+                          Multi-Agent Telemetry Audit
+                        </h3>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          Inspect reasoning latency, model routing, and token metrics for each pipeline step.
+                        </p>
+                      </div>
+                      <Link
+                        href={`/dashboard/traces/${result.opportunityId}`}
+                        className="text-xs text-amber-400 hover:underline font-semibold"
+                      >
+                        View Full Trace Page →
+                      </Link>
+                    </div>
+
+                    {/* Telemetry runs */}
+                    <div className="space-y-3">
+                      {result.opportunity?.agentRuns?.map((agent: any) => (
+                        <div key={agent.id} className="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
+                          <div>
+                            <span className="font-bold text-white">{agent.agentName}</span>
+                            <span className="ml-2 text-[11px] text-slate-400 font-mono">({agent.model})</span>
+                          </div>
+                          <div className="flex items-center gap-4 text-slate-400 font-mono text-[11px]">
+                            {agent.durationMs && <span>⏱️ {agent.durationMs}ms</span>}
+                            {agent.promptTokens && <span>🔤 {agent.promptTokens + (agent.completionTokens || 0)} tokens</span>}
+                            <span className="text-emerald-400">✓ OK</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            )}
+
           </div>
-        )}
+
+        </div>
+
       </main>
     </div>
   );

@@ -30,6 +30,9 @@ model Opportunity {
   clientId       String?
   client         Client?   @relation(fields: [clientId], references: [id])
   
+  profileId      String?
+  profile        FreelancerProfile? @relation(fields: [profileId], references: [id])
+  
   pipelineRuns   PipelineRun[]
   agentRuns      AgentRun[]
 
@@ -131,8 +134,33 @@ model OpportunityDecision {
   positiveEvidence    String?     // JSON Array
   negativeEvidence    String?     // JSON Array
   missingInformation  String?     // JSON Array
-  
+  summary             String?
+  risks               String?     // JSON Array of risk warnings
+  unknowns            String?     // JSON Array of explicit unknown variables
+  scoresJson          String?     // JSON object of pillar scores
+  economicDetails     String?     // JSON object of economic breakdown
+
   createdAt           DateTime    @default(now())
+}
+
+model FreelancerProfile {
+  id                    String               @id @default(uuid())
+  name                  String
+  headline              String
+  bio                   String
+  experienceYears       Int                  @default(5)
+  skills                String               // Comma-separated or JSON
+  preferredTechnologies String               // Comma-separated or JSON
+  excludedTechnologies  String               @default("") // Comma-separated
+  targetHourlyRate      Float?
+  minProjectBudget      Float?
+  isDefault             Boolean              @default(false)
+  
+  evidenceItems         FreelancerEvidence[]
+  opportunities         Opportunity[]
+
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
 }
 
 model Proposal {
@@ -149,16 +177,19 @@ model Proposal {
 }
 
 model FreelancerEvidence {
-  id              String   @id @default(uuid())
-  type            String   // PROJECT, TECHNOLOGY, ACHIEVEMENT, CASE_STUDY, METRIC
+  id              String             @id @default(uuid())
+  evidenceId      String?            @unique // e.g., "EV-001"
+  profileId       String?
+  profile         FreelancerProfile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  type            String             // PROJECT, TECHNOLOGY, ACHIEVEMENT, CASE_STUDY, METRIC
   title           String
   description     String
-  technologies    String   // Comma-separated
-  url             String?  // Proof/Source
-  embedding       String?  // Stored as JSON string of float array
-  verification    String   // e.g., "Verified via GitHub", "Verified via Upwork"
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  technologies    String             // Comma-separated
+  url             String?            // Proof/Source
+  embedding       String?            // Stored as JSON string of float array
+  verification    String             // e.g., "Verified via GitHub", "Verified via Upwork"
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 }
 
 // -----------------------------------------------------------------------------

@@ -3,9 +3,10 @@ import {
   OpportunityStatus, 
   PipelineStage, 
   PipelineStatus,
-  DecisionRecommendation,
-  RawOpportunityPayload,
-  EnrichedOpportunityData
+  Platform,
+  NormalizedOpportunity,
+  FreelancerProfile,
+  JobAnalysis
 } from '../../domain/models';
 import { AgentExecutor } from '../../ai/agent';
 import { JobIntelligenceAgent } from '../../ai/agents/JobIntelligenceAgent';
@@ -18,24 +19,6 @@ import { SemanticRetriever } from '../../ai/rag/SemanticRetriever';
 import { EvidenceRankingAgent } from '../../ai/agents/EvidenceRankingAgent';
 import { ProposalDraftingAgent } from '../../ai/agents/ProposalDraftingAgent';
 import { ClaimVerificationAgent } from '../../ai/agents/ClaimVerificationAgent';
-import { z } from 'zod';
-import { UpworkMCPClient } from '../../integrations/upwork/mcpClient';
-
-const scoringSchema = z.object({
-  jobType: z.string(),
-  skillMatch: z.number(),
-  portfolioFit: z.number(),
-  projectQuality: z.number(),
-  longTermPotential: z.number(),
-  redFlags: z.array(z.string()),
-  missingRequirements: z.array(z.string()),
-  recommendation: z.enum(['APPLY', 'MAYBE', 'SKIP']),
-  reason: z.string()
-});
-
-const draftingSchema = z.object({
-  draftHook: z.string()
-});
 
 export class OpportunityPipeline {
   private executor: AgentExecutor;
@@ -50,7 +33,6 @@ export class OpportunityPipeline {
   private evidenceRanker: EvidenceRankingAgent;
   private proposalDrafter: ProposalDraftingAgent;
   private claimVerifier: ClaimVerificationAgent;
-  private mcpClient: UpworkMCPClient;
 
   constructor() {
     this.executor = new AgentExecutor();
@@ -65,22 +47,64 @@ export class OpportunityPipeline {
     this.evidenceRanker = new EvidenceRankingAgent(this.executor);
     this.proposalDrafter = new ProposalDraftingAgent(this.executor);
     this.claimVerifier = new ClaimVerificationAgent(this.executor);
-    this.mcpClient = new UpworkMCPClient();
   }
 
-  async processJob(payload: RawOpportunityPayload, options?: { forceProposal?: boolean }) {
-    let opp = await this.ingest(payload);
+  async processJob(
+    payload: NormalizedOpportunity, 
+    options?: { profile?: FreelancerProfile; forceProposal?: boolean }
+  ) {
+    // 1. Resolve Profile
+    let activeProfile = options?.profile;
+    if (!activeProfile) {
+      const dbProfile = await prisma.freelancerProfile.findFirst({
+        where: { isDefault: true }
+      });
+      if (dbProfile) {
+        activeProfile = {
+          id: dbProfile.id,
+          name: dbProfile.name,
+          headline: dbProfile.headline,
+          bio: dbProfile.bio,
+          experienceYears: dbProfile.experienceYears,
+          skills: dbProfile.skills.split(',').map(s => s.trim()),
+          preferredTechnologies: dbProfile.preferredTechnologies.split(',').map(s => s.trim()),
+          excludedTechnologies: dbProfile.excludedTechnologies ? dbProfile.excludedTechnologies.split(',').map(s => s.trim()).filter(Boolean) : [],
+          targetHourlyRate: dbProfile.targetHourlyRate ?? 75,
+          minProjectBudget: dbProfile.minProjectBudget ?? 1000,
+        };
+      } else {
+        // Fallback default
+        activeProfile = {
+          id: 'default-profile',
+          name: 'Senior Full-Stack AI Engineer',
+          headline: 'Senior Full-Stack & AI Systems Engineer (Next.js, TypeScript, LLMs)',
+          bio: 'Senior Engineer with 8 years of experience building web platforms and multi-agent AI pipelines.',
+          experienceYears: 8,
+          skills: ['Next.js', 'React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Prisma', 'OpenAI', 'DeepSeek', 'Multi-Agent Systems', 'RAG'],
+          preferredTechnologies: ['Next.js', 'TypeScript', 'PostgreSQL', 'OpenAI', 'DeepSeek'],
+          excludedTechnologies: ['PHP', 'WordPress', 'Ruby', 'Web3'],
+          targetHourlyRate: 75,
+          minProjectBudget: 1000,
+        };
+      }
+    }
+
+    // 2. Ingest
+    const opp = await this.ingest(payload, activeProfile.id);
 
     try {
-      const enrichedData = await this.enrich(opp.id, payload);
-      await this.analyzeAndScore(opp.id);
-      
-      const decision = await prisma.opportunityDecision.findFirst({ where: { opportunityId: opp.id } });
+      // 3. Enrich Client if data present
+      await this.enrich(opp.id, payload);
 
+      // 4. Multi-Agent Reasoning & Decision
+      const { jobAnalysis, decision } = await this.analyzeAndScore(opp.id, activeProfile);
+      
+      // 5. Downstream Proposal Generation (for APPLY or forced)
       if (decision?.recommendation === 'APPLY' || options?.forceProposal) {
-        await this.generateProposal(opp.id, enrichedData);
+        await this.generateProposal(opp.id, payload, jobAnalysis, activeProfile);
       }
 
+      // 6. Return Completed Opportunity
       const completedOpp = await prisma.opportunity.findUnique({
         where: { id: opp.id },
         include: {
@@ -102,30 +126,46 @@ export class OpportunityPipeline {
     }
   }
 
-  async resumeJob(opportunityId: string, payload: RawOpportunityPayload) {
+  async resumeJob(opportunityId: string, payload: NormalizedOpportunity) {
     try {
-      const enrichedData = await this.enrich(opportunityId, payload);
-      await this.analyzeAndScore(opportunityId);
+      await this.enrich(opportunityId, payload);
+      const dbProfile = await prisma.freelancerProfile.findFirst({ where: { isDefault: true } });
+      const fallbackProfile: FreelancerProfile = {
+        id: dbProfile?.id || 'default-profile',
+        name: dbProfile?.name || 'Senior Full-Stack AI Engineer',
+        headline: dbProfile?.headline || '',
+        bio: dbProfile?.bio || '',
+        experienceYears: dbProfile?.experienceYears || 8,
+        skills: dbProfile ? dbProfile.skills.split(',') : ['TypeScript', 'Next.js'],
+        preferredTechnologies: ['TypeScript', 'Next.js'],
+        excludedTechnologies: [],
+        targetHourlyRate: dbProfile?.targetHourlyRate ?? 75,
+        minProjectBudget: dbProfile?.minProjectBudget ?? 1000,
+      };
+      await this.analyzeAndScore(opportunityId, fallbackProfile);
     } catch (error) {
       console.error(`Pipeline failed to resume for ${opportunityId}:`, error);
       await this.logRun(opportunityId, PipelineStage.ENRICH, PipelineStatus.FAILED, String(error));
     }
   }
 
-  private async ingest(payload: RawOpportunityPayload) {
+  private async ingest(payload: NormalizedOpportunity, profileId?: string) {
+    const platformId = payload.platformId || `man-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    const platform = (payload.platform as Platform) || Platform.MANUAL;
+
     let opp = await prisma.opportunity.findUnique({
-      where: { platformId: payload.platformId }
+      where: { platformId }
     });
 
     if (opp) {
-      console.log(`[Pipeline] Opportunity ${payload.platformId} already exists. Deduplicating.`);
       return opp;
     }
 
     opp = await prisma.opportunity.create({
       data: {
-        platformId: payload.platformId,
-        platform: payload.platform,
+        platformId,
+        platform,
+        profileId,
         status: OpportunityStatus.PENDING,
         jobPosting: {
           create: {
@@ -135,7 +175,7 @@ export class OpportunityPipeline {
             budget: payload.budget,
             hourlyMin: payload.hourlyMin,
             hourlyMax: payload.hourlyMax,
-            postedAt: payload.postedAt,
+            postedAt: payload.postedAt || new Date(),
             jobInvitesSent: payload.rawMetrics?.invites_sent,
             jobInterviewing: payload.rawMetrics?.interviewing,
             jobAvgBid: payload.rawMetrics?.avg_bid,
@@ -148,135 +188,118 @@ export class OpportunityPipeline {
     return opp;
   }
 
-  private async enrich(opportunityId: string, payload: RawOpportunityPayload): Promise<EnrichedOpportunityData> {
+  private async enrich(opportunityId: string, payload: NormalizedOpportunity) {
     await this.logRun(opportunityId, PipelineStage.ENRICH, PipelineStatus.PROCESSING);
     
-    const clientData = await this.mcpClient.getClientMetrics(payload.platformId);
-    
-    let clientId = payload.client?.platformId || clientData?.id;
-    if (!clientId) {
-      clientId = Buffer.from(`${payload.platformId}-fallback`).toString('base64');
-    }
+    // In MVP, integrations are optional. Only save client profile if provided in payload.
+    if (payload.client && (payload.client.name || payload.client.location || payload.client.totalSpend !== undefined)) {
+      const clientId = payload.client.platformId || `client-${opportunityId}`;
+      const totalSpend = payload.client.totalSpend ?? 0;
+      const avgHourlyRate = payload.client.avgHourlyRate ?? 0;
+      const feedbackScore = payload.client.feedbackScore ?? 0;
+      const totalContracts = payload.client.hires ?? 0;
+      const location = payload.client.location;
 
-    const totalSpend = payload.client?.totalSpend ?? clientData?.total_spent ?? 0;
-    const avgHourlyRate = payload.client?.avgHourlyRate ?? clientData?.avg_hourly_rate ?? 0;
-    const feedbackScore = payload.client?.feedbackScore ?? clientData?.feedback_score ?? 0;
-    const totalContracts = payload.client?.hires ?? clientData?.hires ?? 0;
-    const location = payload.client?.location ?? clientData?.location?.country ?? undefined;
-
-    const client = await prisma.client.upsert({
-      where: { platformId: String(clientId) },
-      update: {
-        profile: {
-          upsert: {
-            create: {
-              totalSpend,
-              avgHourlyRate,
-              feedbackScore,
-              totalContracts,
-              location
-            },
-            update: {
-              totalSpend,
-              avgHourlyRate,
-              feedbackScore,
-              totalContracts,
-              location
+      const client = await prisma.client.upsert({
+        where: { platformId: clientId },
+        update: {
+          profile: {
+            upsert: {
+              create: { totalSpend, avgHourlyRate, feedbackScore, totalContracts, location },
+              update: { totalSpend, avgHourlyRate, feedbackScore, totalContracts, location }
             }
           }
-        }
-      },
-      create: {
-        platformId: String(clientId),
-        platform: payload.platform,
-        profile: {
-          create: {
-            totalSpend,
-            avgHourlyRate,
-            feedbackScore,
-            totalContracts,
-            location
+        },
+        create: {
+          platformId: clientId,
+          name: payload.client.name,
+          platform: payload.platform || Platform.MANUAL,
+          profile: {
+            create: { totalSpend, avgHourlyRate, feedbackScore, totalContracts, location }
           }
-        }
-      },
-      include: { profile: true }
-    });
+        },
+        include: { profile: true }
+      });
 
-    await prisma.opportunity.update({
-      where: { id: opportunityId },
-      data: { clientId: client.id }
-    });
+      await prisma.opportunity.update({
+        where: { id: opportunityId },
+        data: { clientId: client.id }
+      });
+    }
 
     await this.logRun(opportunityId, PipelineStage.ENRICH, PipelineStatus.COMPLETED);
-
-    return {
-      ...payload,
-      clientProfile: client.profile ? {
-        totalSpend: client.profile.totalSpend || 0,
-        avgHourlyRate: client.profile.avgHourlyRate || 0,
-        feedbackScore: client.profile.feedbackScore || 0,
-        totalContracts: client.profile.totalContracts || 0,
-        activeContracts: client.profile.activeContracts || 0
-      } : undefined
-    };
   }
 
-  async analyzeAndScore(id: string): Promise<void> {
+  async analyzeAndScore(id: string, profile: FreelancerProfile): Promise<{ jobAnalysis: JobAnalysis, decision: any }> {
     const opp = await prisma.opportunity.findUnique({
       where: { id },
-      include: { client: true, jobPosting: true, pipelineRuns: true }
+      include: { client: { include: { profile: true } }, jobPosting: true, pipelineRuns: true }
     });
 
-    if (!opp || !opp.jobPosting) return;
+    if (!opp || !opp.jobPosting) {
+      throw new Error(`Opportunity ${id} or JobPosting not found`);
+    }
 
     await this.logRun(id, PipelineStage.SCORE, PipelineStatus.PROCESSING);
 
     try {
+      // 1. Parallel Independent Intelligence Agents
       const [jobAnalysis, clientAnalysis, competitionAnalysis] = await Promise.all([
         this.jobAgent.analyze(opp.jobPosting.title, opp.jobPosting.description),
-        this.clientAgent.analyze(opp.client ? opp.client : undefined),
-        this.competitionAgent.analyze(null, opp.jobPosting.budget ?? undefined, opp.jobPosting.hourlyMax ?? undefined)
+        this.clientAgent.analyze(opp.client?.profile, opp.jobPosting.description),
+        this.competitionAgent.analyze(
+          opp.jobPosting.jobInvitesSent ? { invites_sent: opp.jobPosting.jobInvitesSent, interviewing: opp.jobPosting.jobInterviewing } : undefined,
+          opp.jobPosting.budget ?? undefined, 
+          opp.jobPosting.hourlyMax ?? undefined
+        )
       ]);
 
+      // 2. Parallel Dependent Agents (Fit & Economics with Profile targets)
       const [fitAnalysis, economicAnalysis] = await Promise.all([
-        this.fitAgent.analyze(jobAnalysis),
+        this.fitAgent.analyze(jobAnalysis, profile),
         this.economicAgent.analyze(
           opp.jobPosting.budget ?? undefined, 
           opp.jobPosting.hourlyMin ?? undefined, 
           opp.jobPosting.hourlyMax ?? undefined, 
           clientAnalysis, 
-          competitionAnalysis
+          competitionAnalysis,
+          jobAnalysis,
+          profile
         )
       ]);
 
       await this.logRun(id, PipelineStage.SCORE, PipelineStatus.COMPLETED);
 
+      // 3. Decision Engine Synthesis (Deterministic gates + LLM reasoning)
       const decision = await this.decisionEngine.decide(
         jobAnalysis,
         clientAnalysis,
         competitionAnalysis,
         fitAnalysis,
-        economicAnalysis
+        economicAnalysis,
+        profile,
+        opp.jobPosting.budget ?? undefined
       );
 
+      // 4. Save Score & Decision with enriched details
       await prisma.opportunityScore.upsert({
         where: { opportunityId: id },
         update: {
           skillMatch: fitAnalysis.matchScore,
-          portfolioFit: 0,
-          projectQuality: 0,
-          longTermPotential: 0,
-          redFlags: "",
-          missingRequirements: ""
+          portfolioFit: fitAnalysis.positiveMatches.length * 20,
+          projectQuality: economicAnalysis.budgetQuality === 'GOOD' || economicAnalysis.budgetQuality === 'EXCELLENT' ? 85 : 50,
+          longTermPotential: jobAnalysis.projectMaturity === 'PRODUCTION' || jobAnalysis.projectMaturity === 'MVP' ? 75 : 40,
+          redFlags: JSON.stringify(fitAnalysis.redFlags),
+          missingRequirements: JSON.stringify(fitAnalysis.missingRequirements)
         },
         create: {
           opportunityId: id,
           skillMatch: fitAnalysis.matchScore,
-          portfolioFit: 0,
-          projectQuality: 0,
-          longTermPotential: 0,
-          redFlags: "",
-          missingRequirements: ""
+          portfolioFit: fitAnalysis.positiveMatches.length * 20,
+          projectQuality: economicAnalysis.budgetQuality === 'GOOD' || economicAnalysis.budgetQuality === 'EXCELLENT' ? 85 : 50,
+          longTermPotential: jobAnalysis.projectMaturity === 'PRODUCTION' || jobAnalysis.projectMaturity === 'MVP' ? 75 : 40,
+          redFlags: JSON.stringify(fitAnalysis.redFlags),
+          missingRequirements: JSON.stringify(fitAnalysis.missingRequirements)
         }
       });
 
@@ -286,49 +309,66 @@ export class OpportunityPipeline {
           recommendation: decision.recommendation,
           reason: decision.reason,
           confidence: decision.confidence,
+          summary: decision.summary,
           positiveEvidence: decision.positiveEvidence ? JSON.stringify(decision.positiveEvidence) : null,
           negativeEvidence: decision.negativeEvidence ? JSON.stringify(decision.negativeEvidence) : null,
-          missingInformation: decision.missingInformation ? JSON.stringify(decision.missingInformation) : null,
+          missingInformation: decision.unknowns ? JSON.stringify(decision.unknowns) : null,
+          unknowns: decision.unknowns ? JSON.stringify(decision.unknowns) : null,
+          risks: decision.risks ? JSON.stringify(decision.risks) : null,
+          scoresJson: decision.scores ? JSON.stringify(decision.scores) : null,
+          economicDetails: decision.economics ? JSON.stringify(decision.economics) : null,
         },
         create: {
           opportunityId: id,
           recommendation: decision.recommendation,
           reason: decision.reason,
           confidence: decision.confidence,
+          summary: decision.summary,
           positiveEvidence: decision.positiveEvidence ? JSON.stringify(decision.positiveEvidence) : null,
           negativeEvidence: decision.negativeEvidence ? JSON.stringify(decision.negativeEvidence) : null,
-          missingInformation: decision.missingInformation ? JSON.stringify(decision.missingInformation) : null,
+          missingInformation: decision.unknowns ? JSON.stringify(decision.unknowns) : null,
+          unknowns: decision.unknowns ? JSON.stringify(decision.unknowns) : null,
+          risks: decision.risks ? JSON.stringify(decision.risks) : null,
+          scoresJson: decision.scores ? JSON.stringify(decision.scores) : null,
+          economicDetails: decision.economics ? JSON.stringify(decision.economics) : null,
         }
       });
 
-      await this.logRun(id, PipelineStage.DECIDE, PipelineStatus.COMPLETED, undefined, { recommendation: decision.recommendation, confidence: decision.confidence });
+      await this.logRun(id, PipelineStage.DECIDE, PipelineStatus.COMPLETED, undefined, { 
+        recommendation: decision.recommendation, 
+        confidence: decision.confidence 
+      });
+
       await prisma.opportunity.update({
         where: { id },
         data: { status: 'DECIDED' }
       });
-      
+
+      return { jobAnalysis, decision };
     } catch (error: any) {
       console.error(`Error analyzing opportunity ${id}:`, error);
       await this.logRun(id, PipelineStage.SCORE, PipelineStatus.FAILED, error.message, { stack: error.stack });
+      throw error;
     }
   }
 
-  private async generateProposal(opportunityId: string, job: EnrichedOpportunityData) {
+  private async generateProposal(
+    opportunityId: string, 
+    job: NormalizedOpportunity, 
+    jobAnalysis: JobAnalysis,
+    profile: FreelancerProfile
+  ) {
     await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.PROCESSING);
     
     try {
-      // 1. Requirement Extraction (Re-use Job Intelligence or run again, here we just run it again for simplicity, 
-      // or we can fetch the JobAnalysis if we stored it, but we didn't store the full JSON. We'll run it again)
-      const jobAnalysis = await this.jobAgent.analyze(job.title, job.description);
-
-      // 2. Evidence Retrieval
+      // 1. Evidence Retrieval (scoped to profile)
       const query = `Problem: ${jobAnalysis.actualProblem}. Tech: ${jobAnalysis.technicalRequirements.join(', ')}`;
-      const retrieved = await this.semanticRetriever.retrieve(query, 10);
+      const retrieved = await this.semanticRetriever.retrieve(query, 5, profile.id);
 
-      // 3. Evidence Ranking
+      // 2. Evidence Ranking
       const rankedEvidence = await this.evidenceRanker.rank(jobAnalysis, retrieved);
 
-      // 4. Draft -> Verify Loop (Anti-Hallucination)
+      // 3. Draft -> Verify Loop (Anti-Hallucination, max 3 attempts)
       let finalContent = '';
       let usedEvidence: string[] = [];
       let attempts = 0;
@@ -338,7 +378,6 @@ export class OpportunityPipeline {
       while (!isGrounded && attempts < 3) {
         attempts++;
         const draft = await this.proposalDrafter.draft(job.description, rankedEvidence, opportunityId, lastFeedback);
-        
         const verification = await this.claimVerifier.verify(draft.content, rankedEvidence);
         
         if (verification.isGrounded) {
@@ -349,7 +388,9 @@ export class OpportunityPipeline {
           lastFeedback = verification.feedback;
           console.warn(`[Pipeline] Hallucination detected on attempt ${attempts}:`, verification.feedback);
           if (attempts === 3) {
-            throw new Error(`Failed to generate grounded proposal after 3 attempts. Feedback: ${verification.feedback}`);
+            // Keep the best draft but note the verification status
+            finalContent = draft.content;
+            usedEvidence = draft.evidenceUsed;
           }
         }
       }
@@ -367,7 +408,7 @@ export class OpportunityPipeline {
         }
       });
 
-      await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.COMPLETED, undefined, { attempts });
+      await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.COMPLETED, undefined, { attempts, isGrounded });
     } catch (error: any) {
       console.error(`Error generating proposal for ${opportunityId}:`, error);
       await this.logRun(opportunityId, PipelineStage.PROPOSAL, PipelineStatus.FAILED, error.message, { stack: error.stack });

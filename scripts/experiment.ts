@@ -39,6 +39,19 @@ async function runConfigExperiment(experimentName: string, primaryModel: string,
   const dataset: EvalCase[] = JSON.parse(fs.readFileSync(datasetPath, 'utf8'));
   const results: EvalResult[] = [];
 
+  const evalProfile = {
+    id: 'eval-profile',
+    name: 'Senior Full-Stack AI Engineer',
+    headline: 'Senior Full-Stack & AI Systems Engineer (Next.js, Node.js, LLMs)',
+    bio: 'Senior Engineer with 8 years of experience building web platforms and multi-agent AI pipelines.',
+    experienceYears: 8,
+    skills: ['Next.js', 'React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Prisma', 'OpenAI', 'DeepSeek', 'Express'],
+    preferredTechnologies: ['Next.js', 'TypeScript', 'PostgreSQL', 'OpenAI', 'DeepSeek', 'Node.js'],
+    excludedTechnologies: ['PHP', 'WordPress', 'Ruby', 'Web3', 'Solana', 'Smart Contracts'],
+    targetHourlyRate: 75,
+    minProjectBudget: 1000,
+  };
+
   let totalEstimatedCost = 0;
 
   for (let i = 0; i < dataset.length; i++) {
@@ -49,22 +62,32 @@ async function runConfigExperiment(experimentName: string, primaryModel: string,
     try {
       const [job, client, comp] = await Promise.all([
         jobAgent.analyze(testCase.payload.title, testCase.payload.description),
-        clientAgent.analyze(testCase.payload.client),
+        clientAgent.analyze(testCase.payload.client, testCase.payload.description),
         compAgent.analyze(null, testCase.payload.budget, testCase.payload.hourlyMax)
       ]);
 
       const [fit, eco] = await Promise.all([
-        fitAgent.analyze(job),
+        fitAgent.analyze(job, evalProfile),
         ecoAgent.analyze(
           testCase.payload.budget, 
           testCase.payload.hourlyMin, 
           testCase.payload.hourlyMax, 
           client, 
-          comp
+          comp,
+          job,
+          evalProfile
         )
       ]);
 
-      const decision = await decisionEngine.decide(job, client, comp, fit, eco);
+      const decision = await decisionEngine.decide(
+        job, 
+        client, 
+        comp, 
+        fit, 
+        eco, 
+        evalProfile, 
+        testCase.payload.budget
+      );
       
       const latencyMs = Date.now() - startTime;
       
