@@ -103,29 +103,29 @@ export default function BenchmarkDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-amber-500 selection:text-slate-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-amber-500 selection:text-slate-950 transition-colors duration-200">
       <Navigation />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
         {/* Header Title Section */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-md">
+        <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm dark:shadow-2xl relative overflow-hidden backdrop-blur-md">
           <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
           <div className="relative z-10 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">
+              <span className="text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30">
                 🛡️ AI Audit & Benchmark Center
               </span>
-              <span className="text-xs font-medium text-slate-400">
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                 Standardized Evaluation Dataset v1.0
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
+            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               Decision Intelligence Engine Benchmarks
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
               Transparent, repeatable benchmark results evaluating OmniBid across 30 real-world freelance scenarios.
               Inspect how multi-agent reasoning distinguishes high-value contracts from scams, dealbreakers, and budget traps.
             </p>
@@ -135,57 +135,57 @@ export default function BenchmarkDashboardPage() {
         {/* Top KPI Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Card 1: Total Cases */}
-          <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg space-y-2">
-            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm dark:shadow-lg space-y-2">
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
               <span>Benchmark Coverage</span>
-              <span className="text-emerald-400 text-xs">● 100% Ran</span>
+              <span className="text-emerald-600 dark:text-emerald-400 text-xs">● 100% Ran</span>
             </div>
-            <div className="text-3xl font-black text-white">
-              {summary?.evaluatedCases || 30} <span className="text-slate-500 text-lg font-normal">/ {summary?.totalCases || 30}</span>
+            <div className="text-3xl font-black text-slate-900 dark:text-white">
+              {summary?.evaluatedCases || 30} <span className="text-slate-400 dark:text-slate-500 text-lg font-normal">/ {summary?.totalCases || 30}</span>
             </div>
-            <div className="text-xs text-slate-400">
+            <div className="text-xs text-slate-500 dark:text-slate-400">
               0 crashes across all 5 intelligence agents
             </div>
           </div>
 
           {/* Card 2: Excluded Tech Guardrail */}
-          <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg space-y-2">
-            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm dark:shadow-lg space-y-2">
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
               <span>Excluded Tech Guardrail</span>
-              <span className="text-amber-400 text-xs">Deterministic</span>
+              <span className="text-amber-600 dark:text-amber-400 text-xs">Deterministic</span>
             </div>
-            <div className="text-3xl font-black text-amber-400">
+            <div className="text-3xl font-black text-amber-600 dark:text-amber-400">
               {summary?.guardrails?.excludedTechAccuracy ?? 100}%
             </div>
-            <div className="text-xs text-slate-400">
+            <div className="text-xs text-slate-500 dark:text-slate-400">
               Instant 0-token rejection for dealbreaker tech
             </div>
           </div>
 
           {/* Card 3: Scam Defense */}
-          <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg space-y-2">
-            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm dark:shadow-lg space-y-2">
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
               <span>Fraud & Scam Defense</span>
-              <span className="text-emerald-400 text-xs">Zero Tolerance</span>
+              <span className="text-emerald-600 dark:text-emerald-400 text-xs">Zero Tolerance</span>
             </div>
-            <div className="text-3xl font-black text-emerald-400">
+            <div className="text-3xl font-black text-emerald-600 dark:text-emerald-400">
               {summary?.guardrails?.scamDetectionAccuracy ?? 100}%
             </div>
-            <div className="text-xs text-slate-400">
+            <div className="text-xs text-slate-500 dark:text-slate-400">
               Off-platform contact & fake checks caught
             </div>
           </div>
 
           {/* Card 4: Average Pipeline Latency */}
-          <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg space-y-2">
-            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm dark:shadow-lg space-y-2">
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
               <span>Average Pipeline Speed</span>
-              <span className="text-blue-400 text-xs">5 Agents</span>
+              <span className="text-blue-600 dark:text-blue-400 text-xs">5 Agents</span>
             </div>
-            <div className="text-3xl font-black text-blue-400">
+            <div className="text-3xl font-black text-blue-600 dark:text-blue-400">
               {((summary?.avgLatencyMs || 8469) / 1000).toFixed(2)}s
             </div>
-            <div className="text-xs text-slate-400">
+            <div className="text-xs text-slate-500 dark:text-slate-400">
               End-to-end multi-agent triage synthesis
             </div>
           </div>
@@ -207,7 +207,7 @@ export default function BenchmarkDashboardPage() {
                     className={`text-xs font-bold px-3.5 py-1.5 rounded-xl border transition-all ${
                       isActive
                         ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/20'
-                        : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700 hover:text-white'
+                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
                     {item.name} ({count})
@@ -223,7 +223,7 @@ export default function BenchmarkDashboardPage() {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search test case or skill..."
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-500"
               />
             </div>
           </div>
@@ -240,10 +240,10 @@ export default function BenchmarkDashboardPage() {
         </div>
 
         {/* Benchmark Results Table */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm dark:shadow-xl overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800 uppercase tracking-wider text-[10px]">
+            <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-950/80 text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-200 dark:border-slate-800 uppercase tracking-wider text-[10px]">
                 <tr>
                   <th className="py-4 px-4 sm:px-6">Case & Category</th>
                   <th className="py-4 px-4">Opportunity Details</th>
@@ -254,7 +254,7 @@ export default function BenchmarkDashboardPage() {
                   <th className="py-4 px-4 sm:px-6 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                 {loading && (
                   <tr>
                     <td colSpan={7} className="py-12 text-center text-slate-500">
@@ -276,17 +276,17 @@ export default function BenchmarkDashboardPage() {
                     <tr
                       key={testCase.id || idx}
                       onClick={() => setActiveModalCase(testCase)}
-                      className="hover:bg-slate-800/60 cursor-pointer transition-all group"
+                      className="hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer transition-all group"
                       title="Click row to inspect full case details"
                     >
                       {/* Column 1: Case ID & Category */}
                       <td className="py-4 px-4 sm:px-6 align-top">
                         <div className="space-y-1">
-                          <span className="font-mono text-[11px] font-bold text-slate-400 group-hover:text-amber-400 transition-colors">
+                          <span className="font-mono text-[11px] font-bold text-slate-500 dark:text-slate-400 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                             {testCase.id}
                           </span>
                           <div>
-                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border bg-slate-800/90 text-slate-300 border-slate-700">
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700">
                               {CATEGORY_LABELS[testCase.category]?.name || testCase.category}
                             </span>
                           </div>
@@ -296,22 +296,22 @@ export default function BenchmarkDashboardPage() {
                       {/* Column 2: Opportunity Title & Budget */}
                       <td className="py-4 px-4 align-top max-w-xs">
                         <div className="space-y-1">
-                          <div className="font-bold text-white text-xs line-clamp-1 group-hover:text-amber-300 transition-colors">
+                          <div className="font-bold text-slate-900 dark:text-white text-xs line-clamp-1 group-hover:text-amber-600 dark:group-hover:text-amber-300 transition-colors">
                             {testCase.title}
                           </div>
-                          <div className="text-[11px] text-slate-400 line-clamp-2">
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2">
                             {testCase.description}
                           </div>
-                          <div className="flex items-center gap-2 text-[10px] text-amber-400/90 font-medium">
+                          <div className="flex items-center gap-2 text-[10px] text-amber-700 dark:text-amber-400/90 font-medium">
                             {testCase.budget ? (
                               <span>Fixed: ${testCase.budget.toLocaleString()}</span>
                             ) : testCase.hourlyMin ? (
                               <span>Hourly: ${testCase.hourlyMin} - ${testCase.hourlyMax}/hr</span>
                             ) : (
-                              <span className="text-slate-500">Budget Unstated</span>
+                              <span className="text-slate-400 dark:text-slate-500">Budget Unstated</span>
                             )}
                             {testCase.client?.totalSpend !== undefined && (
-                              <span className="text-slate-500">
+                              <span className="text-slate-400 dark:text-slate-500">
                                 • Client Spend: ${testCase.client.totalSpend.toLocaleString()}
                               </span>
                             )}
@@ -323,10 +323,10 @@ export default function BenchmarkDashboardPage() {
                       <td className="py-4 px-4 align-top text-center">
                         <span className={`inline-block text-[11px] font-extrabold px-2.5 py-1 rounded-lg border ${
                           testCase.expectedRecommendation === 'APPLY'
-                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                            ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30'
                             : testCase.expectedRecommendation === 'MAYBE'
-                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                            : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                            ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30'
+                            : 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30'
                         }`}>
                           {testCase.expectedRecommendation}
                         </span>
@@ -344,7 +344,7 @@ export default function BenchmarkDashboardPage() {
                           }`}>
                             {testCase.actualRecommendation}
                           </span>
-                          <div className="text-[10px] text-slate-400 font-mono">
+                          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
                             {Math.round(testCase.confidence * 100)}% conf
                           </div>
                         </div>
@@ -353,15 +353,15 @@ export default function BenchmarkDashboardPage() {
                       {/* Column 5: Alignment Badge */}
                       <td className="py-4 px-4 align-top text-center">
                         {testCase.alignment === 'EXACT_MATCH' ? (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                             ✓ Exact Match
                           </span>
                         ) : testCase.alignment === 'CONSERVATIVE_REVIEW' ? (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30">
                             ⚡ Conservative
                           </span>
                         ) : (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/30">
                             🔍 Flagged Risk
                           </span>
                         )}
@@ -369,7 +369,7 @@ export default function BenchmarkDashboardPage() {
 
                       {/* Column 6: AI Rationale */}
                       <td className="py-4 px-4 align-top max-w-sm">
-                        <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">
+                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">
                           {testCase.reason}
                         </p>
                       </td>
@@ -382,7 +382,7 @@ export default function BenchmarkDashboardPage() {
                             e.stopPropagation();
                             handleInspectInAnalyzer(testCase);
                           }}
-                          className="text-xs font-bold text-amber-400 hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-3.5 py-1.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 ml-auto group-hover:border-amber-500/60"
+                          className="text-xs font-bold text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-3.5 py-1.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 ml-auto group-hover:border-amber-500/60"
                         >
                           <span>Test in Analyzer</span>
                           <span>→</span>
@@ -398,27 +398,27 @@ export default function BenchmarkDashboardPage() {
 
         {/* Modal: Full Case Details */}
         {activeModalCase && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 dark:bg-slate-950/80 backdrop-blur-md">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl text-slate-900 dark:text-slate-100">
               {/* Header */}
-              <div className="flex items-start justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-start justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+                    <span className="text-xs font-mono font-bold text-amber-700 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
                       {activeModalCase.id}
                     </span>
-                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full border bg-slate-800 text-slate-300 border-slate-700">
+                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full border bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700">
                       {CATEGORY_LABELS[activeModalCase.category]?.name || activeModalCase.category}
                     </span>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-white">
+                  <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
                     {activeModalCase.title}
                   </h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setActiveModalCase(null)}
-                  className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-sm font-bold transition-colors"
+                  className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center text-sm font-bold transition-colors"
                 >
                   ✕
                 </button>
@@ -427,25 +427,25 @@ export default function BenchmarkDashboardPage() {
               <div className="space-y-5 text-xs">
                 {/* Expected vs Actual Decision Comparison */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-1">
-                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 space-y-1">
+                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
                       Expected Benchmark Target:
                     </span>
                     <div className="flex items-center gap-2 mt-1">
                       <span className={`text-base font-black px-3 py-1 rounded-xl border ${
                         activeModalCase.expectedRecommendation === 'APPLY'
-                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                          ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30'
                           : activeModalCase.expectedRecommendation === 'MAYBE'
-                          ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                          : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                          ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30'
+                          : 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30'
                       }`}>
                         {activeModalCase.expectedRecommendation}
                       </span>
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-1">
-                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 space-y-1">
+                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
                       OmniBid Multi-Agent Triage:
                     </span>
                     <div className="flex items-center gap-2 mt-1">
@@ -458,11 +458,11 @@ export default function BenchmarkDashboardPage() {
                       }`}>
                         {activeModalCase.actualRecommendation}
                       </span>
-                      <span className="text-xs text-slate-300 font-semibold">
+                      <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold">
                         {Math.round(activeModalCase.confidence * 100)}% Confidence
                       </span>
                       {activeModalCase.latencyMs > 0 && (
-                        <span className="text-slate-500">
+                        <span className="text-slate-400 dark:text-slate-500">
                           ({(activeModalCase.latencyMs / 1000).toFixed(1)}s latency)
                         </span>
                       )}
@@ -471,11 +471,11 @@ export default function BenchmarkDashboardPage() {
                 </div>
 
                 {/* AI Rationale */}
-                <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
-                  <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 space-y-2">
+                  <span className="text-[11px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
                     <span>🧠</span> Multi-Agent Decision Rationale:
                   </span>
-                  <p className="text-xs text-slate-200 leading-relaxed">
+                  <p className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
                     {activeModalCase.reason}
                   </p>
                 </div>
@@ -483,12 +483,12 @@ export default function BenchmarkDashboardPage() {
                 {/* Skills Chips */}
                 {activeModalCase.skills && activeModalCase.skills.length > 0 && (
                   <div className="space-y-1.5">
-                    <span className="text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">
+                    <span className="text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">
                       Required Skills & Stack:
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {activeModalCase.skills.map((skill, i) => (
-                        <span key={i} className="px-2.5 py-1 rounded-lg bg-slate-800/90 border border-slate-700 text-slate-300 text-[11px] font-medium">
+                        <span key={i} className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-medium">
                           {skill}
                         </span>
                       ))}
@@ -497,31 +497,31 @@ export default function BenchmarkDashboardPage() {
                 )}
 
                 {/* Opportunity Economics & Client Profile */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 dark:bg-slate-950/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800/80">
                   <div>
-                    <span className="text-slate-500 block text-[10px] uppercase font-semibold">Stated Budget</span>
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-semibold">Stated Budget</span>
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">
                       {activeModalCase.budget ? `$${activeModalCase.budget.toLocaleString()}` : (activeModalCase.hourlyMin ? `$${activeModalCase.hourlyMin}-${activeModalCase.hourlyMax}/hr` : 'Unspecified')}
                     </span>
                   </div>
 
                   <div>
-                    <span className="text-slate-500 block text-[10px] uppercase font-semibold">Client Total Spend</span>
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-semibold">Client Total Spend</span>
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">
                       {activeModalCase.client?.totalSpend !== undefined ? `$${activeModalCase.client.totalSpend.toLocaleString()}` : 'No history'}
                     </span>
                   </div>
 
                   <div>
-                    <span className="text-slate-500 block text-[10px] uppercase font-semibold">Client Hires</span>
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-semibold">Client Hires</span>
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">
                       {activeModalCase.client?.hires !== undefined ? `${activeModalCase.client.hires} hires` : '0 hires'}
                     </span>
                   </div>
 
                   <div>
-                    <span className="text-slate-500 block text-[10px] uppercase font-semibold">Feedback Score</span>
-                    <span className="text-sm font-bold text-amber-400">
+                    <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-semibold">Feedback Score</span>
+                    <span className="text-sm font-bold text-amber-600 dark:text-amber-400">
                       {activeModalCase.client?.feedbackScore !== undefined ? `★ ${activeModalCase.client.feedbackScore.toFixed(1)} / 5.0` : 'No reviews'}
                     </span>
                   </div>
@@ -529,25 +529,25 @@ export default function BenchmarkDashboardPage() {
 
                 {/* Raw Job Description */}
                 <div className="space-y-1.5">
-                  <span className="text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">
+                  <span className="text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">
                     Raw Job Posting Text:
                   </span>
-                  <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-slate-200 leading-relaxed font-mono whitespace-pre-wrap max-h-48 overflow-y-auto">
+                  <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 leading-relaxed font-mono whitespace-pre-wrap max-h-48 overflow-y-auto">
                     {activeModalCase.description}
                   </div>
                 </div>
               </div>
 
               {/* Modal Actions */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-800">
-                <span className="text-[11px] text-slate-400">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400">
                   Clicking below will run live 4-pillar analysis & proposal generation.
                 </span>
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                   <button
                     type="button"
                     onClick={() => setActiveModalCase(null)}
-                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-800 transition-colors"
+                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                   >
                     Close
                   </button>

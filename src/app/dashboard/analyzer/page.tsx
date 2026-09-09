@@ -270,45 +270,45 @@ export default function ManualJobAnalyzer() {
   const recommendation = result?.recommendation;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-amber-500 selection:text-slate-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-amber-500 selection:text-slate-950 transition-colors duration-200">
       <Navigation />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Top Header & Active Profile Banner */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-slate-900/80 p-6 rounded-2xl border border-slate-800 shadow-xl backdrop-blur-md">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-slate-900/80 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-xl backdrop-blur-md">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
                 Zero-Friction Decision Engine
               </span>
-              <span className="text-xs text-slate-400">Zero integrations required</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Zero integrations required</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               Opportunity Intelligence Workspace
             </h1>
-            <p className="text-sm text-slate-400 max-w-2xl">
+            <p className="text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
               Paste any job description to determine whether it is worth your time, understand why, and generate an evidence-grounded proposal.
             </p>
           </div>
 
           {/* Active Profile Pill / Customizer */}
           <div className="flex items-center gap-3">
-            <div className="bg-slate-800/80 border border-slate-700/80 p-3 rounded-xl flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm border border-amber-500/30">
+            <div className="bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 p-3 rounded-xl flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-sm border border-amber-500/30">
                 👤
               </div>
               <div className="text-left">
-                <div className="text-xs font-semibold text-slate-200">
+                <div className="text-xs font-semibold text-slate-900 dark:text-slate-200">
                   {profile?.name || 'Loading Profile...'}
                 </div>
-                <div className="text-[11px] text-slate-400">
-                  Target: <span className="text-amber-400 font-medium">${profileTargetRate}/hr</span> • Min: <span className="text-emerald-400 font-medium">${profileMinBudget}</span>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Target: <span className="text-amber-600 dark:text-amber-400 font-medium">${profileTargetRate}/hr</span> • Min: <span className="text-emerald-600 dark:text-emerald-400 font-medium">${profileMinBudget}</span>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowProfileModal(true)}
-                className="ml-2 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 transition-all"
+                className="ml-2 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 transition-all"
               >
                 ⚙️ Edit
               </button>
@@ -318,15 +318,15 @@ export default function ManualJobAnalyzer() {
 
         {/* Profile Settings Modal */}
         {showProfileModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-            <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 dark:bg-black/70 backdrop-blur-sm p-4">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl text-slate-900 dark:text-slate-100">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <span>⚙️</span> Customize Freelancer Profile
                 </h3>
                 <button 
                   onClick={() => setShowProfileModal(false)}
-                  className="text-slate-400 hover:text-white text-sm p-1"
+                  className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white text-sm p-1"
                 >
                   ✕
                 </button>
@@ -334,27 +334,27 @@ export default function ManualJobAnalyzer() {
 
               <div className="space-y-4 text-sm">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                     Core Skills (Comma separated)
                   </label>
                   <input
                     type="text"
                     value={profileSkills}
                     onChange={e => setProfileSkills(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500 text-xs"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 text-xs"
                     placeholder="Next.js, TypeScript, Node.js, OpenAI, PostgreSQL"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-rose-400 uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider mb-1">
                     Excluded Technologies (Immediate SKIP Dealbreakers)
                   </label>
                   <input
                     type="text"
                     value={profileExcluded}
                     onChange={e => setProfileExcluded(e.target.value)}
-                    className="w-full bg-slate-800 border border-rose-500/30 rounded-lg px-3 py-2 text-rose-200 focus:outline-none focus:border-rose-500 text-xs"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-rose-300 dark:border-rose-500/30 rounded-lg px-3 py-2 text-rose-700 dark:text-rose-200 focus:outline-none focus:border-rose-500 text-xs"
                     placeholder="PHP, WordPress, Ruby, Web3, Smart Contracts"
                   />
                   <p className="text-[11px] text-slate-500 mt-1">
@@ -364,35 +364,35 @@ export default function ManualJobAnalyzer() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                       Target Hourly Rate ($/hr)
                     </label>
                     <input
                       type="number"
                       value={profileTargetRate}
                       onChange={e => setProfileTargetRate(e.target.value)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500 text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 text-xs"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                       Minimum Fixed Budget ($)
                     </label>
                     <input
                       type="number"
                       value={profileMinBudget}
                       onChange={e => setProfileMinBudget(e.target.value)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500 text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 text-xs"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowProfileModal(false)}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold"
+                  className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold"
                 >
                   Cancel
                 </button>
@@ -410,7 +410,7 @@ export default function ManualJobAnalyzer() {
 
         {/* Demo Presets Row */}
         <div className="space-y-2">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
             <span>⚡ Test with 1-Click Golden Presets:</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -419,22 +419,22 @@ export default function ManualJobAnalyzer() {
                 key={idx}
                 type="button"
                 onClick={() => loadPreset(p)}
-                className="text-left p-3.5 rounded-xl bg-slate-900/60 hover:bg-slate-900 border border-slate-800/80 hover:border-slate-700 transition-all group flex flex-col justify-between"
+                className="text-left p-3.5 rounded-xl bg-white dark:bg-slate-900/60 hover:bg-slate-50 dark:hover:bg-slate-900 border border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 transition-all group flex flex-col justify-between shadow-sm dark:shadow-none"
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-bold text-slate-200 group-hover:text-amber-400 transition-colors">
+                    <span className="text-xs font-bold text-slate-900 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                       {p.label}
                     </span>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${p.badgeColor}`}>
                       {p.badge}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 line-clamp-2">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
                     {p.data.description.substring(0, 100)}...
                   </p>
                 </div>
-                <span className="text-[11px] text-amber-500/80 font-medium mt-2 flex items-center gap-1">
+                <span className="text-[11px] text-amber-600 dark:text-amber-500/80 font-medium mt-2 flex items-center gap-1">
                   Load into analyzer →
                 </span>
               </button>
@@ -446,15 +446,15 @@ export default function ManualJobAnalyzer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* LEFT: Input Form (5 cols) */}
-          <div className="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
-            <h2 className="text-base font-bold text-white flex items-center justify-between">
+          <div className="lg:col-span-5 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm dark:shadow-xl space-y-5">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center justify-between">
               <span>Paste Job Description</span>
-              <span className="text-xs text-slate-400 font-normal">Accepts raw text or URL</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">Accepts raw text or URL</span>
             </h2>
 
             <form onSubmit={handleAnalyze} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                   Job Description (Required)
                 </label>
                 <textarea
@@ -462,14 +462,14 @@ export default function ManualJobAnalyzer() {
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                   placeholder="Paste the full job posting text here. You can include budget, requirements, or client text directly..."
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-amber-500 font-mono leading-relaxed"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl p-3.5 text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-amber-500 font-mono leading-relaxed"
                 />
               </div>
 
               {/* Optional Quick Fields */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-400 mb-1">
+                  <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
                     Job Title (Optional)
                   </label>
                   <input
@@ -477,11 +477,11 @@ export default function ManualJobAnalyzer() {
                     value={title}
                     onChange={e => setTitle(e.target.value)}
                     placeholder="e.g. Next.js Developer"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-amber-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-400 mb-1">
+                  <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
                     Stated Fixed Budget ($)
                   </label>
                   <input
@@ -489,7 +489,7 @@ export default function ManualJobAnalyzer() {
                     value={budget}
                     onChange={e => setBudget(e.target.value)}
                     placeholder="e.g. 3500"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-amber-500"
                   />
                 </div>
               </div>
@@ -499,65 +499,65 @@ export default function ManualJobAnalyzer() {
                 <button
                   type="button"
                   onClick={() => setShowAdvanced(!showAdvanced)}
-                  className="text-xs text-slate-400 hover:text-amber-400 flex items-center gap-1 font-medium transition-colors"
+                  className="text-xs text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 flex items-center gap-1 font-medium transition-colors"
                 >
                   <span>{showAdvanced ? '▾ Hide' : '▸ Add'} Optional Client / Hourly Info</span>
                 </button>
 
                 {showAdvanced && (
-                  <div className="mt-3 p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 space-y-3">
+                  <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-slate-800/80 space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[10px] text-slate-400 mb-1">Hourly Min ($/hr)</label>
+                        <label className="block text-[10px] text-slate-500 dark:text-slate-400 mb-1">Hourly Min ($/hr)</label>
                         <input
                           type="number"
                           value={hourlyMin}
                           onChange={e => setHourlyMin(e.target.value)}
                           placeholder="45"
-                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
+                          className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-200"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] text-slate-400 mb-1">Hourly Max ($/hr)</label>
+                        <label className="block text-[10px] text-slate-500 dark:text-slate-400 mb-1">Hourly Max ($/hr)</label>
                         <input
                           type="number"
                           value={hourlyMax}
                           onChange={e => setHourlyMax(e.target.value)}
                           placeholder="80"
-                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
+                          className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-200"
                         />
                       </div>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       <div>
-                        <label className="block text-[10px] text-slate-400 mb-1">Client Location</label>
+                        <label className="block text-[10px] text-slate-500 dark:text-slate-400 mb-1">Client Location</label>
                         <input
                           type="text"
                           value={clientLocation}
                           onChange={e => setClientLocation(e.target.value)}
                           placeholder="USA"
-                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
+                          className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-200"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] text-slate-400 mb-1">Client Spend ($)</label>
+                        <label className="block text-[10px] text-slate-500 dark:text-slate-400 mb-1">Client Spend ($)</label>
                         <input
                           type="number"
                           value={clientSpend}
                           onChange={e => setClientSpend(e.target.value)}
                           placeholder="25000"
-                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
+                          className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-200"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] text-slate-400 mb-1">Rating (1-5)</label>
+                        <label className="block text-[10px] text-slate-500 dark:text-slate-400 mb-1">Rating (1-5)</label>
                         <input
                           type="number"
                           step="0.1"
                           value={clientRating}
                           onChange={e => setClientRating(e.target.value)}
                           placeholder="4.9"
-                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
+                          className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-200"
                         />
                       </div>
                     </div>
@@ -566,7 +566,7 @@ export default function ManualJobAnalyzer() {
               </div>
 
               {error && (
-                <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
+                <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-xs">
                   {error}
                 </div>
               )}
@@ -599,15 +599,15 @@ export default function ManualJobAnalyzer() {
             
             {/* Empty State when no analysis has run */}
             {!result && !isAnalyzing && (
-              <div className="bg-slate-900/40 border border-dashed border-slate-800 rounded-2xl p-12 text-center space-y-4">
-                <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-2xl font-bold shadow-inner">
+              <div className="bg-white/60 dark:bg-slate-900/40 border border-dashed border-slate-300 dark:border-slate-800 rounded-2xl p-12 text-center space-y-4 shadow-sm dark:shadow-none">
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl font-bold shadow-inner">
                   ⚡
                 </div>
                 <div className="max-w-md mx-auto space-y-2">
-                  <h3 className="text-lg font-bold text-white">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                     Ready to Triage
                   </h3>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     Paste any job description on the left or select a golden preset above. OmniBid will synthesize technical fit, client risk, economics, and generate a grounded proposal.
                   </p>
                 </div>
@@ -616,15 +616,15 @@ export default function ManualJobAnalyzer() {
 
             {/* Loading Skeleton */}
             {isAnalyzing && (
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-6 animate-pulse">
-                <div className="h-14 bg-slate-800 rounded-xl w-3/4"></div>
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 space-y-6 animate-pulse shadow-sm dark:shadow-none">
+                <div className="h-14 bg-slate-200 dark:bg-slate-800 rounded-xl w-3/4"></div>
                 <div className="grid grid-cols-4 gap-3">
-                  <div className="h-20 bg-slate-800 rounded-xl"></div>
-                  <div className="h-20 bg-slate-800 rounded-xl"></div>
-                  <div className="h-20 bg-slate-800 rounded-xl"></div>
-                  <div className="h-20 bg-slate-800 rounded-xl"></div>
+                  <div className="h-20 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
+                  <div className="h-20 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
+                  <div className="h-20 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
+                  <div className="h-20 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
                 </div>
-                <div className="h-28 bg-slate-800 rounded-xl"></div>
+                <div className="h-28 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
               </div>
             )}
 
@@ -633,13 +633,13 @@ export default function ManualJobAnalyzer() {
               <div className="space-y-6">
 
                 {/* Tabs: Decision | Grounded Proposal | Agent Trace */}
-                <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
                   <button
                     onClick={() => setActiveTab('decision')}
                     className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                       activeTab === 'decision'
                         ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                   >
                     🎯 1. Decision & Scorecard
@@ -651,11 +651,11 @@ export default function ManualJobAnalyzer() {
                       className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
                         activeTab === 'proposal'
                           ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                          : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <span>📝 2. Grounded Proposal</span>
-                      <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.2 rounded border border-emerald-500/30">
+                      <span className="text-[10px] bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.2 rounded border border-emerald-500/30">
                         Verified
                       </span>
                     </button>
@@ -666,7 +666,7 @@ export default function ManualJobAnalyzer() {
                     className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                       activeTab === 'trace'
                         ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                   >
                     🔍 3. Agent Execution Trace
@@ -679,10 +679,10 @@ export default function ManualJobAnalyzer() {
                     {/* Hero Decision Banner */}
                     <div className={`p-6 rounded-2xl border shadow-xl ${
                       recommendation === 'APPLY'
-                        ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
+                        ? 'bg-emerald-500/10 dark:bg-emerald-950/40 border-emerald-500/30 dark:border-emerald-500/40 text-emerald-900 dark:text-emerald-300'
                         : recommendation === 'MAYBE'
-                        ? 'bg-amber-950/40 border-amber-500/40 text-amber-300'
-                        : 'bg-rose-950/40 border-rose-500/40 text-rose-300'
+                        ? 'bg-amber-500/10 dark:bg-amber-950/40 border-amber-500/30 dark:border-amber-500/40 text-amber-900 dark:text-amber-300'
+                        : 'bg-rose-500/10 dark:bg-rose-950/40 border-rose-500/30 dark:border-rose-500/40 text-rose-900 dark:text-rose-300'
                     }`}>
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div className="flex items-center gap-3">
@@ -696,10 +696,10 @@ export default function ManualJobAnalyzer() {
                             {recommendation}
                           </span>
                           <div>
-                            <div className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                            <div className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                               Recommendation Confidence
                             </div>
-                            <div className="text-xl font-extrabold text-white">
+                            <div className="text-xl font-extrabold text-slate-900 dark:text-white">
                               {Math.round((result.confidence || 0.9) * 100)}% Confidence
                             </div>
                           </div>
@@ -715,7 +715,7 @@ export default function ManualJobAnalyzer() {
                         )}
                       </div>
 
-                      <p className="mt-4 text-sm font-medium text-slate-200 leading-relaxed border-t border-slate-800/60 pt-3">
+                      <p className="mt-4 text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed border-t border-slate-200 dark:border-slate-800/60 pt-3">
                         {result.summary || result.reason}
                       </p>
                     </div>
@@ -723,49 +723,49 @@ export default function ManualJobAnalyzer() {
                     {/* 4-Pillar Scorecard Grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                       {/* Technical Fit */}
-                      <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
-                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Technical Fit</div>
-                        <div className="text-2xl font-black text-amber-400">
+                      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-1 shadow-sm">
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400">Technical Fit</div>
+                        <div className="text-2xl font-black text-amber-600 dark:text-amber-400">
                           {result.scores?.technicalFit ?? 0}
-                          <span className="text-xs text-slate-500 font-normal"> / 100</span>
+                          <span className="text-xs text-slate-400 dark:text-slate-500 font-normal"> / 100</span>
                         </div>
-                        <div className="text-[11px] text-slate-400">
+                        <div className="text-[11px] text-slate-600 dark:text-slate-400">
                           {result.scores?.technicalFit > 75 ? 'Strong Match' : (result.scores?.technicalFit > 40 ? 'Moderate' : 'Disjoint')}
                         </div>
                       </div>
 
                       {/* Economic Quality */}
-                      <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
-                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Economics</div>
-                        <div className="text-xl font-black text-emerald-400">
+                      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-1 shadow-sm">
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400">Economics</div>
+                        <div className="text-xl font-black text-emerald-600 dark:text-emerald-400">
                           {result.economics?.status === 'OBSERVED' ? 'OBSERVED' : (result.economics?.status || 'ESTIMATED')}
                         </div>
-                        <div className="text-[11px] text-slate-400 truncate">
+                        <div className="text-[11px] text-slate-600 dark:text-slate-400 truncate">
                           {result.economics?.effectiveHourlyRate ? `~$${result.economics.effectiveHourlyRate}/hr` : 'Scope estimate'}
                         </div>
                       </div>
 
                       {/* Client Risk */}
-                      <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
-                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Client Risk</div>
+                      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-1 shadow-sm">
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400">Client Risk</div>
                         <div className={`text-xl font-black ${
-                          result.scores?.clientRisk === 'UNKNOWN' ? 'text-slate-400' :
-                          result.scores?.clientRisk === 'HIGH' ? 'text-rose-400' : 'text-emerald-400'
+                          result.scores?.clientRisk === 'UNKNOWN' ? 'text-slate-500 dark:text-slate-400' :
+                          result.scores?.clientRisk === 'HIGH' ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'
                         }`}>
                           {result.scores?.clientRisk || 'UNKNOWN'}
                         </div>
-                        <div className="text-[11px] text-slate-400">
+                        <div className="text-[11px] text-slate-600 dark:text-slate-400">
                           {result.scores?.clientRisk === 'UNKNOWN' ? 'No history provided' : 'Verified score'}
                         </div>
                       </div>
 
                       {/* Scope Clarity */}
-                      <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
-                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Scope Clarity</div>
-                        <div className="text-xl font-black text-blue-400">
+                      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-1 shadow-sm">
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400">Scope Clarity</div>
+                        <div className="text-xl font-black text-blue-600 dark:text-blue-400">
                           {result.scores?.scopeClarity || 'MEDIUM'}
                         </div>
-                        <div className="text-[11px] text-slate-400">
+                        <div className="text-[11px] text-slate-600 dark:text-slate-400">
                           Deliverable definition
                         </div>
                       </div>
@@ -774,14 +774,14 @@ export default function ManualJobAnalyzer() {
                     {/* 3 Detail Cards: Why / Unknowns / Risks */}
                     <div className="space-y-4">
                       {/* WHY Drivers */}
-                      <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-2">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                      <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl p-5 space-y-2 shadow-sm">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                           <span>✓</span> Why This Recommendation:
                         </h4>
-                        <ul className="space-y-1.5 text-xs text-slate-300">
+                        <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
                           {(result.positiveEvidence?.length > 0 ? result.positiveEvidence : result.reasons || [result.reason]).map((r: string, idx: number) => (
                             <li key={idx} className="flex items-start gap-2">
-                              <span className="text-emerald-400 font-bold">•</span>
+                              <span className="text-emerald-600 dark:text-emerald-400 font-bold">•</span>
                               <span>{r}</span>
                             </li>
                           ))}
@@ -790,14 +790,14 @@ export default function ManualJobAnalyzer() {
 
                       {/* UNKNOWNS Card */}
                       {result.unknowns && result.unknowns.length > 0 && (
-                        <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-2">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                        <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl p-5 space-y-2 shadow-sm">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
                             <span>ℹ️</span> Unknown Variables (Preserved Without Penalties):
                           </h4>
-                          <ul className="space-y-1.5 text-xs text-slate-400">
+                          <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
                             {result.unknowns.map((u: string, idx: number) => (
                               <li key={idx} className="flex items-start gap-2">
-                                <span className="text-slate-500 font-bold">•</span>
+                                <span className="text-slate-400 dark:text-slate-500 font-bold">•</span>
                                 <span>{u}</span>
                               </li>
                             ))}
@@ -807,14 +807,14 @@ export default function ManualJobAnalyzer() {
 
                       {/* RISKS Card */}
                       {result.risks && result.risks.length > 0 && (
-                        <div className="bg-slate-900/90 border border-rose-500/20 rounded-xl p-5 space-y-2">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
+                        <div className="bg-white dark:bg-slate-900/90 border border-rose-300 dark:border-rose-500/20 rounded-xl p-5 space-y-2 shadow-sm">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
                             <span>⚠️</span> Project Risks & Watchouts:
                           </h4>
-                          <ul className="space-y-1.5 text-xs text-slate-300">
+                          <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
                             {result.risks.map((risk: string, idx: number) => (
                               <li key={idx} className="flex items-start gap-2">
-                                <span className="text-rose-400 font-bold">•</span>
+                                <span className="text-rose-600 dark:text-rose-400 font-bold">•</span>
                                 <span>{risk}</span>
                               </li>
                             ))}
@@ -827,16 +827,16 @@ export default function ManualJobAnalyzer() {
 
                 {/* TAB 2: GROUNDED PROPOSAL */}
                 {activeTab === 'proposal' && result.proposal && (
-                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-4">
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 space-y-5 shadow-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/20">
+                          <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/20">
                             ✓ Anti-Hallucination Verified
                           </span>
-                          <span className="text-xs text-slate-400">Strictly grounded in your portfolio</span>
+                          <span className="text-xs text-slate-500 dark:text-slate-400">Strictly grounded in your portfolio</span>
                         </div>
-                        <h3 className="text-lg font-bold text-white mt-1">
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-1">
                           Tailored Bidding Proposal
                         </h3>
                       </div>
@@ -850,17 +850,17 @@ export default function ManualJobAnalyzer() {
                     </div>
 
                     {/* Proposal Body */}
-                    <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 text-slate-200 text-xs sm:text-sm font-mono whitespace-pre-wrap leading-relaxed">
+                    <div className="bg-slate-50 dark:bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-mono whitespace-pre-wrap leading-relaxed shadow-inner">
                       {result.proposal.content}
                     </div>
 
                     {/* Evidence Citations */}
                     {result.proposal.evidenceUsed && (
-                      <div className="p-4 bg-slate-950/60 rounded-xl border border-slate-800/80 space-y-2">
-                        <div className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                      <div className="p-4 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-slate-800/80 space-y-2">
+                        <div className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                           Portfolio Evidence Cited in this Draft:
                         </div>
-                        <div className="text-xs text-slate-400">
+                        <div className="text-xs text-slate-600 dark:text-slate-400">
                           {result.proposal.evidenceUsed}
                         </div>
                       </div>
@@ -870,19 +870,19 @@ export default function ManualJobAnalyzer() {
 
                 {/* TAB 3: AGENT EXECUTION TRACE */}
                 {activeTab === 'trace' && (
-                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
-                    <div className="border-b border-slate-800 pb-3 flex items-center justify-between">
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 space-y-5 shadow-sm">
+                    <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
                       <div>
-                        <h3 className="text-base font-bold text-white">
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white">
                           Multi-Agent Telemetry Audit
                         </h3>
-                        <p className="text-xs text-slate-400 mt-0.5">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                           Inspect reasoning latency, model routing, and token metrics for each pipeline step.
                         </p>
                       </div>
                       <Link
                         href={`/dashboard/traces/${result.opportunityId}`}
-                        className="text-xs text-amber-400 hover:underline font-semibold"
+                        className="text-xs text-amber-600 dark:text-amber-400 hover:underline font-semibold"
                       >
                         View Full Trace Page →
                       </Link>
@@ -891,15 +891,15 @@ export default function ManualJobAnalyzer() {
                     {/* Telemetry runs */}
                     <div className="space-y-3">
                       {result.opportunity?.agentRuns?.map((agent: any) => (
-                        <div key={agent.id} className="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
+                        <div key={agent.id} className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
                           <div>
-                            <span className="font-bold text-white">{agent.agentName}</span>
-                            <span className="ml-2 text-[11px] text-slate-400 font-mono">({agent.model})</span>
+                            <span className="font-bold text-slate-900 dark:text-white">{agent.agentName}</span>
+                            <span className="ml-2 text-[11px] text-slate-500 dark:text-slate-400 font-mono">({agent.model})</span>
                           </div>
-                          <div className="flex items-center gap-4 text-slate-400 font-mono text-[11px]">
+                          <div className="flex items-center gap-4 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
                             {agent.durationMs && <span>⏱️ {agent.durationMs}ms</span>}
                             {agent.promptTokens && <span>🔤 {agent.promptTokens + (agent.completionTokens || 0)} tokens</span>}
-                            <span className="text-emerald-400">✓ OK</span>
+                            <span className="text-emerald-600 dark:text-emerald-400">✓ OK</span>
                           </div>
                         </div>
                       ))}
