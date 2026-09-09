@@ -46,6 +46,7 @@ export interface MetricsSummary {
   applyRecall: number;
   applyF1: number;
   truePositives: number;
+  trueNegatives: number;
   falsePositives: number;
   falseNegatives: number;
   
@@ -86,10 +87,9 @@ export interface MetricsSummary {
 export class MetricsEngine {
   calculate(results: EvalResult[]): MetricsSummary {
     let truePositives = 0;
+    let trueNegatives = 0;
     let falsePositives = 0;
     let falseNegatives = 0;
-    let trueNegatives = 0;
-
     let skipTruePositives = 0;
     let skipFalsePositives = 0;
     let skipFalseNegatives = 0;
@@ -255,6 +255,7 @@ export class MetricsEngine {
       applyRecall: Number(applyRecall.toFixed(4)),
       applyF1: Number(applyF1.toFixed(4)),
       truePositives,
+      trueNegatives,
       falsePositives,
       falseNegatives,
 

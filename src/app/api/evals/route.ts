@@ -33,7 +33,7 @@ export async function GET() {
             latestTimestamp = file.replace('eval-', '').replace('.json', '');
             break;
           }
-        } catch (e) {
+        } catch {
           // ignore corrupted files
         }
       }

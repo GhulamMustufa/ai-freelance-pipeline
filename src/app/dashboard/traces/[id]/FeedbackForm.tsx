@@ -28,7 +28,7 @@ export function FeedbackForm({ opportunityId, initialOutcome, initialFeedback }:
     try {
       await logOpportunityFeedback(opportunityId, outcome, feedback);
       alert('Feedback logged successfully!');
-    } catch (err) {
+    } catch {
       alert('Failed to log feedback');
     }
     setLoading(false);

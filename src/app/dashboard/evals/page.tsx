@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 interface BenchmarkCase {
@@ -97,7 +96,7 @@ export default function BenchmarkDashboardPage() {
         client: testCase.client,
       }));
       router.push('/dashboard/analyzer?source=benchmark');
-    } catch (e) {
+    } catch {
       router.push('/dashboard/analyzer');
     }
   };

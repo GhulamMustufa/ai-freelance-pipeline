@@ -1,6 +1,3 @@
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-
 export class UpworkMCPClient {
   private ORG_UID = "853342360878370817";
 

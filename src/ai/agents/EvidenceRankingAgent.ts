@@ -44,7 +44,6 @@ export class EvidenceRankingAgent {
       complexity: 'LOW'
     });
 
-    const rankedSet = new Set(result.rankedIds);
     // Return evidence in the order they were ranked
     return result.rankedIds
       .map(id => retrievedEvidence.find(e => e.id === id))

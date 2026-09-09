@@ -1,6 +1,5 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
-import { ProposalDraftingAgent } from '../src/ai/agents/ProposalDraftingAgent';
 import { ClaimVerificationAgent } from '../src/ai/agents/ClaimVerificationAgent';
 import { AgentExecutor } from '../src/ai/agent';
 import { RetrievedEvidence } from '../src/ai/rag/SemanticRetriever';
@@ -10,7 +9,6 @@ test('Anti-Hallucination Pipeline', async (t) => {
   // Actually, we can just test the Prompt structures or use a small mock. For the sake of the project, we'll write the test structure.
   
   const executor = new AgentExecutor();
-  const drafter = new ProposalDraftingAgent(executor);
   const verifier = new ClaimVerificationAgent(executor);
 
   const evidence: RetrievedEvidence[] = [
@@ -33,8 +31,6 @@ test('Anti-Hallucination Pipeline', async (t) => {
     // To demonstrate the test, we mock the executor for this specific test case.
     const originalExecute = executor.executeStructured;
     
-    // Mock the verification response
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (executor as any).executeStructured = async (args: any) => {
       if (args.agentName === 'ClaimVerification') {
         return {
@@ -51,7 +47,6 @@ test('Anti-Hallucination Pipeline', async (t) => {
     assert.strictEqual(result.isGrounded, false);
     assert.match(result.feedback, /Rust/i);
     
-    // Restore
     executor.executeStructured = originalExecute;
   });
 
@@ -60,7 +55,6 @@ test('Anti-Hallucination Pipeline', async (t) => {
     
     const originalExecute = executor.executeStructured;
     
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (executor as any).executeStructured = async (args: any) => {
       if (args.agentName === 'ClaimVerification') {
         return {

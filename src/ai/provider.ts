@@ -1,7 +1,6 @@
 import { deepseek } from '@ai-sdk/deepseek';
 import { openai } from '@ai-sdk/openai';
 import { generateObject, generateText, LanguageModel } from 'ai';
-import type { UIMessage } from 'ai';
 import { z } from 'zod';
 
 export type AIProviderName = 'deepseek' | 'openai';
@@ -43,7 +42,6 @@ export class AIProvider {
   
   static async chat(
     config: AIProviderConfig,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     messages: any[],
     system?: string
   ) {

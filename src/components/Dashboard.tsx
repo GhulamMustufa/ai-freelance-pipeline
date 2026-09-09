@@ -2,7 +2,6 @@
 import { useState, useTransition, useEffect } from 'react';
 import { updateClientStatus, updateProposalDraft } from '@/app/actions';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
   const [filterType, setFilterType] = useState<'ALL' | 'GOLDEN' | 'SUBMITTED'>('ALL');
   
@@ -22,7 +21,6 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
 
   // Sync draft content when job changes
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDraftContent(selectedJob?.proposalDraft?.content || '');
   }, [selectedJobId, selectedJob?.proposalDraft?.content]);
 

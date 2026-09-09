@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
 
@@ -109,6 +109,25 @@ export default function ManualJobAnalyzer() {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<'decision' | 'proposal' | 'trace'>('decision');
 
+  const fetchProfile = useCallback(async () => {
+    try {
+      const res = await fetch('/api/profile');
+      const data = await res.json();
+      if (data.success && data.profile) {
+        setProfile(data.profile);
+        setProfileSkills(data.profile.skills.join(', '));
+        setProfilePrimarySkills((data.profile.primarySkills || []).join(', '));
+        setProfileExcluded(data.profile.excludedTechnologies.join(', '));
+        setProfileTargetRate(String(data.profile.targetHourlyRate || 75));
+        setProfileMinBudget(String(data.profile.minProjectBudget || 1000));
+        setProfileLocation(data.profile.location || '');
+        setProfileAvailability(data.profile.availability || 'FULL_TIME');
+      }
+    } catch {
+      console.warn('Could not load profile');
+    }
+  }, []);
+
   // Fetch active default profile and check for benchmark inspection on mount
   useEffect(() => {
     fetchProfile();
@@ -129,34 +148,80 @@ export default function ManualJobAnalyzer() {
           setClientRating(job.client.feedbackScore ? String(job.client.feedbackScore) : '');
         }
         sessionStorage.removeItem('omnibid_inspect_job');
-        // Automatically execute live triage to show all details immediately
+
         setTimeout(() => {
-          executeTriage(job);
+          const targetDesc = job?.description ?? description;
+          if (!targetDesc || !targetDesc.trim()) {
+            setError('Please paste a job description.');
+            return;
+          }
+
+          setIsAnalyzing(true);
+          setError(null);
+          setResult(null);
+          setCopied(false);
+
+          const payload = {
+            title: (job?.title ?? title)?.trim() || undefined,
+            description: targetDesc.trim(),
+            platform: 'MANUAL',
+            budget: job?.budget !== undefined ? (job.budget ? parseFloat(job.budget) : undefined) : (budget ? parseFloat(budget) : undefined),
+            hourlyMin: job?.hourlyMin !== undefined ? (job.hourlyMin ? parseFloat(job.hourlyMin) : undefined) : (hourlyMin ? parseFloat(hourlyMin) : undefined),
+            hourlyMax: job?.hourlyMax !== undefined ? (job.hourlyMax ? parseFloat(job.hourlyMax) : undefined) : (hourlyMax ? parseFloat(hourlyMax) : undefined),
+            client: job?.client ?? ((clientLocation || clientSpend || clientRating) ? {
+              location: clientLocation || undefined,
+              totalSpend: clientSpend ? parseFloat(clientSpend) : undefined,
+              feedbackScore: clientRating ? parseFloat(clientRating) : undefined,
+            } : undefined),
+            profile: profile ? {
+              ...profile,
+              skills: profileSkills.split(',').map((s: string) => s.trim()).filter(Boolean),
+              excludedTechnologies: profileExcluded.split(',').map((s: string) => s.trim()).filter(Boolean),
+              targetHourlyRate: Number(profileTargetRate) || 75,
+              minProjectBudget: Number(profileMinBudget) || 1000,
+            } : undefined,
+          };
+
+          fetch('/api/opportunities/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (!data.success) {
+                throw new Error(data.error || 'Pipeline execution failed');
+              }
+              setResult(data);
+              setActiveTab('decision');
+            })
+            .catch((err: any) => {
+              setError(err.message || 'An error occurred during analysis');
+            })
+            .finally(() => {
+              setIsAnalyzing(false);
+            });
         }, 150);
       }
-    } catch (e) {
+    } catch {
       // ignore
     }
-  }, []);
-
-  const fetchProfile = async () => {
-    try {
-      const res = await fetch('/api/profile');
-      const data = await res.json();
-      if (data.success && data.profile) {
-        setProfile(data.profile);
-        setProfileSkills(data.profile.skills.join(', '));
-        setProfilePrimarySkills((data.profile.primarySkills || []).join(', '));
-        setProfileExcluded(data.profile.excludedTechnologies.join(', '));
-        setProfileTargetRate(String(data.profile.targetHourlyRate || 75));
-        setProfileMinBudget(String(data.profile.minProjectBudget || 1000));
-        setProfileLocation(data.profile.location || '');
-        setProfileAvailability(data.profile.availability || 'FULL_TIME');
-      }
-    } catch (e) {
-      console.warn('Could not load profile:', e);
-    }
-  };
+  }, [
+    budget,
+    clientLocation,
+    clientRating,
+    clientSpend,
+    description,
+    fetchProfile,
+    hourlyMax,
+    hourlyMin,
+    profile,
+    profileExcluded,
+    profileMinBudget,
+    profileSkills,
+    profileTargetRate,
+    title,
+  ]);
 
   const handleSaveProfile = async () => {
     try {
@@ -184,7 +249,7 @@ export default function ManualJobAnalyzer() {
         setShowProfileModal(false);
         fetchProfile();
       }
-    } catch (e) {
+    } catch {
       alert('Failed to update profile');
     }
   };
@@ -209,7 +274,7 @@ export default function ManualJobAnalyzer() {
     setError(null);
   };
 
-  const executeTriage = async (customPayload?: any) => {
+  async function executeTriage(customPayload?: any) {
     const targetDesc = customPayload?.description ?? description;
     if (!targetDesc || !targetDesc.trim()) {
       setError('Please paste a job description.');
@@ -261,7 +326,7 @@ export default function ManualJobAnalyzer() {
     } finally {
       setIsAnalyzing(false);
     }
-  };
+  }
 
   const handleAnalyze = (e: React.FormEvent) => {
     e.preventDefault();

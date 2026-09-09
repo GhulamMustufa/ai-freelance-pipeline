@@ -141,7 +141,7 @@ export default async function TraceDetailPage({ params }: { params: { id: string
               </div>
             );
           }
-        } catch (e) {
+        } catch {
           return null;
         }
         return null;

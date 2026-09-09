@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import { OpportunityPipeline } from '../src/application/pipeline/OpportunityPipeline';
 import { Platform } from '../src/domain/models';
 
-test('OpportunityPipeline should initialize correctly', (t) => {
+test('OpportunityPipeline should initialize correctly', () => {
   const pipeline = new OpportunityPipeline();
   assert.ok(pipeline, 'Pipeline instantiated successfully');
 });

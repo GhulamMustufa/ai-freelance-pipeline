@@ -1,4 +1,4 @@
-import { AIProviderConfig, AIProviderName } from './provider';
+import { AIProviderConfig } from './provider';
 
 export enum TaskType {
   EXTRACTION = 'EXTRACTION',     // Fast, simple parsing
