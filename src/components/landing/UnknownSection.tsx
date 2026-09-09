@@ -24,18 +24,18 @@ export default function UnknownSection() {
   ];
 
   return (
-    <section className="py-24 bg-slate-900">
+    <section className="py-24 bg-slate-100 dark:bg-slate-900">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-16">
           <div className="inline-block px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-xs font-bold text-slate-400 uppercase tracking-wider">
             Epistemic Honesty
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Missing information shouldn&apos;t become
             <br />
             <span className="text-amber-400">a fake red flag.</span>
           </h2>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+          <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
             Many AI systems fill information gaps with assumptions.
             OmniBid explicitly preserves uncertainty instead of inventing negative signals.
           </p>
@@ -45,7 +45,7 @@ export default function UnknownSection() {
           {examples.map((e) => (
             <div key={e.label} className="grid sm:grid-cols-3 gap-4 items-center">
               {/* Input */}
-              <div className="bg-slate-800/40 border border-slate-800 rounded-xl p-4">
+              <div className="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
                 <div className="text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-1.5">{e.label}</div>
                 <div className="text-sm text-slate-400 italic">{e.input}</div>
               </div>
@@ -70,12 +70,12 @@ export default function UnknownSection() {
         </div>
 
         <div className="mt-12 text-center p-6 bg-slate-800/30 border border-slate-700/60 rounded-2xl">
-          <p className="text-white font-semibold text-lg">
+          <p className="text-slate-900 dark:text-white font-semibold text-lg">
             The system tells you what it <span className="text-emerald-400">knows</span>,
             what it <span className="text-sky-400">estimates</span>, and
             what it <span className="text-slate-400">doesn&apos;t know</span>.
           </p>
-          <p className="text-slate-500 text-sm mt-2">
+          <p className="text-slate-600 dark:text-slate-500 text-sm mt-2">
             No invented negatives. No false confidence. Honest analysis only.
           </p>
         </div>

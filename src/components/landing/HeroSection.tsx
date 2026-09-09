@@ -106,16 +106,16 @@ function ProductMockup() {
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
+    <section className="relative min-h-screen flex items-center pt-16 overflow-hidden bg-white dark:bg-slate-950">
       {/* Background */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-slate-950" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-gradient-radial from-amber-500/8 via-transparent to-transparent rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-white dark:bg-slate-950" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-gradient-radial from-amber-500/12 via-transparent to-transparent rounded-full blur-3xl" />
         {/* Subtle grid */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.06] dark:opacity-[0.03]"
           style={{
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)',
+            backgroundImage: 'linear-gradient(rgba(15,23,42,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(15,23,42,0.18) 1px, transparent 1px)',
             backgroundSize: '60px 60px',
           }}
         />
@@ -135,14 +135,14 @@ export default function HeroSection() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-black text-white leading-[1.05] tracking-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-black text-slate-900 dark:text-white leading-[1.05] tracking-tight">
               Stop applying to freelance jobs that{' '}
               <span className="text-amber-400">aren&apos;t worth</span>{' '}
               your time.
             </h1>
 
             {/* Sub */}
-            <p className="text-lg text-slate-400 leading-relaxed max-w-lg mx-auto lg:mx-0">
+            <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-lg mx-auto lg:mx-0">
               OmniBid analyzes a freelance job against your skills, economics, client signals, and job quality —
               then tells you whether to{' '}
               <span className="text-emerald-400 font-semibold">APPLY</span>,{' '}
@@ -163,7 +163,7 @@ export default function HeroSection() {
               </Link>
               <a
                 href="#how-it-works"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-slate-700 hover:border-slate-600 text-slate-300 hover:text-white font-semibold text-base rounded-xl transition-all hover:bg-slate-800/40"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-semibold text-base rounded-xl transition-all hover:bg-slate-100 dark:hover:bg-slate-800/40"
               >
                 See How It Works
               </a>

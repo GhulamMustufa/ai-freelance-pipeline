@@ -36,13 +36,13 @@ export default function DecisionBadges() {
   ];
 
   return (
-    <section className="py-24 bg-slate-900" id="decisions">
+    <section className="py-24 bg-slate-100 dark:bg-slate-900" id="decisions">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Three decisions. One clear answer.
           </h2>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+          <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
             OmniBid doesn&apos;t give you a list of factors to weigh yourself.
             It gives you a decision — and shows you exactly why.
           </p>
@@ -60,8 +60,8 @@ export default function DecisionBadges() {
               <p className={`text-sm leading-relaxed ${d.text}`}>{d.description}</p>
               <div className="pt-2 space-y-1.5">
                 {d.signals.map((s) => (
-                  <div key={s} className="flex items-center gap-2 text-xs text-slate-500">
-                    <span className="w-1 h-1 rounded-full bg-slate-600" />
+                  <div key={s} className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-500">
+                    <span className="w-1 h-1 rounded-full bg-slate-500 dark:bg-slate-600" />
                     {s}
                   </div>
                 ))}
@@ -70,9 +70,9 @@ export default function DecisionBadges() {
           ))}
         </div>
 
-        <p className="text-center mt-10 text-slate-400 text-sm">
+        <p className="text-center mt-10 text-slate-600 dark:text-slate-400 text-sm">
           OmniBid doesn&apos;t just tell you what to do.{' '}
-          <span className="text-white font-semibold">It shows you why.</span>
+          <span className="text-slate-900 dark:text-white font-semibold">It shows you why.</span>
         </p>
       </div>
     </section>

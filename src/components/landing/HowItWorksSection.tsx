@@ -29,13 +29,13 @@ export default function HowItWorksSection() {
   ];
 
   return (
-    <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-950" id="how-it-works">
+    <section className="py-24 bg-gradient-to-b from-slate-100 to-slate-50 dark:from-slate-900 dark:to-slate-950" id="how-it-works">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             From job post to decision in minutes.
           </h2>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+          <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
             A four-step process that turns a raw freelance opportunity into a clear, evidence-backed recommendation.
           </p>
         </div>
@@ -48,14 +48,14 @@ export default function HowItWorksSection() {
                 <div className="hidden lg:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-slate-700 to-transparent z-0 -translate-y-0.5" />
               )}
 
-              <div className="relative z-10 bg-slate-900 border border-slate-800 group-hover:border-amber-500/30 rounded-2xl p-5 h-full space-y-3 transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/5">
+              <div className="relative z-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 group-hover:border-amber-500/30 rounded-2xl p-5 h-full space-y-3 transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500 font-black text-sm font-mono">
                     {s.number}
                   </div>
                 </div>
-                <h3 className="text-lg font-black text-white">{s.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{s.description}</p>
+                <h3 className="text-lg font-black text-slate-900 dark:text-white">{s.title}</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{s.description}</p>
                 <p className="text-xs text-slate-600 border-t border-slate-800/80 pt-3">{s.detail}</p>
               </div>
             </div>
@@ -72,7 +72,7 @@ export default function HowItWorksSection() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
           </Link>
-          <p className="text-slate-600 text-sm mt-3">No marketplace integration required.</p>
+          <p className="text-slate-500 dark:text-slate-600 text-sm mt-3">No marketplace integration required.</p>
         </div>
       </div>
     </section>

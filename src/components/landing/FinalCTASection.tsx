@@ -2,20 +2,20 @@ import Link from 'next/link';
 
 export default function FinalCTASection() {
   return (
-    <section className="py-28 bg-slate-950 relative overflow-hidden">
+    <section className="py-28 bg-white dark:bg-slate-950 relative overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-radial from-amber-500/12 via-transparent to-transparent rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
           Your next freelance job is already waiting.
           <br />
           <span className="text-amber-400">The question is whether it&apos;s worth your time.</span>
         </h2>
 
-        <p className="text-slate-400 text-lg">
+        <p className="text-slate-600 dark:text-slate-400 text-lg">
           Paste the opportunity. Let OmniBid analyze it.
         </p>
 
@@ -43,7 +43,7 @@ export default function FinalCTASection() {
             'Deterministic scam protection',
             'UNKNOWN ≠ bad signal',
           ].map((item) => (
-            <div key={item} className="flex items-center gap-1.5 text-xs text-slate-600">
+            <div key={item} className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-600">
               <span className="text-amber-500/60">✓</span>
               {item}
             </div>

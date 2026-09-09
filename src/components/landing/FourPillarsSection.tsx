@@ -49,15 +49,15 @@ export default function FourPillarsSection() {
   ];
 
   return (
-    <section className="py-24 bg-slate-950" id="intelligence">
+    <section className="py-24 bg-slate-50 dark:bg-slate-950" id="intelligence">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             A proposal generator sees a job.{' '}
             <br className="hidden sm:block" />
             <span className="text-amber-400">OmniBid evaluates the opportunity.</span>
           </h2>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+          <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
             Four independent analysis dimensions. Each one verifiable. Each one explained.
           </p>
         </div>
@@ -66,7 +66,7 @@ export default function FourPillarsSection() {
           {pillars.map((p) => (
             <div
               key={p.number}
-              className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 hover:border-slate-700 transition-colors group"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-4 hover:border-slate-300 dark:hover:border-slate-700 transition-colors group shadow-sm dark:shadow-none"
             >
               <div className="flex items-center justify-between">
                 <span className="text-2xl font-black text-slate-700 group-hover:text-amber-500/50 transition-colors font-mono">
@@ -84,12 +84,12 @@ export default function FourPillarsSection() {
                 )}
               </div>
               <div>
-                <h3 className="text-base font-bold text-white">{p.title}</h3>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">{p.description}</p>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">{p.title}</h3>
+                <p className="text-xs text-slate-600 dark:text-slate-500 mt-1 leading-relaxed">{p.description}</p>
               </div>
               <ul className="space-y-2">
                 {p.points.map((pt) => (
-                  <li key={pt} className="flex items-start gap-2 text-xs text-slate-400">
+                    <li key={pt} className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-400">
                     <span className="text-amber-500/70 mt-0.5 shrink-0">›</span>
                     {pt}
                   </li>
