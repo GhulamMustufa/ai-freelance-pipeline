@@ -106,6 +106,8 @@ async function runEvaluation() {
         latencyMs,
         tokensUsed,
         confidence: decision.confidence ?? 0,
+        reason: decision.reason,
+        summary: decision.summary,
       });
 
     } catch (err: any) {

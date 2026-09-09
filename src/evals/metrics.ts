@@ -6,6 +6,8 @@ export interface EvalResult {
   latencyMs: number;
   tokensUsed: number;
   confidence: number;
+  reason?: string;
+  summary?: string;
   error?: string;
 }
 

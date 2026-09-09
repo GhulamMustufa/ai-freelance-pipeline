@@ -106,9 +106,34 @@ export default function ManualJobAnalyzer() {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<'decision' | 'proposal' | 'trace'>('decision');
 
-  // Fetch active default profile on mount
+  // Fetch active default profile and check for benchmark inspection on mount
   useEffect(() => {
     fetchProfile();
+
+    try {
+      const stored = sessionStorage.getItem('omnibid_inspect_job');
+      if (stored) {
+        const job = JSON.parse(stored);
+        setTitle(job.title || '');
+        setDescription(job.description || '');
+        setBudget(job.budget ? String(job.budget) : '');
+        setHourlyMin(job.hourlyMin ? String(job.hourlyMin) : '');
+        setHourlyMax(job.hourlyMax ? String(job.hourlyMax) : '');
+        if (job.client) {
+          setShowAdvanced(true);
+          setClientLocation(job.client.location || '');
+          setClientSpend(job.client.totalSpend ? String(job.client.totalSpend) : '');
+          setClientRating(job.client.feedbackScore ? String(job.client.feedbackScore) : '');
+        }
+        sessionStorage.removeItem('omnibid_inspect_job');
+        // Automatically execute live triage to show all details immediately
+        setTimeout(() => {
+          executeTriage(job);
+        }, 150);
+      }
+    } catch (e) {
+      // ignore
+    }
   }, []);
 
   const fetchProfile = async () => {
@@ -175,9 +200,9 @@ export default function ManualJobAnalyzer() {
     setError(null);
   };
 
-  const handleAnalyze = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!description.trim()) {
+  const executeTriage = async (customPayload?: any) => {
+    const targetDesc = customPayload?.description ?? description;
+    if (!targetDesc || !targetDesc.trim()) {
       setError('Please paste a job description.');
       return;
     }
@@ -189,21 +214,21 @@ export default function ManualJobAnalyzer() {
 
     try {
       const payload = {
-        title: title.trim() || undefined,
-        description: description.trim(),
+        title: (customPayload?.title ?? title)?.trim() || undefined,
+        description: targetDesc.trim(),
         platform: 'MANUAL',
-        budget: budget ? parseFloat(budget) : undefined,
-        hourlyMin: hourlyMin ? parseFloat(hourlyMin) : undefined,
-        hourlyMax: hourlyMax ? parseFloat(hourlyMax) : undefined,
-        client: (clientLocation || clientSpend || clientRating) ? {
+        budget: customPayload?.budget !== undefined ? (customPayload.budget ? parseFloat(customPayload.budget) : undefined) : (budget ? parseFloat(budget) : undefined),
+        hourlyMin: customPayload?.hourlyMin !== undefined ? (customPayload.hourlyMin ? parseFloat(customPayload.hourlyMin) : undefined) : (hourlyMin ? parseFloat(hourlyMin) : undefined),
+        hourlyMax: customPayload?.hourlyMax !== undefined ? (customPayload.hourlyMax ? parseFloat(customPayload.hourlyMax) : undefined) : (hourlyMax ? parseFloat(hourlyMax) : undefined),
+        client: customPayload?.client ?? ((clientLocation || clientSpend || clientRating) ? {
           location: clientLocation || undefined,
           totalSpend: clientSpend ? parseFloat(clientSpend) : undefined,
           feedbackScore: clientRating ? parseFloat(clientRating) : undefined,
-        } : undefined,
+        } : undefined),
         profile: profile ? {
           ...profile,
-          skills: profileSkills.split(',').map(s => s.trim()).filter(Boolean),
-          excludedTechnologies: profileExcluded.split(',').map(s => s.trim()).filter(Boolean),
+          skills: profileSkills.split(',').map((s: string) => s.trim()).filter(Boolean),
+          excludedTechnologies: profileExcluded.split(',').map((s: string) => s.trim()).filter(Boolean),
           targetHourlyRate: Number(profileTargetRate) || 75,
           minProjectBudget: Number(profileMinBudget) || 1000,
         } : undefined,
@@ -227,6 +252,11 @@ export default function ManualJobAnalyzer() {
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const handleAnalyze = (e: React.FormEvent) => {
+    e.preventDefault();
+    executeTriage();
   };
 
   const copyProposalToClipboard = () => {

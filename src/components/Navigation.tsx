@@ -9,6 +9,7 @@ export default function Navigation() {
 
   const isDashboard = pathname === '/dashboard' || pathname === '/';
   const isAnalyzer = pathname.startsWith('/dashboard/analyzer');
+  const isEvals = pathname.startsWith('/dashboard/evals');
 
   return (
     <header className="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-50 shadow-sm">
@@ -16,7 +17,7 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo & Name */}
           <div className="flex items-center space-x-3">
-            <Link href="/dashboard" className="flex items-center space-x-3 group">
+            <Link href="/dashboard/analyzer" className="flex items-center space-x-3 group">
               <div className="w-9 h-9 rounded-lg overflow-hidden border border-amber-500/30 bg-slate-800 flex items-center justify-center shadow-md shadow-amber-500/10 group-hover:border-amber-500/60 transition-all">
                 <Image
                   src="/favicon.jpg"
@@ -40,17 +41,6 @@ export default function Navigation() {
           {/* Navigation Tabs */}
           <nav className="flex items-center space-x-1 sm:space-x-2">
             <Link
-              href="/dashboard"
-              className={`px-3.5 py-2 rounded-md text-sm font-medium transition-colors ${
-                isDashboard && !isAnalyzer
-                  ? 'bg-slate-800 text-amber-400 border border-slate-700 shadow-inner'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-              }`}
-            >
-              Opportunities Feed
-            </Link>
-
-            <Link
               href="/dashboard/analyzer"
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-md text-sm font-medium transition-colors ${
                 isAnalyzer
@@ -60,6 +50,20 @@ export default function Navigation() {
             >
               <span className="text-xs">⚡</span>
               <span>Manual Job Analyzer</span>
+            </Link>
+
+            <Link
+              href="/dashboard/evals"
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-md text-sm font-medium transition-colors ${
+                isEvals
+                  ? 'bg-slate-800 text-amber-400 border border-slate-700 shadow-inner'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+              }`}
+            >
+              <span>🛡️ AI Benchmarks</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-400 font-bold border border-amber-500/30">
+                30 Cases
+              </span>
             </Link>
           </nav>
 
