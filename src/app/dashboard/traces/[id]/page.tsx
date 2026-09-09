@@ -1,6 +1,7 @@
 import { prisma } from '../../../../lib/prisma';
 import Link from 'next/link';
 import { FeedbackForm } from './FeedbackForm';
+import Navigation from '@/components/Navigation';
 
 export default async function TraceDetailPage({ params }: { params: { id: string } }) {
   const { id } = await params;
@@ -19,13 +20,27 @@ export default async function TraceDetailPage({ params }: { params: { id: string
     }
   });
 
-  if (!opportunity) return <div>Trace not found.</div>;
+  if (!opportunity) {
+    return (
+      <div className="min-h-screen bg-slate-50">
+        <Navigation />
+        <div className="p-8 max-w-6xl mx-auto text-slate-600">Trace not found.</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="mb-6">
-        <Link href="/dashboard" className="text-blue-600 hover:underline">← Back to Dashboard</Link>
-      </div>
+    <div className="min-h-screen bg-slate-50 pb-16">
+      <Navigation />
+      <div className="p-8 max-w-6xl mx-auto">
+        <div className="mb-6 flex items-center justify-between">
+          <Link href="/dashboard" className="text-blue-600 hover:underline text-sm font-semibold">
+            ← Back to Dashboard
+          </Link>
+          <Link href="/dashboard/analyzer" className="text-amber-600 hover:underline text-sm font-semibold">
+            ⚡ Analyze Another Job →
+          </Link>
+        </div>
 
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8">
         <h1 className="text-2xl font-bold mb-2">{opportunity.jobPosting?.title || 'Unknown Job'}</h1>
@@ -185,6 +200,7 @@ export default async function TraceDetailPage({ params }: { params: { id: string
         initialOutcome={opportunity.outcome} 
         initialFeedback={opportunity.feedback} 
       />
+      </div>
     </div>
   );
 }

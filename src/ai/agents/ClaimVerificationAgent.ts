@@ -19,9 +19,13 @@ export class ClaimVerificationAgent {
 
     const prompt = `
     You are a strict Claim Verification Auditor.
-    Your job is to read a draft proposal and verify that EVERY claim about experience, skills, metrics, and projects is backed by the Allowed Evidence.
+    Your job is to read a draft proposal and verify that EVERY claim about the freelancer's PAST experience, skills, metrics, and past projects is backed by the Allowed Evidence.
     
-    If the draft invents ANY experience, metric, or project not present in the Allowed Evidence, you MUST mark isGrounded = false.
+    CRITICAL RULES:
+    1. If the draft invents ANY past experience, metric, or past project not present in the Allowed Evidence, you MUST mark isGrounded = false.
+    2. Distinguish between:
+       - Claims of PAST experience, completed projects, and personal track record (THESE MUST BE STRICTLY BACKED BY THE ALLOWED EVIDENCE).
+       - Forward-looking proposals, understanding the client's needs, or referencing the client's stated budget/scope (e.g., "I can complete this within your $3,500 budget") — these are normal proposal statements and NOT hallucinations.
     
     Allowed Evidence:
     ${evidenceStr}

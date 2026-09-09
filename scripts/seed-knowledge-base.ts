@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { prisma } from '../src/lib/prisma';
 import { AIProvider } from '../src/ai/provider';
 
@@ -45,6 +48,14 @@ async function seed() {
       description: 'Led a cloud infrastructure migration from Heroku to AWS (ECS + RDS). Implemented IaC using Terraform and set up complete CI/CD pipelines using GitHub Actions. Reduced monthly hosting costs by 65% while improving uptime.',
       technologies: 'AWS, Terraform, Docker, GitHub Actions',
       verification: 'Verified via Client Testimonial'
+    },
+    {
+      type: 'PROJECT',
+      title: 'Autonomous Multi-Agent AI Pipeline & Decision Engine',
+      description: 'Architected and built an autonomous multi-agent pipeline using Next.js, TypeScript, DeepSeek, and OpenAI. Features automated opportunity evaluation, RAG semantic search, anti-hallucination claim verification, and SQLite/Prisma persistence.',
+      technologies: 'Next.js, TypeScript, DeepSeek, OpenAI, Prisma, SQLite, RAG, Multi-Agent Systems',
+      verification: 'Verified via GitHub Repository & Production Deployment',
+      url: 'https://github.com/GhulamMustufa/ai-freelance-pipeline'
     }
   ];
 

@@ -68,7 +68,7 @@ export class OpportunityPipeline {
     this.mcpClient = new UpworkMCPClient();
   }
 
-  async processJob(payload: RawOpportunityPayload) {
+  async processJob(payload: RawOpportunityPayload, options?: { forceProposal?: boolean }) {
     let opp = await this.ingest(payload);
 
     try {
@@ -77,12 +77,28 @@ export class OpportunityPipeline {
       
       const decision = await prisma.opportunityDecision.findFirst({ where: { opportunityId: opp.id } });
 
-      if (decision?.recommendation === 'APPLY') {
+      if (decision?.recommendation === 'APPLY' || options?.forceProposal) {
         await this.generateProposal(opp.id, enrichedData);
       }
+
+      const completedOpp = await prisma.opportunity.findUnique({
+        where: { id: opp.id },
+        include: {
+          jobPosting: true,
+          decision: true,
+          score: true,
+          proposal: true,
+          client: { include: { profile: true } },
+          pipelineRuns: { orderBy: { createdAt: 'asc' } },
+          agentRuns: { orderBy: { createdAt: 'asc' } },
+        }
+      });
+
+      return completedOpp;
     } catch (error) {
       console.error(`Pipeline failed for ${opp.id}:`, error);
       await this.logRun(opp.id, PipelineStage.INGEST, PipelineStatus.FAILED, String(error));
+      throw error;
     }
   }
 
@@ -142,23 +158,30 @@ export class OpportunityPipeline {
       clientId = Buffer.from(`${payload.platformId}-fallback`).toString('base64');
     }
 
+    const totalSpend = payload.client?.totalSpend ?? clientData?.total_spent ?? 0;
+    const avgHourlyRate = payload.client?.avgHourlyRate ?? clientData?.avg_hourly_rate ?? 0;
+    const feedbackScore = payload.client?.feedbackScore ?? clientData?.feedback_score ?? 0;
+    const totalContracts = payload.client?.hires ?? clientData?.hires ?? 0;
+    const location = payload.client?.location ?? clientData?.location?.country ?? undefined;
+
     const client = await prisma.client.upsert({
       where: { platformId: String(clientId) },
       update: {
         profile: {
           upsert: {
             create: {
-              totalSpend: clientData?.total_spent || 0,
-              avgHourlyRate: clientData?.avg_hourly_rate || 0,
-              feedbackScore: clientData?.feedback_score || 0,
-              totalContracts: clientData?.hires || 0,
-              location: clientData?.location?.country
+              totalSpend,
+              avgHourlyRate,
+              feedbackScore,
+              totalContracts,
+              location
             },
             update: {
-              totalSpend: clientData?.total_spent || 0,
-              avgHourlyRate: clientData?.avg_hourly_rate || 0,
-              feedbackScore: clientData?.feedback_score || 0,
-              totalContracts: clientData?.hires || 0,
+              totalSpend,
+              avgHourlyRate,
+              feedbackScore,
+              totalContracts,
+              location
             }
           }
         }
@@ -168,11 +191,11 @@ export class OpportunityPipeline {
         platform: payload.platform,
         profile: {
           create: {
-            totalSpend: clientData?.total_spent || 0,
-            avgHourlyRate: clientData?.avg_hourly_rate || 0,
-            feedbackScore: clientData?.feedback_score || 0,
-            totalContracts: clientData?.hires || 0,
-            location: clientData?.location?.country
+            totalSpend,
+            avgHourlyRate,
+            feedbackScore,
+            totalContracts,
+            location
           }
         }
       },
@@ -310,10 +333,11 @@ export class OpportunityPipeline {
       let usedEvidence: string[] = [];
       let attempts = 0;
       let isGrounded = false;
+      let lastFeedback: string | undefined = undefined;
 
       while (!isGrounded && attempts < 3) {
         attempts++;
-        const draft = await this.proposalDrafter.draft(job.description, rankedEvidence, opportunityId);
+        const draft = await this.proposalDrafter.draft(job.description, rankedEvidence, opportunityId, lastFeedback);
         
         const verification = await this.claimVerifier.verify(draft.content, rankedEvidence);
         
@@ -322,6 +346,7 @@ export class OpportunityPipeline {
           finalContent = draft.content;
           usedEvidence = draft.evidenceUsed;
         } else {
+          lastFeedback = verification.feedback;
           console.warn(`[Pipeline] Hallucination detected on attempt ${attempts}:`, verification.feedback);
           if (attempts === 3) {
             throw new Error(`Failed to generate grounded proposal after 3 attempts. Feedback: ${verification.feedback}`);
