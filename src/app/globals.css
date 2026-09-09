@@ -128,3 +128,30 @@
     @apply font-sans;
   }
 }
+/* ── Landing Page Animations ─────────────────────────────────────────────── */
+@keyframes scoreIn {
+  from { width: 0%; }
+  to { width: var(--tw-width, 100%); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .motion-safe\:animate-\[scoreIn_1s_ease-out_forwards\] {
+    animation: none;
+  }
+}

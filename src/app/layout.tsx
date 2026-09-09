@@ -16,37 +16,30 @@ const geistMono = Geist_Mono({
 const BASE_URL = "https://github.com/GhulamMustufa/ai-freelance-pipeline";
 
 export const metadata: Metadata = {
-  // ── Core ──────────────────────────────────────────────────────────────────
   title: {
-    default: "OmniBid Intelligence Engine",
-    template: "%s | OmniBid Intelligence Engine",
+    default: "OmniBid — AI Freelance Job Analyzer & Opportunity Intelligence",
+    template: "%s | OmniBid",
   },
   description:
-    "An autonomous, multi-agent AI pipeline that discovers freelance opportunities, evaluates technical fit, generates evidence-grounded proposals, and learns from real-world outcomes. Built with Next.js, DeepSeek, OpenAI, Prisma, and MCP.",
+    "Analyze freelance opportunities with AI. OmniBid evaluates fit, job quality, client signals, economics, risks and unknowns — then tells you APPLY, MAYBE, or SKIP before helping you build a grounded proposal.",
   keywords: [
-    "AI freelance pipeline",
-    "multi-agent AI system",
-    "autonomous proposal generation",
-    "RAG retrieval augmented generation",
-    "LLM pipeline",
-    "OpenAI GPT-4o",
-    "DeepSeek",
-    "Next.js AI",
-    "Upwork automation",
-    "AI model routing",
-    "freelance intelligence",
-    "agentic workflow",
+    "AI freelance job analyzer",
+    "freelance opportunity analysis",
+    "Upwork job analyzer",
+    "freelance job scoring",
+    "AI freelance assistant",
+    "freelance proposal generator",
+    "AI opportunity intelligence",
+    "freelance job evaluation",
     "OmniBid",
-    "AI portfolio project",
-    "TypeScript AI",
+    "freelance decision engine",
   ],
   authors: [{ name: "Ghulam Mustufa", url: BASE_URL }],
   creator: "Ghulam Mustufa",
   publisher: "Ghulam Mustufa",
   category: "Technology",
-  applicationName: "OmniBid Intelligence Engine",
+  applicationName: "OmniBid",
 
-  // ── Robots & Indexing ─────────────────────────────────────────────────────
   robots: {
     index: true,
     follow: true,
@@ -58,52 +51,48 @@ export const metadata: Metadata = {
     },
   },
 
-  // ── Icons & Manifest ──────────────────────────────────────────────────────
   icons: {
     icon: "/favicon.jpg",
     shortcut: "/favicon.jpg",
     apple: "/favicon.jpg",
   },
 
-  // ── Open Graph (LinkedIn, Facebook, Slack previews) ───────────────────────
   openGraph: {
     type: "website",
     locale: "en_US",
     url: BASE_URL,
-    siteName: "OmniBid Intelligence Engine",
-    title: "OmniBid Intelligence Engine — Autonomous AI Freelance Pipeline",
+    siteName: "OmniBid",
+    title: "OmniBid — Know which freelance jobs are worth your time",
     description:
-      "Multi-agent AI system with model routing, RAG evidence grounding, evaluation framework, and real-time observability. Evaluates freelance opportunities and generates proposals autonomously.",
+      "Analyze freelance opportunities with AI. OmniBid evaluates fit, job quality, client signals, economics, risks and unknowns — then tells you APPLY, MAYBE, or SKIP.",
     images: [
       {
         url: "/logo.png",
         width: 1280,
         height: 853,
-        alt: "OmniBid Intelligence Engine Logo",
+        alt: "OmniBid — AI Freelance Opportunity Intelligence",
       },
     ],
   },
 
-  // ── Twitter / X Card ──────────────────────────────────────────────────────
   twitter: {
     card: "summary_large_image",
-    title: "OmniBid Intelligence Engine — Autonomous AI Freelance Pipeline",
+    title: "OmniBid — Know which freelance jobs are worth your time",
     description:
-      "Multi-agent AI system with model routing, RAG grounding, and real-time observability. Evaluates and proposes on freelance jobs autonomously.",
+      "Analyze freelance opportunities with AI. APPLY, MAYBE, or SKIP — with transparent reasoning, evidence-grounded proposals, and deterministic protection.",
     images: ["/logo.png"],
     creator: "@GhulamMustufa",
   },
 };
 
-// JSON-LD Structured Data — makes Google show rich results
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "OmniBid Intelligence Engine",
-  applicationCategory: "DeveloperApplication",
+  name: "OmniBid",
+  applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   description:
-    "An autonomous multi-agent AI pipeline that discovers, evaluates, and proposes on freelance opportunities using LLM orchestration, RAG, and dynamic model routing.",
+    "AI Opportunity Decision Intelligence Engine for freelancers. Analyzes job quality, technical fit, client signals, and economics to deliver APPLY / MAYBE / SKIP decisions with grounded proposals.",
   author: {
     "@type": "Person",
     name: "Ghulam Mustufa",
@@ -127,17 +116,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        {/* JSON-LD Structured Data */}
         <Script
           id="json-ld"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {/* Preconnect to Google Fonts for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
+      <body className="min-h-full flex flex-col bg-slate-950 text-slate-100 transition-colors duration-200">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
