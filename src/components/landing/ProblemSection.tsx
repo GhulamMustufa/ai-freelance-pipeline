@@ -17,7 +17,7 @@ export default function ProblemSection() {
             <span className="text-amber-400">It&apos;s knowing which ones deserve your time.</span>
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
-            Every time you evaluate an opportunity manually, you're making a costly bet with your most limited resource.
+            Every time you evaluate an opportunity manually, you&apos;re making a costly bet with your most limited resource.
           </p>
         </div>
 
