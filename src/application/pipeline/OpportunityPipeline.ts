@@ -148,9 +148,9 @@ export class OpportunityPipeline {
         headline: dbProfile?.headline || '',
         bio: dbProfile?.bio || '',
         experienceYears: dbProfile?.experienceYears || 8,
-        skills: dbProfile ? dbProfile.skills.split(',') : ['TypeScript', 'Next.js'],
-        preferredTechnologies: ['TypeScript', 'Next.js'],
-        excludedTechnologies: [],
+        skills: dbProfile ? (dbProfile.skills || '').split(',').filter(Boolean) : ['TypeScript', 'Next.js'],
+        preferredTechnologies: dbProfile ? (dbProfile.preferredTechnologies || '').split(',').filter(Boolean) : ['TypeScript', 'Next.js'],
+        excludedTechnologies: dbProfile ? (dbProfile.excludedTechnologies || '').split(',').filter(Boolean) : [],
         targetHourlyRate: dbProfile?.targetHourlyRate ?? 75,
         minProjectBudget: dbProfile?.minProjectBudget ?? 1000,
       };

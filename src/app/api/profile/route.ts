@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { auth } from '@clerk/nextjs/server';
 
 export async function GET() {
   try {
-    const profile = await prisma.freelancerProfile.findFirst({
-      where: { isDefault: true },
+    const { userId } = await auth();
+    
+    // If authenticated, look for their profile. Otherwise, fallback to the default global profile.
+    let profileQuery = userId 
+      ? { userId } 
+      : { isDefault: true };
+
+    let profile = await prisma.freelancerProfile.findFirst({
+      where: profileQuery,
       include: {
         evidenceItems: {
           select: {
@@ -22,10 +30,18 @@ export async function GET() {
     });
 
     if (!profile) {
-      return NextResponse.json({
-        success: false,
-        error: 'No default profile found. Please run seed or create one.',
-      }, { status: 404 });
+      if (userId) {
+        // If a user has no profile, we can return null to signify they need to create one.
+        return NextResponse.json({
+          success: true,
+          profile: null,
+        });
+      } else {
+        return NextResponse.json({
+          success: false,
+          error: 'No default profile found. Please run seed or create one.',
+        }, { status: 404 });
+      }
     }
 
     return NextResponse.json({
@@ -71,12 +87,19 @@ export async function PUT(req: NextRequest) {
 
 async function handleSaveProfile(req: NextRequest) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const data = await req.json();
 
-    const targetId = data.id || 'default-profile';
-    const existing = await prisma.freelancerProfile.findUnique({
-      where: { id: targetId }
+    // Check if the user already has a profile
+    let existing = await prisma.freelancerProfile.findFirst({
+      where: { userId }
     });
+    
+    const targetId = existing?.id || data.id || undefined;
 
     const nextVersion = existing ? (existing.version || 1) + 1 : 1;
 
@@ -87,46 +110,37 @@ async function handleSaveProfile(req: NextRequest) {
     const projectTypesStr = Array.isArray(data.preferredProjectTypes) ? data.preferredProjectTypes.join(', ') : (data.preferredProjectTypes || '');
     const industriesStr = Array.isArray(data.preferredIndustries) ? data.preferredIndustries.join(', ') : (data.preferredIndustries || '');
 
-    const profile = await prisma.freelancerProfile.upsert({
-      where: { id: targetId },
-      update: {
-        name: data.name || 'Senior Full-Stack AI Engineer',
-        headline: data.headline || '',
-        bio: data.bio || '',
-        experienceYears: Number(data.experienceYears) || 5,
-        skills: skillsStr,
-        primarySkills: primarySkillsStr,
-        preferredTechnologies: prefStr,
-        excludedTechnologies: exclStr,
-        preferredProjectTypes: projectTypesStr,
-        preferredIndustries: industriesStr,
-        location: data.location || null,
-        availability: data.availability || null,
-        targetHourlyRate: data.targetHourlyRate ? Number(data.targetHourlyRate) : null,
-        minProjectBudget: data.minProjectBudget ? Number(data.minProjectBudget) : null,
-        version: nextVersion,
-        isDefault: true,
-      },
-      create: {
-        id: targetId,
-        name: data.name || 'Senior Full-Stack AI Engineer',
-        headline: data.headline || '',
-        bio: data.bio || '',
-        experienceYears: Number(data.experienceYears) || 5,
-        skills: skillsStr,
-        primarySkills: primarySkillsStr,
-        preferredTechnologies: prefStr,
-        excludedTechnologies: exclStr,
-        preferredProjectTypes: projectTypesStr,
-        preferredIndustries: industriesStr,
-        location: data.location || null,
-        availability: data.availability || null,
-        targetHourlyRate: data.targetHourlyRate ? Number(data.targetHourlyRate) : null,
-        minProjectBudget: data.minProjectBudget ? Number(data.minProjectBudget) : null,
-        version: 1,
-        isDefault: true,
-      }
-    });
+    const profileData = {
+      name: data.name || 'Senior Freelancer',
+      headline: data.headline || '',
+      bio: data.bio || '',
+      experienceYears: Number(data.experienceYears) || 5,
+      skills: skillsStr,
+      primarySkills: primarySkillsStr,
+      preferredTechnologies: prefStr,
+      excludedTechnologies: exclStr,
+      preferredProjectTypes: projectTypesStr,
+      preferredIndustries: industriesStr,
+      location: data.location || '',
+      availability: data.availability || '',
+      targetHourlyRate: data.targetHourlyRate ? Number(data.targetHourlyRate) : null,
+      minProjectBudget: data.minProjectBudget ? Number(data.minProjectBudget) : null,
+      version: nextVersion,
+      userId: userId,
+      isDefault: false
+    };
+
+    let profile;
+    if (targetId) {
+      profile = await prisma.freelancerProfile.update({
+        where: { id: targetId },
+        data: profileData
+      });
+    } else {
+      profile = await prisma.freelancerProfile.create({
+        data: profileData
+      });
+    }
 
     return NextResponse.json({
       success: true,
