@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -8,11 +9,18 @@ import { ThemeToggle } from './ThemeToggle';
 
 export default function Navigation() {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const navItemClass = (isActive: boolean) => `flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
     isActive
       ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
       : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
+  }`;
+
+  const mobileNavItemClass = (isActive: boolean) => `block px-4 py-3 rounded-md text-sm font-medium transition-colors ${
+    isActive
+      ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white'
+      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white'
   }`;
 
   return (
@@ -55,7 +63,7 @@ export default function Navigation() {
 
           <div className="flex items-center space-x-3">
             <Show when="signed-out">
-              <div className="flex items-center gap-2 ml-2">
+              <div className="hidden sm:flex items-center gap-2 ml-2">
                 <SignInButton mode="modal">
                   <button className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium px-2 py-1.5 transition-colors">
                     Sign In
@@ -84,8 +92,55 @@ export default function Navigation() {
             <div className="pl-3 border-l border-slate-200 dark:border-slate-800 flex items-center">
               <ThemeToggle />
             </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              className="sm:hidden p-1.5 ml-1 rounded-md text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown */}
+        {menuOpen && (
+          <div className="sm:hidden py-3 border-t border-slate-100 dark:border-slate-800/60 space-y-1">
+            <Link href="/dashboard/analyzer" onClick={() => setMenuOpen(false)} className={mobileNavItemClass(pathname.startsWith('/dashboard/analyzer'))}>
+              Analyzer
+            </Link>
+            <Link href="/dashboard/evals" onClick={() => setMenuOpen(false)} className={mobileNavItemClass(pathname.startsWith('/dashboard/evals'))}>
+              Benchmarks
+            </Link>
+            <Show when="signed-in">
+              <Link href="/dashboard/history" onClick={() => setMenuOpen(false)} className={mobileNavItemClass(pathname.startsWith('/dashboard/history'))}>
+                History
+              </Link>
+              <Link href="/dashboard/profile" onClick={() => setMenuOpen(false)} className={mobileNavItemClass(pathname.startsWith('/dashboard/profile'))}>
+                Profile
+              </Link>
+            </Show>
+            <Show when="signed-out">
+              <div className="flex flex-col gap-2 pt-3 mt-3 border-t border-slate-100 dark:border-slate-800/60 px-2">
+                <SignInButton mode="modal">
+                  <button onClick={() => setMenuOpen(false)} className="w-full text-center text-sm font-medium px-4 py-2.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white transition-colors">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button onClick={() => setMenuOpen(false)} className="w-full text-center text-sm font-medium px-4 py-2.5 rounded-md bg-slate-900 dark:bg-white text-white dark:text-slate-900 transition-colors">
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </div>
+            </Show>
+          </div>
+        )}
       </div>
     </header>
   );
