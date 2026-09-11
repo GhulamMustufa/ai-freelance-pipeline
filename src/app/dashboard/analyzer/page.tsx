@@ -80,6 +80,39 @@ Budget is fixed at $800. Timeline is approximately 2 weeks.`,
   }
 ];
 
+const DEMO_RESULT = {
+  success: true,
+  recommendation: 'APPLY',
+  score: 85,
+  decision: {
+    status: 'APPLY',
+    rationale: 'This is a perfect match for your AI and Full-Stack background. The client has an excellent history and a realistic budget. It requires the exact stack you are an expert in (Next.js, TypeScript, AI APIs).',
+    risks: ['Timeline is not explicitly stated', 'May require managing multiple AI providers'],
+    missingSkills: [],
+    redFlags: [],
+    opportunities: ['High potential for a long-term contract', 'Bleeding edge technology stack'],
+    confidence: 0.92,
+  },
+  economics: {
+    estimatedDuration: '1-3 months',
+    recommendedRate: '$85/hr',
+    expectedTotalValue: '$15,000+',
+    competitiveness: 'MEDIUM',
+    notes: 'The client has spent over $62k with a strong average rate, indicating they are willing to pay premium rates for verified experts.',
+  },
+  proposal: {
+    content: `Hi there,\n\nI noticed you're looking for an AI & Full-Stack Engineer to architect an autonomous agent workflow using Next.js and DeepSeek. This is exactly what I specialize in.\n\nRecently, I built a multi-agent orchestration pipeline using the Next.js App Router and Prisma, integrating OpenAI and DeepSeek to handle complex reasoning tasks and background verification loops. I understand the specific challenges around vector search, anti-hallucination guardrails, and managing streaming API states.\n\nGiven your requirements, I'd propose starting with a lightweight MVP to validate the multi-agent routing logic before scaling out the full feature set.\n\nI'd love to jump on a quick 15-minute call to discuss your specific architecture and see if I'm the right fit to bring this pipeline to life.\n\nBest,\nJane Doe`,
+    strategy: 'Focus on your specific experience with Next.js App Router and DeepSeek. Mention anti-hallucination loops explicitly since they asked for it. End with a soft call-to-action for a technical chat.',
+  },
+  trace: {
+    logs: [
+      { step: 'INGEST', timestamp: new Date().toISOString(), message: 'Parsed job description and client data' },
+      { step: 'EVALUATE', timestamp: new Date().toISOString(), message: 'Evaluated skills against user profile' },
+      { step: 'PROPOSE', timestamp: new Date().toISOString(), message: 'Drafted highly tailored proposal using past projects' },
+    ]
+  }
+};
+
 export default function ManualJobAnalyzer() {
   // Input states
   const [title, setTitle] = useState('');
@@ -112,12 +145,6 @@ export default function ManualJobAnalyzer() {
 
   // Paywall state
   const { isSignedIn } = useAuth();
-  const [usageCount, setUsageCount] = useState(0);
-
-  useEffect(() => {
-    const count = parseInt(localStorage.getItem('omnibid_usage_count') || '0', 10);
-    setUsageCount(count);
-  }, []);
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -170,6 +197,15 @@ export default function ManualJobAnalyzer() {
           setError(null);
           setResult(null);
           setCopied(false);
+
+          if (!isSignedIn) {
+            setTimeout(() => {
+              setResult(DEMO_RESULT);
+              setActiveTab('decision');
+              setIsAnalyzing(false);
+            }, 1500);
+            return;
+          }
 
           const payload = {
             title: (job?.title ?? title)?.trim() || undefined,
@@ -301,11 +337,14 @@ export default function ManualJobAnalyzer() {
     setResult(null);
     setCopied(false);
 
-    // Increment count for anonymous users
     if (!isSignedIn) {
-      const newCount = usageCount + 1;
-      setUsageCount(newCount);
-      localStorage.setItem('omnibid_usage_count', String(newCount));
+      setIsAnalyzing(true);
+      setTimeout(() => {
+        setResult(DEMO_RESULT);
+        setActiveTab('decision');
+        setIsAnalyzing(false);
+      }, 1500);
+      return;
     }
 
     try {
@@ -719,39 +758,26 @@ export default function ManualJobAnalyzer() {
                 </div>
               )}
 
-              {!isSignedIn && usageCount >= 3 ? (
-                <div className="w-full text-center space-y-3 pt-2">
-                  <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs font-semibold">
-                    You've reached your limit of 3 free analyses.
-                  </div>
-                  <SignInButton mode="modal">
-                    <button type="button" className="w-full py-3.5 px-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-extrabold text-sm shadow-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-all">
-                      Sign In to Unlock Unlimited Access
-                    </button>
-                  </SignInButton>
-                </div>
-              ) : (
-                <button
-                  type="submit"
-                  disabled={isAnalyzing}
-                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-                >
-                  {isAnalyzing ? (
-                    <>
-                      <svg className="animate-spin h-4 w-4 text-slate-950" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                      </svg>
-                      <span>Synthesizing Multi-Agent Intelligence...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>⚡</span>
-                      <span>Triage Opportunity (Instant AI Decision)</span>
-                    </>
-                  )}
-                </button>
-              )}
+              <button
+                type="submit"
+                disabled={isAnalyzing}
+                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              >
+                {isAnalyzing ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 text-slate-950" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    <span>Synthesizing Multi-Agent Intelligence...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>⚡</span>
+                    <span>Triage Opportunity (Instant AI Decision)</span>
+                  </>
+                )}
+              </button>
             </form>
           </div>
 
@@ -792,6 +818,23 @@ export default function ManualJobAnalyzer() {
             {/* Complete Result View */}
             {result && !isAnalyzing && (
               <div className="space-y-6">
+
+                {/* DEMO BANNER */}
+                {!isSignedIn && (
+                  <div className="bg-amber-100 dark:bg-amber-500/10 border-b border-amber-200 dark:border-amber-500/20 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">✨</span>
+                      <p className="text-sm text-amber-800 dark:text-amber-300 font-medium">
+                        This is a sample <strong>Demo Analysis</strong>. To evaluate your actual job description and generate a real proposal based on your custom profile, please sign in.
+                      </p>
+                    </div>
+                    <SignInButton mode="modal">
+                      <button className="whitespace-nowrap px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm rounded-lg shadow-sm transition-all">
+                        Sign In Now
+                      </button>
+                    </SignInButton>
+                  </div>
+                )}
 
                 {/* Tabs: Decision | Grounded Proposal | Agent Trace */}
                 <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
