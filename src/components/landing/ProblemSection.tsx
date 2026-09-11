@@ -34,7 +34,7 @@ export default function ProblemSection() {
                 }`}>
                   {s.time}
                 </div>
-                <div className="h-px flex-1 bg-slate-800" />
+                <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
                 <div className="text-sm text-slate-700 dark:text-slate-300 flex-1">{s.action}</div>
               </div>
             ))}

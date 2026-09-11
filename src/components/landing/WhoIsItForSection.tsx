@@ -29,7 +29,7 @@ export default function WhoIsItForSection() {
   ];
 
   return (
-    <section className="py-24 bg-slate-50 dark:bg-slate-950">
+    <section className="py-24 bg-white dark:bg-slate-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Who it IS for */}

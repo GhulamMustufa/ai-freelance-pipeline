@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function FinalCTASection() {
   return (
-    <section className="py-28 bg-white dark:bg-slate-950 relative overflow-hidden">
+    <section className="py-28 bg-white dark:bg-slate-900 relative overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-radial from-amber-500/12 via-transparent to-transparent rounded-full blur-3xl" />

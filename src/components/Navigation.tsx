@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { ThemeToggle } from './ThemeToggle';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -39,18 +40,6 @@ export default function Navigation() {
 
           <nav className="flex items-center space-x-1 sm:space-x-2">
             <Link
-              href="/"
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-md text-sm font-medium transition-colors ${
-                isHome
-                  ? 'bg-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/20'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
-              }`}
-            >
-              <span>🏠</span>
-              <span>Home</span>
-            </Link>
-
-            <Link
               href="/dashboard/analyzer"
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-md text-sm font-medium transition-colors ${
                 isAnalyzer
@@ -86,6 +75,7 @@ export default function Navigation() {
               </span>
               <span className="font-medium">Multi-Agent Router Active</span>
             </div>
+            <ThemeToggle />
           </div>
         </div>
       </div>

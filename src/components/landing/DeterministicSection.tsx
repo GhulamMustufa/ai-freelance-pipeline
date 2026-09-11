@@ -21,11 +21,11 @@ export default function DeterministicSection() {
   ];
 
   return (
-    <section className="py-24 bg-slate-50 dark:bg-slate-950">
+    <section className="py-24 bg-white dark:bg-slate-900">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <div className="inline-block px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-xs font-bold text-slate-400 uppercase tracking-wider">
+            <div className="inline-block px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
               Deterministic Protection
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">

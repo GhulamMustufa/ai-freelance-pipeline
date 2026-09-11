@@ -49,7 +49,7 @@ export default function FourPillarsSection() {
   ];
 
   return (
-    <section className="py-24 bg-slate-50 dark:bg-slate-950" id="intelligence">
+    <section className="py-24 bg-white dark:bg-slate-900" id="intelligence">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -73,7 +73,7 @@ export default function FourPillarsSection() {
                   {p.number}
                 </span>
                 {p.hasUnknown && (
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400">
                     UNKNOWN SAFE
                   </span>
                 )}

@@ -36,7 +36,7 @@ export default function DecisionBadges() {
   ];
 
   return (
-    <section className="py-24 bg-slate-100 dark:bg-slate-900" id="decisions">
+    <section className="py-24 bg-slate-50 dark:bg-slate-950" id="decisions">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">

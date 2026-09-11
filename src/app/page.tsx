@@ -1,4 +1,4 @@
-import LandingNav from "@/components/landing/LandingNav";
+import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/landing/HeroSection";
 import TrustStrip from "@/components/landing/TrustStrip";
 import ProblemSection from "@/components/landing/ProblemSection";
@@ -19,7 +19,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       {/* Navigation */}
-      <LandingNav />
+      <Navigation />
 
       {/* 1. Hero */}
       <HeroSection />

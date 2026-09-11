@@ -15,7 +15,7 @@ export default function ProposalSection() {
   ];
 
   return (
-    <section className="py-24 bg-slate-100 dark:bg-slate-900">
+    <section className="py-24 bg-slate-50 dark:bg-slate-950">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           <div className="space-y-6">

@@ -24,10 +24,10 @@ export default function UnknownSection() {
   ];
 
   return (
-    <section className="py-24 bg-slate-100 dark:bg-slate-900">
+    <section className="py-24 bg-slate-50 dark:bg-slate-950">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-16">
-          <div className="inline-block px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <div className="inline-block px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
             Epistemic Honesty
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -59,7 +59,7 @@ export default function UnknownSection() {
               </div>
 
               {/* What OmniBid does */}
-              <div className="bg-slate-800/60 border border-amber-500/20 rounded-xl p-4">
+              <div className="bg-amber-50 dark:bg-slate-800/60 border border-amber-500/20 rounded-xl p-4">
                 <div className="text-[10px] font-bold uppercase tracking-widest text-amber-600 mb-1.5">
                   OmniBid preserves:
                 </div>
@@ -69,7 +69,7 @@ export default function UnknownSection() {
           ))}
         </div>
 
-        <div className="mt-12 text-center p-6 bg-slate-800/30 border border-slate-700/60 rounded-2xl">
+        <div className="mt-12 text-center p-6 bg-slate-200/50 dark:bg-slate-800/30 border border-slate-300/60 dark:border-slate-700/60 rounded-2xl">
           <p className="text-slate-900 dark:text-white font-semibold text-lg">
             The system tells you what it <span className="text-emerald-400">knows</span>,
             what it <span className="text-sky-400">estimates</span>, and

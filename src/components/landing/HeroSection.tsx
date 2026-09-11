@@ -106,10 +106,10 @@ function ProductMockup() {
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center pt-16 overflow-hidden bg-white dark:bg-slate-950">
+    <section className="relative min-h-screen flex items-center pt-16 overflow-hidden bg-slate-50 dark:bg-slate-950">
       {/* Background */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-white dark:bg-slate-950" />
+        <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-gradient-radial from-amber-500/12 via-transparent to-transparent rounded-full blur-3xl" />
         {/* Subtle grid */}
         <div
