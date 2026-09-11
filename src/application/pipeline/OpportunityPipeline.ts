@@ -257,6 +257,8 @@ export class OpportunityPipeline {
 
     await this.logRun(id, PipelineStage.SCORE, PipelineStatus.PROCESSING);
 
+    this.executor.setOpportunityContext(id);
+
     try {
       // 1. Parallel Independent Intelligence Agents
       const [jobAnalysis, clientAnalysis, competitionAnalysis] = await Promise.all([

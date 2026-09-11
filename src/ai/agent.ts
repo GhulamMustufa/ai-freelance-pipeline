@@ -21,11 +21,18 @@ export interface ExecuteOptions<T> {
 }
 
 export class AgentExecutor {
+  private contextOpportunityId: string | null = null;
+
   // If not injected per-execution, fallback to this
   constructor(private defaultConfig: AIProviderConfig = { provider: 'openai', model: 'gpt-4o-mini' }) {}
 
+  setOpportunityContext(id: string) {
+    this.contextOpportunityId = id;
+  }
+
   async executeStructured<T>(options: ExecuteOptions<T>): Promise<T> {
-    const { agentName, opportunityId = null, prompt, schema, systemPrompt, schemaName, promptVersion = "1.0" } = options;
+    const { agentName, prompt, schema, systemPrompt, schemaName, promptVersion = "1.0" } = options;
+    const opportunityId = options.opportunityId || this.contextOpportunityId;
     const startTime = Date.now();
     let result: T | null = null;
     let errorStr: string | null = null;

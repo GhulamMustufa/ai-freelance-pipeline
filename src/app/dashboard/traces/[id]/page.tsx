@@ -232,19 +232,19 @@ export default async function TraceDetailPage({ params }: { params: { id: string
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between mb-1"><span className="text-sm font-medium text-slate-700 dark:text-slate-300">Skill Match</span><span className="text-sm font-bold text-slate-900 dark:text-white">{opportunity.score.skillMatch}/100</span></div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2"><div className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style={{width: `${opportunity.score.skillMatch}%`}}></div></div>
+                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2"><div className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style={{width: `${Math.min(100, Math.max(0, opportunity.score.skillMatch))}%`}}></div></div>
                 </div>
                 <div>
                   <div className="flex justify-between mb-1"><span className="text-sm font-medium text-slate-700 dark:text-slate-300">Portfolio Fit</span><span className="text-sm font-bold text-slate-900 dark:text-white">{opportunity.score.portfolioFit}/100</span></div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2"><div className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style={{width: `${opportunity.score.portfolioFit}%`}}></div></div>
+                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2"><div className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style={{width: `${Math.min(100, Math.max(0, opportunity.score.portfolioFit))}%`}}></div></div>
                 </div>
                 <div>
                   <div className="flex justify-between mb-1"><span className="text-sm font-medium text-slate-700 dark:text-slate-300">Project Quality</span><span className="text-sm font-bold text-slate-900 dark:text-white">{opportunity.score.projectQuality}/100</span></div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2"><div className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style={{width: `${opportunity.score.projectQuality}%`}}></div></div>
+                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2"><div className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style={{width: `${Math.min(100, Math.max(0, opportunity.score.projectQuality))}%`}}></div></div>
                 </div>
                 <div>
                   <div className="flex justify-between mb-1"><span className="text-sm font-medium text-slate-700 dark:text-slate-300">Long Term Potential</span><span className="text-sm font-bold text-slate-900 dark:text-white">{opportunity.score.longTermPotential}/100</span></div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2"><div className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style={{width: `${opportunity.score.longTermPotential}%`}}></div></div>
+                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2"><div className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style={{width: `${Math.min(100, Math.max(0, opportunity.score.longTermPotential))}%`}}></div></div>
                 </div>
                 
                 {opportunity.score.redFlags && JSON.parse(opportunity.score.redFlags).length > 0 && (

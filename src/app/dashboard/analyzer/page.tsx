@@ -125,17 +125,8 @@ export default function ManualJobAnalyzer() {
   const [clientSpend, setClientSpend] = useState('');
   const [clientRating, setClientRating] = useState('');
 
-  // Profile state
   const [profile, setProfile] = useState<any>(null);
   const [profileLoaded, setProfileLoaded] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [profileSkills, setProfileSkills] = useState('');
-  const [profilePrimarySkills, setProfilePrimarySkills] = useState('');
-  const [profileExcluded, setProfileExcluded] = useState('');
-  const [profileTargetRate, setProfileTargetRate] = useState('75');
-  const [profileMinBudget, setProfileMinBudget] = useState('1000');
-  const [profileLocation, setProfileLocation] = useState('');
-  const [profileAvailability, setProfileAvailability] = useState('FULL_TIME');
 
   // Loading & Execution states
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -153,13 +144,6 @@ export default function ManualJobAnalyzer() {
       const data = await res.json();
       if (data.success && data.profile) {
         setProfile(data.profile);
-        setProfileSkills(data.profile.skills.join(', '));
-        setProfilePrimarySkills((data.profile.primarySkills || []).join(', '));
-        setProfileExcluded(data.profile.excludedTechnologies.join(', '));
-        setProfileTargetRate(String(data.profile.targetHourlyRate || 75));
-        setProfileMinBudget(String(data.profile.minProjectBudget || 1000));
-        setProfileLocation(data.profile.location || '');
-        setProfileAvailability(data.profile.availability || 'FULL_TIME');
       } else {
         setProfile(null);
       }
@@ -219,18 +203,11 @@ export default function ManualJobAnalyzer() {
             budget: job?.budget !== undefined ? (job.budget ? parseFloat(job.budget) : undefined) : (budget ? parseFloat(budget) : undefined),
             hourlyMin: job?.hourlyMin !== undefined ? (job.hourlyMin ? parseFloat(job.hourlyMin) : undefined) : (hourlyMin ? parseFloat(hourlyMin) : undefined),
             hourlyMax: job?.hourlyMax !== undefined ? (job.hourlyMax ? parseFloat(job.hourlyMax) : undefined) : (hourlyMax ? parseFloat(hourlyMax) : undefined),
-            client: job?.client ?? ((clientLocation || clientSpend || clientRating) ? {
-              location: clientLocation || undefined,
-              totalSpend: clientSpend ? parseFloat(clientSpend) : undefined,
-              feedbackScore: clientRating ? parseFloat(clientRating) : undefined,
-            } : undefined),
-            profile: profile ? {
-              ...profile,
-              skills: profileSkills.split(',').map((s: string) => s.trim()).filter(Boolean),
-              excludedTechnologies: profileExcluded.split(',').map((s: string) => s.trim()).filter(Boolean),
-              targetHourlyRate: Number(profileTargetRate) || 75,
-              minProjectBudget: Number(profileMinBudget) || 1000,
+            client: clientSpend || clientRating ? {
+              totalSpend: clientSpend ? Number(clientSpend) : undefined,
+              feedbackScore: clientRating ? Number(clientRating) : undefined
             } : undefined,
+            profile: profile ? profile : undefined,
           };
 
           fetch('/api/opportunities/analyze', {
@@ -268,43 +245,8 @@ export default function ManualJobAnalyzer() {
     hourlyMin,
     isSignedIn,
     profile,
-    profileExcluded,
-    profileMinBudget,
-    profileSkills,
-    profileTargetRate,
     title,
   ]);
-
-  const handleSaveProfile = async () => {
-    try {
-      const res = await fetch('/api/profile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: profile?.id || 'default-profile',
-          name: profile?.name || 'Senior Full-Stack AI Engineer',
-          headline: profile?.headline || 'Senior Full-Stack & AI Systems Engineer',
-          bio: profile?.bio || '',
-          experienceYears: profile?.experienceYears || 8,
-          skills: profileSkills.split(',').map(s => s.trim()).filter(Boolean),
-          primarySkills: profilePrimarySkills.split(',').map(s => s.trim()).filter(Boolean),
-          preferredTechnologies: profileSkills.split(',').map(s => s.trim()).slice(0, 5),
-          excludedTechnologies: profileExcluded.split(',').map(s => s.trim()).filter(Boolean),
-          targetHourlyRate: Number(profileTargetRate) || 75,
-          minProjectBudget: Number(profileMinBudget) || 1000,
-          location: profileLocation || 'Remote / US Timezones',
-          availability: profileAvailability || 'FULL_TIME',
-        })
-      });
-      const data = await res.json();
-      if (data.success) {
-        setShowProfileModal(false);
-        fetchProfile();
-      }
-    } catch {
-      alert('Failed to update profile');
-    }
-  };
 
   const loadPreset = (preset: Preset) => {
     setTitle(preset.data.title);
@@ -358,18 +300,11 @@ export default function ManualJobAnalyzer() {
         budget: customPayload?.budget !== undefined ? (customPayload.budget ? parseFloat(customPayload.budget) : undefined) : (budget ? parseFloat(budget) : undefined),
         hourlyMin: customPayload?.hourlyMin !== undefined ? (customPayload.hourlyMin ? parseFloat(customPayload.hourlyMin) : undefined) : (hourlyMin ? parseFloat(hourlyMin) : undefined),
         hourlyMax: customPayload?.hourlyMax !== undefined ? (customPayload.hourlyMax ? parseFloat(customPayload.hourlyMax) : undefined) : (hourlyMax ? parseFloat(hourlyMax) : undefined),
-        client: customPayload?.client ?? ((clientLocation || clientSpend || clientRating) ? {
-          location: clientLocation || undefined,
-          totalSpend: clientSpend ? parseFloat(clientSpend) : undefined,
-          feedbackScore: clientRating ? parseFloat(clientRating) : undefined,
-        } : undefined),
-        profile: profile ? {
-          ...profile,
-          skills: profileSkills.split(',').map((s: string) => s.trim()).filter(Boolean),
-          excludedTechnologies: profileExcluded.split(',').map((s: string) => s.trim()).filter(Boolean),
-          targetHourlyRate: Number(profileTargetRate) || 75,
-          minProjectBudget: Number(profileMinBudget) || 1000,
+        client: clientSpend || clientRating ? {
+          totalSpend: clientSpend ? Number(clientSpend) : undefined,
+          feedbackScore: clientRating ? Number(clientRating) : undefined
         } : undefined,
+        profile: profile ? profile : undefined,
       };
 
       const res = await fetch('/api/opportunities/analyze', {
@@ -429,179 +364,16 @@ export default function ManualJobAnalyzer() {
             </p>
           </div>
 
-          {/* Active Profile Pill / Customizer */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            {profileLoaded && (!profile || profile.isDefault) && (
-              <div className="text-[11px] font-bold text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-3 py-2 rounded-xl border border-red-200 dark:border-red-800 flex items-center gap-2 shadow-sm animate-pulse">
-                ⚠️ WARNING: Using Fallback Profile Data. Please configure your profile!
-              </div>
-            )}
-            <div className="bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 p-3 rounded-xl flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-warning/20 text-warning flex items-center justify-center font-bold text-sm border border-warning/30">
-                👤
-              </div>
-              <div className="text-left">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-200">
-                    {profile ? profile.name : (profileLoaded ? 'Default Profile' : 'Loading Profile...')}
-                  </span>
-                  <span className="text-[10px] font-mono font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 px-1.5 py-0.2 rounded">
-                    v{profile?.version || 1}
-                  </span>
-                </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Target: <span className="text-warning font-medium">${profileTargetRate}/hr</span> • Min: <span className="text-success font-medium">${profileMinBudget}</span>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowProfileModal(true)}
-                className="ml-2 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 transition-all"
-              >
-                ⚙️ Edit
-              </button>
+          {/* Active Profile Warning */}
+          {profileLoaded && (!profile || profile.isDefault) && (
+            <div className="text-[11px] font-bold text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-3 py-2 rounded-xl border border-red-200 dark:border-red-800 inline-flex items-center gap-2 shadow-sm animate-pulse mt-3">
+              ⚠️ WARNING: Using Fallback Profile Data.
+              <Link href="/dashboard/profile" className="underline hover:text-red-900 dark:hover:text-red-300 ml-1">
+                Configure your profile
+              </Link>
             </div>
-          </div>
+          )}
         </div>
-
-        {/* Profile Settings Modal */}
-        {showProfileModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 dark:bg-black/70 backdrop-blur-sm p-4">
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl text-slate-900 dark:text-slate-100 max-h-[90vh] overflow-y-auto">
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <span>⚙️</span> Customize Freelancer Profile
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    Currently active: <span className="font-mono font-bold text-warning">Profile v{profile?.version || 1}</span> (Saving bumps version and creates new snapshot)
-                  </p>
-                </div>
-                <button 
-                  onClick={() => setShowProfileModal(false)}
-                  className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white text-sm p-1"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <div className="space-y-4 text-sm">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                    Core Skills (Comma separated)
-                  </label>
-                  <input
-                    type="text"
-                    value={profileSkills}
-                    onChange={e => setProfileSkills(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-warning text-xs"
-                    placeholder="Next.js, TypeScript, Node.js, OpenAI, PostgreSQL"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                    Primary / Top Strengths (Verified Claims Ceiling)
-                  </label>
-                  <input
-                    type="text"
-                    value={profilePrimarySkills}
-                    onChange={e => setProfilePrimarySkills(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-warning text-xs"
-                    placeholder="Next.js App Router, TypeScript, Multi-Agent Architecture, RAG"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-danger uppercase tracking-wider mb-1">
-                    Excluded Technologies (Immediate SKIP Dealbreakers)
-                  </label>
-                  <input
-                    type="text"
-                    value={profileExcluded}
-                    onChange={e => setProfileExcluded(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-rose-300 dark:border-danger/30 rounded-lg px-3 py-2 text-rose-700 dark:text-rose-200 focus:outline-none focus:border-danger text-xs"
-                    placeholder="PHP, WordPress, Ruby, Web3, Smart Contracts"
-                  />
-                  <p className="text-[11px] text-slate-500 mt-1">
-                    Any job requiring these technologies triggers an immediate deterministic auto-SKIP before LLM inference.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                      Target Hourly Rate ($/hr)
-                    </label>
-                    <input
-                      type="number"
-                      value={profileTargetRate}
-                      onChange={e => setProfileTargetRate(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-warning text-xs"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                      Minimum Fixed Budget ($)
-                    </label>
-                    <input
-                      type="number"
-                      value={profileMinBudget}
-                      onChange={e => setProfileMinBudget(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-warning text-xs"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                      Location / Timezone
-                    </label>
-                    <input
-                      type="text"
-                      value={profileLocation}
-                      onChange={e => setProfileLocation(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-warning text-xs"
-                      placeholder="Remote / US Timezones"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-                      Availability
-                    </label>
-                    <select
-                      value={profileAvailability}
-                      onChange={e => setProfileAvailability(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-warning text-xs"
-                    >
-                      <option value="FULL_TIME">Full-time (30-40 hrs/wk)</option>
-                      <option value="PART_TIME">Part-time (10-20 hrs/wk)</option>
-                      <option value="PROJECT">Project-based</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setShowProfileModal(false)}
-                  className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSaveProfile}
-                  className="px-4 py-2 rounded-lg bg-warning hover:bg-warning text-slate-950 text-xs font-bold shadow-lg shadow-warning/20"
-                >
-                  Save Profile (Bump to v{(profile?.version || 1) + 1})
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Demo Presets Row */}
         <div className="space-y-2">

@@ -19,6 +19,7 @@ export async function GET() {
         jobPosting: true,
         decision: true,
         score: true,
+        proposal: true,
       },
       orderBy: {
         createdAt: 'desc',
