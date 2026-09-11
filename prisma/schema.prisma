@@ -36,6 +36,7 @@ model Opportunity {
   profileSnapshotJson String?
   
   userId         String?   // Added for Clerk multi-tenancy
+  archived       Boolean   @default(false) // Soft delete flag for history dashboard
   
   pipelineRuns   PipelineRun[]
   agentRuns      AgentRun[]

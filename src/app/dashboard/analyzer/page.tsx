@@ -327,10 +327,7 @@ export default function ManualJobAnalyzer() {
       return;
     }
 
-    if (!isSignedIn && usageCount >= 3) {
-      setError('Free limit reached. Please sign up to continue analyzing jobs.');
-      return;
-    }
+
 
     setIsAnalyzing(true);
     setError(null);

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { auth } from '@clerk/nextjs/server';
 import { OpportunityPipeline } from '@/application/pipeline/OpportunityPipeline';
 import { Platform, NormalizedOpportunity, FreelancerProfile } from '@/domain/models';
 
@@ -108,10 +109,13 @@ export async function POST(req: NextRequest) {
       };
     }
 
+    const { userId } = auth();
+
     const pipeline = new OpportunityPipeline();
     const result = await pipeline.processJob(payload, { 
       profile: customProfile,
-      forceProposal: data.forceProposal 
+      forceProposal: data.forceProposal,
+      userId: userId || undefined
     });
 
     // Parse structured JSON fields for clean client consumption

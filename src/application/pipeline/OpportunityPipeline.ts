@@ -51,7 +51,7 @@ export class OpportunityPipeline {
 
   async processJob(
     payload: NormalizedOpportunity, 
-    options?: { profile?: FreelancerProfile; forceProposal?: boolean }
+    options?: { profile?: FreelancerProfile; forceProposal?: boolean; userId?: string }
   ) {
     // 1. Resolve Profile
     let activeProfile = options?.profile;
@@ -102,7 +102,7 @@ export class OpportunityPipeline {
     }
 
     // 2. Ingest with profile snapshot
-    const opp = await this.ingest(payload, activeProfile);
+    const opp = await this.ingest(payload, activeProfile, options?.userId);
 
     try {
       // 3. Enrich Client if data present
@@ -161,7 +161,7 @@ export class OpportunityPipeline {
     }
   }
 
-  private async ingest(payload: NormalizedOpportunity, profile?: FreelancerProfile) {
+  private async ingest(payload: NormalizedOpportunity, profile?: FreelancerProfile, userId?: string) {
     const platformId = payload.platformId || `man-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     const platform = (payload.platform as Platform) || Platform.MANUAL;
 
@@ -180,6 +180,7 @@ export class OpportunityPipeline {
         profileId: profile?.id,
         profileVersion: profile?.version || 1,
         profileSnapshotJson: profile ? JSON.stringify(profile) : null,
+        userId: userId,
         status: OpportunityStatus.PENDING,
         jobPosting: {
           create: {
