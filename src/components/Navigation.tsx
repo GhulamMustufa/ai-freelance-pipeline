@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { SignInButton, SignUpButton, Show, UserButton } from '@clerk/nextjs';
 import { ThemeToggle } from './ThemeToggle';
 
 export default function Navigation() {
@@ -75,6 +76,30 @@ export default function Navigation() {
               </span>
               <span className="font-medium">Multi-Agent Router Active</span>
             </div>
+            
+            <Show when="signed-out">
+              <SignInButton mode="modal">
+                <button className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium px-3 py-1.5 transition-colors">
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 font-medium px-3.5 py-1.5 rounded-md transition-colors">
+                  Sign Up
+                </button>
+              </SignUpButton>
+            </Show>
+            
+            <Show when="signed-in">
+              <UserButton 
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "w-8 h-8 rounded-md border border-slate-200 dark:border-slate-700 shadow-sm"
+                  }
+                }}
+              />
+            </Show>
+
             <ThemeToggle />
           </div>
         </div>

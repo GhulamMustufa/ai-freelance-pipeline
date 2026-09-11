@@ -1,5 +1,4 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+import 'dotenv/config';
 
 import { prisma } from '../src/lib/prisma';
 import { AIProvider } from '../src/ai/provider';

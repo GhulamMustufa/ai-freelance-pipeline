@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
+import { useAuth, SignInButton } from '@clerk/nextjs';
 
 interface Preset {
   label: string;
@@ -108,6 +109,15 @@ export default function ManualJobAnalyzer() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<'decision' | 'proposal' | 'trace'>('decision');
+
+  // Paywall state
+  const { isSignedIn } = useAuth();
+  const [usageCount, setUsageCount] = useState(0);
+
+  useEffect(() => {
+    const count = parseInt(localStorage.getItem('omnibid_usage_count') || '0', 10);
+    setUsageCount(count);
+  }, []);
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -281,10 +291,22 @@ export default function ManualJobAnalyzer() {
       return;
     }
 
+    if (!isSignedIn && usageCount >= 3) {
+      setError('Free limit reached. Please sign up to continue analyzing jobs.');
+      return;
+    }
+
     setIsAnalyzing(true);
     setError(null);
     setResult(null);
     setCopied(false);
+
+    // Increment count for anonymous users
+    if (!isSignedIn) {
+      const newCount = usageCount + 1;
+      setUsageCount(newCount);
+      localStorage.setItem('omnibid_usage_count', String(newCount));
+    }
 
     try {
       const payload = {
@@ -697,26 +719,39 @@ export default function ManualJobAnalyzer() {
                 </div>
               )}
 
-              <button
-                type="submit"
-                disabled={isAnalyzing}
-                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-              >
-                {isAnalyzing ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4 text-slate-950" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                    </svg>
-                    <span>Synthesizing Multi-Agent Intelligence...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>⚡</span>
-                    <span>Triage Opportunity (Instant AI Decision)</span>
-                  </>
-                )}
-              </button>
+              {!isSignedIn && usageCount >= 3 ? (
+                <div className="w-full text-center space-y-3 pt-2">
+                  <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs font-semibold">
+                    You've reached your limit of 3 free analyses.
+                  </div>
+                  <SignInButton mode="modal">
+                    <button type="button" className="w-full py-3.5 px-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-extrabold text-sm shadow-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-all">
+                      Sign In to Unlock Unlimited Access
+                    </button>
+                  </SignInButton>
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={isAnalyzing}
+                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-slate-950" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                      <span>Synthesizing Multi-Agent Intelligence...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>⚡</span>
+                      <span>Triage Opportunity (Instant AI Decision)</span>
+                    </>
+                  )}
+                </button>
+              )}
             </form>
           </div>
 

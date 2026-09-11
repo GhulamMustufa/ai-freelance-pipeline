@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 // -----------------------------------------------------------------------------
@@ -34,6 +34,8 @@ model Opportunity {
   profile             FreelancerProfile? @relation(fields: [profileId], references: [id])
   profileVersion      Int?
   profileSnapshotJson String?
+  
+  userId         String?   // Added for Clerk multi-tenancy
   
   pipelineRuns   PipelineRun[]
   agentRuns      AgentRun[]
@@ -77,6 +79,8 @@ model Client {
   name           String?
   status         String         @default("NEUTRAL") // NEUTRAL, FAVORITE, BLACKLISTED
   notes          String?
+  
+  userId         String?   // Added for Clerk multi-tenancy
   
   profile        ClientProfile?
   opportunities  Opportunity[]
@@ -166,6 +170,8 @@ model FreelancerProfile {
   minProjectBudget      Float?
   version               Int                  @default(1)
   isDefault             Boolean              @default(false)
+  
+  userId                String?              // Added for Clerk multi-tenancy
   
   evidenceItems         FreelancerEvidence[]
   opportunities         Opportunity[]
