@@ -54,7 +54,7 @@ export function FeedbackForm({ opportunityId, initialOutcome, initialFeedback }:
             <span>Contract Won</span>
           </label>
           <label className="flex items-center space-x-2 mb-2 text-slate-700 dark:text-slate-300">
-            <input type="checkbox" checked={outcome.rejected} onChange={e => setOutcome({...outcome, rejected: e.target.checked})} className="rounded text-rose-600 focus:ring-rose-500" />
+            <input type="checkbox" checked={outcome.rejected} onChange={e => setOutcome({...outcome, rejected: e.target.checked})} className="rounded text-danger focus:ring-danger" />
             <span>Rejected</span>
           </label>
         </div>
@@ -62,11 +62,11 @@ export function FeedbackForm({ opportunityId, initialOutcome, initialFeedback }:
         <div>
           <h3 className="font-semibold mb-3 text-slate-800 dark:text-slate-200">AI Evaluation</h3>
           <label className="flex items-center space-x-2 mb-2 text-slate-700 dark:text-slate-300">
-            <input type="checkbox" checked={feedback.decisionCorrect} onChange={e => setFeedback({...feedback, decisionCorrect: e.target.checked})} className="rounded text-emerald-600 focus:ring-emerald-500" />
+            <input type="checkbox" checked={feedback.decisionCorrect} onChange={e => setFeedback({...feedback, decisionCorrect: e.target.checked})} className="rounded text-success focus:ring-success" />
             <span>AI Decision Was Correct</span>
           </label>
           <label className="flex items-center space-x-2 mb-2 text-slate-700 dark:text-slate-300">
-            <input type="checkbox" checked={feedback.opportunityValuable} onChange={e => setFeedback({...feedback, opportunityValuable: e.target.checked})} className="rounded text-emerald-600 focus:ring-emerald-500" />
+            <input type="checkbox" checked={feedback.opportunityValuable} onChange={e => setFeedback({...feedback, opportunityValuable: e.target.checked})} className="rounded text-success focus:ring-success" />
             <span>Opportunity Was Valuable</span>
           </label>
           <label className="block mb-2 text-slate-700 dark:text-slate-300">

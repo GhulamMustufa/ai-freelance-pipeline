@@ -37,7 +37,7 @@ export default async function TraceDetailPage({ params }: { params: { id: string
           <Link href="/dashboard" className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-semibold">
             ← Back to Dashboard
           </Link>
-          <Link href="/dashboard/analyzer" className="text-amber-600 dark:text-amber-400 hover:underline text-sm font-semibold">
+          <Link href="/dashboard/analyzer" className="text-warning hover:underline text-sm font-semibold">
             ⚡ Analyze Another Job →
           </Link>
         </div>
@@ -99,7 +99,7 @@ export default async function TraceDetailPage({ params }: { params: { id: string
               </div>
               <div>
                 <span className="text-slate-400 dark:text-slate-500 block uppercase font-medium">Estimated Cost</span>
-                <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">${totalCost.toFixed(4)} USD</span>
+                <span className="font-mono font-semibold text-success">${totalCost.toFixed(4)} USD</span>
               </div>
             </div>
           );
@@ -155,7 +155,7 @@ export default async function TraceDetailPage({ params }: { params: { id: string
             {opportunity.pipelineRuns.map((run, i) => (
               <div key={run.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                 <div className={`flex items-center justify-center w-10 h-10 rounded-full border border-white dark:border-slate-800 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 ${
-                  run.status === 'COMPLETED' ? 'bg-emerald-500' : run.status === 'FAILED' ? 'bg-rose-500' : 'bg-blue-500'
+                  run.status === 'COMPLETED' ? 'bg-success' : run.status === 'FAILED' ? 'bg-danger' : 'bg-blue-500'
                 }`}>
                   <span className="text-white text-xs font-bold">{i+1}</span>
                 </div>
@@ -164,11 +164,11 @@ export default async function TraceDetailPage({ params }: { params: { id: string
                     <span className="font-bold text-slate-900 dark:text-white">{run.stage}</span>
                     <span className="text-xs text-slate-500 dark:text-slate-400">{new Date(run.createdAt).toLocaleTimeString()}</span>
                   </div>
-                  <div className={`text-sm ${run.status === 'FAILED' ? 'text-rose-600 dark:text-rose-400 font-semibold' : 'text-slate-600 dark:text-slate-400'}`}>
+                  <div className={`text-sm ${run.status === 'FAILED' ? 'text-danger font-semibold' : 'text-slate-600 dark:text-slate-400'}`}>
                     {run.status} 
                     {run.completedAt && run.startedAt && ` (${new Date(run.completedAt).getTime() - new Date(run.startedAt).getTime()}ms)`}
                   </div>
-                  {run.error && <p className="text-xs text-rose-600 dark:text-rose-300 mt-2 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 p-2 rounded">{run.error}</p>}
+                  {run.error && <p className="text-xs text-danger dark:text-rose-300 mt-2 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 p-2 rounded">{run.error}</p>}
                 </div>
               </div>
             ))}
@@ -197,7 +197,7 @@ export default async function TraceDetailPage({ params }: { params: { id: string
                   
                   {agent.error ? (
                     <div className="mt-4">
-                      <span className="text-rose-600 dark:text-rose-400 block text-xs uppercase mb-1">Error</span>
+                      <span className="text-danger block text-xs uppercase mb-1">Error</span>
                       <pre className="text-xs bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 p-2 rounded overflow-x-auto border border-rose-200 dark:border-rose-900">
                         {agent.error}
                       </pre>

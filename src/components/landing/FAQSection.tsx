@@ -47,7 +47,7 @@ export default function FAQSection() {
             <div
               key={i}
               className={`bg-white dark:bg-slate-950 border rounded-xl overflow-hidden transition-all duration-200 ${
-                open === i ? "border-amber-500/30" : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
+                open === i ? "border-warning/30" : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
               }`}
             >
               <button
@@ -60,7 +60,7 @@ export default function FAQSection() {
                 </span>
                 <span className={`shrink-0 w-5 h-5 rounded-full border flex items-center justify-center text-[10px] transition-all ${
                   open === i
-                    ? "border-amber-500/60 text-amber-400 bg-amber-500/10 rotate-45"
+                    ? "border-warning/60 text-warning bg-warning/10 rotate-45"
                     : "border-slate-300 dark:border-slate-700 text-slate-500"
                 }`}>
                   +

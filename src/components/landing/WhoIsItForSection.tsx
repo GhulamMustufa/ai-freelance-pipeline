@@ -59,15 +59,15 @@ export default function WhoIsItForSection() {
           <div className="space-y-3">
             {notForItems.map((item) => (
               <div key={item} className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-500">
-                <span className="text-slate-700 mt-0.5 font-bold shrink-0">✗</span>
+                <span className="text-danger mt-0.5 font-bold shrink-0">✗</span>
                 <span>{item}</span>
               </div>
             ))}
           </div>
-          <div className="mt-6 pt-6 border-t border-slate-800">
+          <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800">
             <p className="text-slate-900 dark:text-white font-semibold">
               OmniBid is for people who want to make{' '}
-              <span className="text-amber-400">better opportunity decisions</span> — not more applications.
+              <span className="text-success font-bold">better opportunity decisions</span> — not more applications.
             </p>
           </div>
         </div>

@@ -9,7 +9,7 @@ export default function LandingFooter() {
           {/* Brand */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg overflow-hidden border border-amber-500/30 bg-slate-200 dark:bg-slate-800">
+              <div className="w-7 h-7 rounded-lg overflow-hidden border border-warning/30 bg-slate-200 dark:bg-slate-800">
                 <Image src="/favicon.jpg" alt="OmniBid" width={28} height={28} className="object-cover" />
               </div>
               <span className="font-bold text-slate-900 dark:text-white">OmniBid</span>
@@ -64,7 +64,7 @@ export default function LandingFooter() {
           </p>
           <Link
             href="/dashboard/analyzer"
-            className="text-xs px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 hover:bg-amber-500/20 rounded-lg font-semibold transition-colors"
+            className="text-xs px-4 py-2 bg-warning/10 border border-warning/30 text-slate-800 dark:text-warning hover:bg-warning/20 rounded-lg font-semibold transition-colors"
           >
             Try the Analyzer →
           </Link>

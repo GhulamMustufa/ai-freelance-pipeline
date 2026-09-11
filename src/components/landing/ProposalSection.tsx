@@ -22,7 +22,7 @@ export default function ProposalSection() {
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
               When the opportunity is worth pursuing,
               build the proposal from{' '}
-              <span className="text-amber-400">proof.</span>
+              <span className="text-warning">proof.</span>
             </h2>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
               OmniBid retrieves relevant verified portfolio evidence before drafting your proposal.
@@ -30,15 +30,15 @@ export default function ProposalSection() {
             </p>
             <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
               <div className="flex items-start gap-3">
-                <span className="text-emerald-500 dark:text-emerald-400 font-bold mt-0.5">✓</span>
+                <span className="text-success font-bold mt-0.5">✓</span>
                 <span>No invented clients or imaginary projects</span>
               </div>
               <div className="flex items-start gap-3">
-                <span className="text-emerald-500 dark:text-emerald-400 font-bold mt-0.5">✓</span>
+                <span className="text-success font-bold mt-0.5">✓</span>
                 <span>Every experience claim linked to portfolio evidence</span>
               </div>
               <div className="flex items-start gap-3">
-                <span className="text-emerald-500 dark:text-emerald-400 font-bold mt-0.5">✓</span>
+                <span className="text-success font-bold mt-0.5">✓</span>
                 <span>Designed to detect unsupported claims before you send</span>
               </div>
             </div>
@@ -54,7 +54,7 @@ export default function ProposalSection() {
           <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xl">
             <div className="px-4 py-3 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Grounded Proposal</span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-bold">
+              <span className="text-[10px] px-2 py-0.5 rounded bg-success/10 border border-success/30 text-success font-bold">
                 ✓ Anti-Hallucination Pass
               </span>
             </div>
@@ -62,17 +62,17 @@ export default function ProposalSection() {
               {claims.map((c, i) => (
                 <div key={i} className="space-y-2">
                   <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{c.text}</p>
-                  <div className="flex items-center gap-2 pl-3 border-l border-amber-500/30">
-                    <span className="px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-[9px] font-black">{c.evidence}</span>
+                  <div className="flex items-center gap-2 pl-3 border-l border-warning/30">
+                    <span className="px-1.5 py-0.5 rounded bg-warning/15 border border-warning/30 text-warning text-[9px] font-black">{c.evidence}</span>
                     <span className="text-slate-500 dark:text-slate-500 text-[10px]">{c.evidenceLabel}</span>
-                    <span className="ml-auto text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">✓ {c.status}</span>
+                    <span className="ml-auto text-success text-[10px] font-bold">✓ {c.status}</span>
                   </div>
                 </div>
               ))}
               <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
                 <div className="flex items-center justify-between text-[10px]">
                   <span className="text-slate-500 dark:text-slate-500">Claim Verification Pass</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">2/2 claims verified</span>
+                  <span className="text-success font-bold">2/2 claims verified</span>
                 </div>
               </div>
             </div>

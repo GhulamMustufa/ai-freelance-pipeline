@@ -95,7 +95,7 @@ export default function ProfilePage() {
   if (!isLoaded || loading) {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
-        <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-warning" />
       </div>
     );
   }
@@ -114,7 +114,7 @@ export default function ProfilePage() {
         
         <div>
           <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
-            <UserCircle className="w-8 h-8 text-amber-500" />
+            <UserCircle className="w-8 h-8 text-warning" />
             My Profile
           </h1>
           <p className="mt-2 text-slate-600 dark:text-slate-400">
@@ -131,7 +131,7 @@ export default function ProfilePage() {
                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Display Name</label>
                 <input 
                   type="text" name="name" value={formData.name} onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500/50 outline-none transition-all"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-warning/50 outline-none transition-all"
                   placeholder="e.g. Jane Doe"
                   required
                 />
@@ -140,7 +140,7 @@ export default function ProfilePage() {
                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Professional Headline</label>
                 <input 
                   type="text" name="headline" value={formData.headline} onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500/50 outline-none transition-all"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-warning/50 outline-none transition-all"
                   placeholder="e.g. Senior Full-Stack Engineer"
                 />
               </div>
@@ -148,7 +148,7 @@ export default function ProfilePage() {
                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Bio</label>
                 <textarea 
                   name="bio" value={formData.bio} onChange={handleChange} rows={3}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500/50 outline-none transition-all resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-warning/50 outline-none transition-all resize-none"
                   placeholder="A short overview of your background and goals..."
                 />
               </div>
@@ -163,14 +163,14 @@ export default function ProfilePage() {
                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Years of Experience</label>
                 <input 
                   type="number" name="experienceYears" value={formData.experienceYears} onChange={handleChange} min="0"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500/50 outline-none transition-all"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-warning/50 outline-none transition-all"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Target Hourly Rate ($)</label>
                 <input 
                   type="number" name="targetHourlyRate" value={formData.targetHourlyRate} onChange={handleChange} min="0"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500/50 outline-none transition-all"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-warning/50 outline-none transition-all"
                   placeholder="e.g. 85"
                 />
               </div>
@@ -178,7 +178,7 @@ export default function ProfilePage() {
                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Minimum Project Budget ($)</label>
                 <input 
                   type="number" name="minProjectBudget" value={formData.minProjectBudget} onChange={handleChange} min="0"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500/50 outline-none transition-all"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-warning/50 outline-none transition-all"
                   placeholder="e.g. 1000"
                 />
               </div>
@@ -199,7 +199,7 @@ export default function ProfilePage() {
                 </label>
                 <textarea 
                   name="primarySkills" value={formData.primarySkills} onChange={handleChange} rows={2}
-                  className="w-full px-4 py-2.5 rounded-xl border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-500/5 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-success/30 bg-emerald-50/50 dark:bg-success/5 text-slate-900 dark:text-white focus:ring-2 focus:ring-success/50 outline-none transition-all resize-none"
                   placeholder="e.g. React, Next.js, TypeScript, PostgreSQL, AI Integration..."
                 />
                 <p className="text-xs text-slate-500">The core technologies you are an expert in.</p>
@@ -212,7 +212,7 @@ export default function ProfilePage() {
                 </label>
                 <textarea 
                   name="excludedTechnologies" value={formData.excludedTechnologies} onChange={handleChange} rows={2}
-                  className="w-full px-4 py-2.5 rounded-xl border border-rose-500/30 bg-rose-50/50 dark:bg-rose-500/5 text-slate-900 dark:text-white focus:ring-2 focus:ring-rose-500/50 outline-none transition-all resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-danger/30 bg-rose-50/50 dark:bg-danger/5 text-slate-900 dark:text-white focus:ring-2 focus:ring-danger/50 outline-none transition-all resize-none"
                   placeholder="e.g. PHP, WordPress, Magento, Web3..."
                 />
                 <p className="text-xs text-slate-500">If OmniBid detects these in a job posting, it will automatically flag the job as a SKIP.</p>
@@ -221,7 +221,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="flex items-center justify-between pt-4">
-            <div className="text-sm text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-2">
+            <div className="text-sm text-success font-medium flex items-center gap-2">
               {successMessage && (
                 <>
                   <CheckCircle2 className="w-5 h-5" />
@@ -232,7 +232,7 @@ export default function ProfilePage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 rounded-xl bg-warning hover:bg-warning text-slate-950 font-bold shadow-lg shadow-warning/20 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
               Save Profile

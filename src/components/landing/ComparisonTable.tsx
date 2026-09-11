@@ -29,7 +29,7 @@ export default function ComparisonTable() {
               <tr className="bg-slate-100 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800">
                 <th className="text-left px-5 py-4 text-slate-600 dark:text-slate-500 font-semibold text-xs uppercase tracking-wider w-1/3">Dimension</th>
                 <th className="text-left px-5 py-4 text-slate-600 dark:text-slate-500 font-semibold text-xs uppercase tracking-wider w-1/3">Typical AI Tool</th>
-                <th className="text-left px-5 py-4 text-amber-600 dark:text-amber-500 font-semibold text-xs uppercase tracking-wider w-1/3">OmniBid</th>
+                <th className="text-left px-5 py-4 text-warning font-semibold text-xs uppercase tracking-wider w-1/3">OmniBid</th>
               </tr>
             </thead>
             <tbody>
@@ -37,7 +37,7 @@ export default function ComparisonTable() {
                 <tr key={r.feature} className={`border-b border-slate-200 dark:border-slate-800/60 ${i % 2 === 0 ? 'bg-slate-50 dark:bg-slate-900/20' : 'bg-white dark:bg-slate-900/40'} hover:bg-slate-100 dark:hover:bg-slate-900/60 transition-colors`}>
                   <td className="px-5 py-3.5 text-slate-700 dark:text-slate-400 font-medium">{r.feature}</td>
                   <td className="px-5 py-3.5 text-slate-600 dark:text-slate-500">{r.typical}</td>
-                  <td className="px-5 py-3.5 text-emerald-600 dark:text-emerald-400 font-semibold">{r.omnibid}</td>
+                  <td className="px-5 py-3.5 text-success font-semibold">{r.omnibid}</td>
                 </tr>
               ))}
             </tbody>
@@ -55,8 +55,8 @@ export default function ComparisonTable() {
                   <div className="text-slate-600 dark:text-slate-500">{r.typical}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-amber-600 dark:text-amber-500 mb-1">OmniBid</div>
-                  <div className="text-emerald-600 dark:text-emerald-400 font-semibold">{r.omnibid}</div>
+                  <div className="text-[10px] text-warning mb-1">OmniBid</div>
+                  <div className="text-success font-semibold">{r.omnibid}</div>
                 </div>
               </div>
             </div>

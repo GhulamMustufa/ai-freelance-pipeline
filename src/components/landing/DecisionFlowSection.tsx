@@ -46,14 +46,14 @@ export default function DecisionFlowSection() {
                 </div>
               ))}
             </div>
-            <div className="mt-6 p-3 bg-rose-500/8 border border-rose-500/20 rounded-xl text-xs text-rose-400 font-medium">
+            <div className="mt-6 p-3 bg-danger/8 border border-danger/20 rounded-xl text-xs text-danger font-medium">
               ⚠ No understanding. No filtering. Proposals for every job — good or bad.
             </div>
           </div>
 
           {/* OmniBid */}
-          <div className="bg-white dark:bg-slate-900 border border-amber-500/20 rounded-2xl p-6 shadow-xl shadow-amber-500/5">
-            <div className="text-xs font-bold uppercase tracking-widest text-amber-500/80 mb-6">
+          <div className="bg-white dark:bg-slate-900 border border-warning/20 rounded-2xl p-6 shadow-xl shadow-warning/5">
+            <div className="text-xs font-bold uppercase tracking-widest text-warning/80 mb-6">
               OmniBid
             </div>
             <div className="space-y-2">
@@ -62,8 +62,8 @@ export default function DecisionFlowSection() {
                   {!s.sub && (
                     <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
                       s.highlight
-                        ? 'bg-amber-500 text-slate-950'
-                        : 'bg-slate-200 dark:bg-slate-800 border border-amber-500/30 text-amber-600 dark:text-amber-500'
+                        ? 'bg-warning text-slate-950'
+                        : 'bg-slate-200 dark:bg-slate-800 border border-warning/30 text-warning'
                     }`}>
                       {i + 1}
                     </div>
@@ -71,7 +71,7 @@ export default function DecisionFlowSection() {
                   {s.sub && <div className="w-5 shrink-0" />}
                   <div className={`flex-1 py-2.5 px-3 rounded-lg text-sm font-medium ${
                     s.highlight
-                      ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/20'
+                      ? 'bg-warning text-slate-950 font-black shadow-md shadow-warning/20'
                       : s.sub
                       ? 'bg-slate-100 dark:bg-slate-800/30 border border-dashed border-slate-300 dark:border-slate-700/60 text-slate-500 dark:text-slate-500 text-xs italic'
                       : 'bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-slate-700 dark:text-slate-300'
@@ -81,7 +81,7 @@ export default function DecisionFlowSection() {
                 </div>
               ))}
             </div>
-            <div className="mt-6 p-3 bg-emerald-500/8 border border-emerald-500/20 rounded-xl text-xs text-emerald-400 font-medium">
+            <div className="mt-6 p-3 bg-success/8 border border-success/20 rounded-xl text-xs text-success font-medium">
               ✓ Decision-first. Every proposal is justified by a prior analysis.
             </div>
           </div>

@@ -40,7 +40,7 @@ export default async function DashboardOverview() {
           <div className="flex items-center gap-3">
             <Link
               href="/dashboard/analyzer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-sm shadow-sm transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-warning hover:bg-warning text-slate-950 font-semibold text-sm shadow-sm transition-all"
             >
               <span>⚡</span>
               <span>Analyze New Job</span>
@@ -56,8 +56,8 @@ export default async function DashboardOverview() {
             <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Opportunities ingested & reasoned</div>
           </div>
           <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-            <div className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">High-Fit (APPLY)</div>
-            <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">{applyCount}</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-success">High-Fit (APPLY)</div>
+            <div className="text-2xl font-extrabold text-success mt-1">{applyCount}</div>
             <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Met threshold for bid deployment</div>
           </div>
           <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -98,7 +98,7 @@ export default async function DashboardOverview() {
                         </p>
                         <Link
                           href="/dashboard/analyzer"
-                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-500 text-slate-950 font-semibold text-xs shadow-sm hover:bg-amber-400 transition"
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-warning text-slate-950 font-semibold text-xs shadow-sm hover:bg-warning transition"
                         >
                           <span>⚡</span> Try Manual Job Analyzer
                         </Link>

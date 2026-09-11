@@ -71,7 +71,7 @@ export default function HistoryDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-amber-500 selection:text-slate-950 transition-colors duration-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-warning selection:text-slate-950 transition-colors duration-200">
       <Navigation />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -121,14 +121,14 @@ export default function HistoryDashboard() {
                 <div 
                   key={opp.id}
                   onClick={() => setExpandedId(isExpanded ? null : opp.id)}
-                  className={`bg-white dark:bg-slate-900 border ${isExpanded ? 'border-amber-500/50 shadow-md' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'} rounded-2xl overflow-hidden cursor-pointer transition-all duration-200`}
+                  className={`bg-white dark:bg-slate-900 border ${isExpanded ? 'border-warning/50 shadow-md' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'} rounded-2xl overflow-hidden cursor-pointer transition-all duration-200`}
                 >
                   <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <div className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap border ${
-                        rec === 'APPLY' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' :
-                        rec === 'MAYBE' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20' :
-                        'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
+                        rec === 'APPLY' ? 'bg-success/10 text-success border-success/20' :
+                        rec === 'MAYBE' ? 'bg-warning/10 text-warning border-warning/20' :
+                        'bg-danger/10 text-danger border-danger/20'
                       }`}>
                         {rec}
                       </div>
@@ -147,7 +147,7 @@ export default function HistoryDashboard() {
                       <button
                         onClick={(e) => handleArchive(opp.id, e)}
                         disabled={isArchiving === opp.id}
-                        className="px-3 py-1.5 text-xs font-bold text-slate-500 hover:text-rose-600 bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors disabled:opacity-50"
+                        className="px-3 py-1.5 text-xs font-bold text-slate-500 hover:text-danger bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-danger/10 rounded-lg transition-colors disabled:opacity-50"
                       >
                         {isArchiving === opp.id ? 'Archiving...' : 'Archive'}
                       </button>

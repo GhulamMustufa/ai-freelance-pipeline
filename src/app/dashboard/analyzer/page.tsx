@@ -28,7 +28,7 @@ const PRESETS: Preset[] = [
   {
     label: 'AI & Next.js Systems Engineer',
     badge: 'High Fit (APPLY)',
-    badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+    badgeColor: 'bg-success/10 text-success border-success/30',
     data: {
       title: 'Full-Stack AI Engineer — Next.js, Multi-Agent Systems & DeepSeek',
       description: `We are looking for a Senior AI & Full-Stack Engineer to architect an autonomous agent workflow. 
@@ -53,7 +53,7 @@ Please provide examples of production AI systems or pipelines you have built.`,
   {
     label: 'React Webhook Integration (JD Only)',
     badge: 'Marginal (MAYBE)',
-    badgeColor: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+    badgeColor: 'bg-warning/10 text-warning border-warning/30',
     data: {
       title: '',
       description: `Need a frontend developer to connect our webhook endpoints to a responsive React dashboard. 
@@ -68,7 +68,7 @@ Budget is fixed at $800. Timeline is approximately 2 weeks.`,
   {
     label: 'Excluded Tech: WordPress Task ($30)',
     badge: 'Dealbreaker (SKIP)',
-    badgeColor: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+    badgeColor: 'bg-danger/10 text-danger border-danger/30',
     data: {
       title: 'Need complete WordPress custom plugin in 24 hours cheap',
       description: `Need an expert in PHP and WordPress to build a custom membership plugin with payment gateway. Total budget is $30. Must be finished by tomorrow morning. Do not bid higher or you will be reported.`,
@@ -402,7 +402,7 @@ export default function ManualJobAnalyzer() {
   const recommendation = result?.recommendation;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-amber-500 selection:text-slate-950 transition-colors duration-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-warning selection:text-slate-950 transition-colors duration-200">
       <Navigation />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -410,7 +410,7 @@ export default function ManualJobAnalyzer() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-slate-900/80 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-xl backdrop-blur-md">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-warning bg-warning/10 px-2.5 py-0.5 rounded-full border border-warning/20">
                 Zero-Friction Decision Engine
               </span>
               <span className="text-xs text-slate-500 dark:text-slate-400">Zero integrations required</span>
@@ -426,7 +426,7 @@ export default function ManualJobAnalyzer() {
           {/* Active Profile Pill / Customizer */}
           <div className="flex items-center gap-3">
             <div className="bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 p-3 rounded-xl flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-sm border border-amber-500/30">
+              <div className="w-9 h-9 rounded-lg bg-warning/20 text-warning flex items-center justify-center font-bold text-sm border border-warning/30">
                 👤
               </div>
               <div className="text-left">
@@ -439,7 +439,7 @@ export default function ManualJobAnalyzer() {
                   </span>
                 </div>
                 <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Target: <span className="text-amber-600 dark:text-amber-400 font-medium">${profileTargetRate}/hr</span> • Min: <span className="text-emerald-600 dark:text-emerald-400 font-medium">${profileMinBudget}</span>
+                  Target: <span className="text-warning font-medium">${profileTargetRate}/hr</span> • Min: <span className="text-success font-medium">${profileMinBudget}</span>
                 </div>
               </div>
               <button
@@ -463,7 +463,7 @@ export default function ManualJobAnalyzer() {
                     <span>⚙️</span> Customize Freelancer Profile
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    Currently active: <span className="font-mono font-bold text-amber-600 dark:text-amber-400">Profile v{profile?.version || 1}</span> (Saving bumps version and creates new snapshot)
+                    Currently active: <span className="font-mono font-bold text-warning">Profile v{profile?.version || 1}</span> (Saving bumps version and creates new snapshot)
                   </p>
                 </div>
                 <button 
@@ -483,7 +483,7 @@ export default function ManualJobAnalyzer() {
                     type="text"
                     value={profileSkills}
                     onChange={e => setProfileSkills(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 text-xs"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-warning text-xs"
                     placeholder="Next.js, TypeScript, Node.js, OpenAI, PostgreSQL"
                   />
                 </div>
@@ -496,20 +496,20 @@ export default function ManualJobAnalyzer() {
                     type="text"
                     value={profilePrimarySkills}
                     onChange={e => setProfilePrimarySkills(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 text-xs"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-warning text-xs"
                     placeholder="Next.js App Router, TypeScript, Multi-Agent Architecture, RAG"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-semibold text-danger uppercase tracking-wider mb-1">
                     Excluded Technologies (Immediate SKIP Dealbreakers)
                   </label>
                   <input
                     type="text"
                     value={profileExcluded}
                     onChange={e => setProfileExcluded(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-rose-300 dark:border-rose-500/30 rounded-lg px-3 py-2 text-rose-700 dark:text-rose-200 focus:outline-none focus:border-rose-500 text-xs"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-rose-300 dark:border-danger/30 rounded-lg px-3 py-2 text-rose-700 dark:text-rose-200 focus:outline-none focus:border-danger text-xs"
                     placeholder="PHP, WordPress, Ruby, Web3, Smart Contracts"
                   />
                   <p className="text-[11px] text-slate-500 mt-1">
@@ -526,7 +526,7 @@ export default function ManualJobAnalyzer() {
                       type="number"
                       value={profileTargetRate}
                       onChange={e => setProfileTargetRate(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-warning text-xs"
                     />
                   </div>
                   <div>
@@ -537,7 +537,7 @@ export default function ManualJobAnalyzer() {
                       type="number"
                       value={profileMinBudget}
                       onChange={e => setProfileMinBudget(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-warning text-xs"
                     />
                   </div>
                 </div>
@@ -551,7 +551,7 @@ export default function ManualJobAnalyzer() {
                       type="text"
                       value={profileLocation}
                       onChange={e => setProfileLocation(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-warning text-xs"
                       placeholder="Remote / US Timezones"
                     />
                   </div>
@@ -562,7 +562,7 @@ export default function ManualJobAnalyzer() {
                     <select
                       value={profileAvailability}
                       onChange={e => setProfileAvailability(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-warning text-xs"
                     >
                       <option value="FULL_TIME">Full-time (30-40 hrs/wk)</option>
                       <option value="PART_TIME">Part-time (10-20 hrs/wk)</option>
@@ -583,7 +583,7 @@ export default function ManualJobAnalyzer() {
                 <button
                   type="button"
                   onClick={handleSaveProfile}
-                  className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow-lg shadow-amber-500/20"
+                  className="px-4 py-2 rounded-lg bg-warning hover:bg-warning text-slate-950 text-xs font-bold shadow-lg shadow-warning/20"
                 >
                   Save Profile (Bump to v{(profile?.version || 1) + 1})
                 </button>
@@ -607,7 +607,7 @@ export default function ManualJobAnalyzer() {
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-bold text-slate-900 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                    <span className="text-xs font-bold text-slate-900 dark:text-slate-200 group-hover:text-warning dark:group-hover:text-warning transition-colors">
                       {p.label}
                     </span>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${p.badgeColor}`}>
@@ -618,7 +618,7 @@ export default function ManualJobAnalyzer() {
                     {p.data.description.substring(0, 100)}...
                   </p>
                 </div>
-                <span className="text-[11px] text-amber-600 dark:text-amber-500/80 font-medium mt-2 flex items-center gap-1">
+                <span className="text-[11px] text-warning/80 font-medium mt-2 flex items-center gap-1">
                   Load into analyzer →
                 </span>
               </button>
@@ -646,7 +646,7 @@ export default function ManualJobAnalyzer() {
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                   placeholder="Paste the full job posting text here. You can include budget, requirements, or client text directly..."
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl p-3.5 text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-amber-500 font-mono leading-relaxed"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl p-3.5 text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-warning font-mono leading-relaxed"
                 />
               </div>
 
@@ -661,7 +661,7 @@ export default function ManualJobAnalyzer() {
                     value={title}
                     onChange={e => setTitle(e.target.value)}
                     placeholder="e.g. Next.js Developer"
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-warning"
                   />
                 </div>
                 <div>
@@ -673,7 +673,7 @@ export default function ManualJobAnalyzer() {
                     value={budget}
                     onChange={e => setBudget(e.target.value)}
                     placeholder="e.g. 3500"
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-warning"
                   />
                 </div>
               </div>
@@ -683,7 +683,7 @@ export default function ManualJobAnalyzer() {
                 <button
                   type="button"
                   onClick={() => setShowAdvanced(!showAdvanced)}
-                  className="text-xs text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 flex items-center gap-1 font-medium transition-colors"
+                  className="text-xs text-slate-600 dark:text-slate-400 hover:text-warning dark:hover:text-warning flex items-center gap-1 font-medium transition-colors"
                 >
                   <span>{showAdvanced ? '▾ Hide' : '▸ Add'} Optional Client / Hourly Info</span>
                 </button>
@@ -750,7 +750,7 @@ export default function ManualJobAnalyzer() {
               </div>
 
               {error && (
-                <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-xs">
+                <div className="p-3 rounded-lg bg-danger/10 border border-danger/30 text-danger dark:text-rose-300 text-xs">
                   {error}
                 </div>
               )}
@@ -758,7 +758,7 @@ export default function ManualJobAnalyzer() {
               <button
                 type="submit"
                 disabled={isAnalyzing}
-                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold text-sm shadow-lg shadow-warning/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
               >
                 {isAnalyzing ? (
                   <>
@@ -784,7 +784,7 @@ export default function ManualJobAnalyzer() {
             {/* Empty State when no analysis has run */}
             {!result && !isAnalyzing && (
               <div className="bg-white/60 dark:bg-slate-900/40 border border-dashed border-slate-300 dark:border-slate-800 rounded-2xl p-12 text-center space-y-4 shadow-sm dark:shadow-none">
-                <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl font-bold shadow-inner">
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-warning/10 border border-warning/20 text-warning flex items-center justify-center text-2xl font-bold shadow-inner">
                   ⚡
                 </div>
                 <div className="max-w-md mx-auto space-y-2">
@@ -818,7 +818,7 @@ export default function ManualJobAnalyzer() {
 
                 {/* DEMO BANNER */}
                 {!isSignedIn && (
-                  <div className="bg-amber-100 dark:bg-amber-500/10 border-b border-amber-200 dark:border-amber-500/20 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="bg-amber-100 dark:bg-warning/10 border-b border-amber-200 dark:border-warning/20 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">✨</span>
                       <p className="text-sm text-amber-800 dark:text-amber-300 font-medium">
@@ -826,7 +826,7 @@ export default function ManualJobAnalyzer() {
                       </p>
                     </div>
                     <SignInButton mode="modal">
-                      <button className="whitespace-nowrap px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm rounded-lg shadow-sm transition-all">
+                      <button className="whitespace-nowrap px-4 py-2 bg-warning hover:bg-warning text-slate-950 font-bold text-sm rounded-lg shadow-sm transition-all">
                         Sign In Now
                       </button>
                     </SignInButton>
@@ -839,7 +839,7 @@ export default function ManualJobAnalyzer() {
                     onClick={() => setActiveTab('decision')}
                     className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                       activeTab === 'decision'
-                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                        ? 'bg-warning text-slate-950 shadow-md shadow-warning/20'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                   >
@@ -851,12 +851,12 @@ export default function ManualJobAnalyzer() {
                       onClick={() => setActiveTab('proposal')}
                       className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
                         activeTab === 'proposal'
-                          ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                          ? 'bg-warning text-slate-950 shadow-md shadow-warning/20'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <span>📝 2. Grounded Proposal</span>
-                      <span className="text-[10px] bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.2 rounded border border-emerald-500/30">
+                      <span className="text-[10px] bg-success/20 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.2 rounded border border-success/30">
                         Verified
                       </span>
                     </button>
@@ -866,7 +866,7 @@ export default function ManualJobAnalyzer() {
                     onClick={() => setActiveTab('trace')}
                     className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                       activeTab === 'trace'
-                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                        ? 'bg-warning text-slate-950 shadow-md shadow-warning/20'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                   >
@@ -880,19 +880,19 @@ export default function ManualJobAnalyzer() {
                     {/* Hero Decision Banner */}
                     <div className={`p-6 rounded-2xl border shadow-xl ${
                       recommendation === 'APPLY'
-                        ? 'bg-emerald-500/10 dark:bg-emerald-950/40 border-emerald-500/30 dark:border-emerald-500/40 text-emerald-900 dark:text-emerald-300'
+                        ? 'bg-success/10 dark:bg-emerald-950/40 border-success/30 dark:border-success/40 text-emerald-900 dark:text-emerald-300'
                         : recommendation === 'MAYBE'
-                        ? 'bg-amber-500/10 dark:bg-amber-950/40 border-amber-500/30 dark:border-amber-500/40 text-amber-900 dark:text-amber-300'
-                        : 'bg-rose-500/10 dark:bg-rose-950/40 border-rose-500/30 dark:border-rose-500/40 text-rose-900 dark:text-rose-300'
+                        ? 'bg-warning/10 dark:bg-amber-950/40 border-warning/30 dark:border-warning/40 text-amber-900 dark:text-amber-300'
+                        : 'bg-danger/10 dark:bg-rose-950/40 border-danger/30 dark:border-danger/40 text-rose-900 dark:text-rose-300'
                     }`}>
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div className="flex items-center gap-3">
                           <span className={`text-2xl sm:text-3xl font-black px-4 py-1.5 rounded-xl border ${
                             recommendation === 'APPLY'
-                              ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-lg shadow-emerald-500/20'
+                              ? 'bg-success text-slate-950 border-success shadow-lg shadow-success/20'
                               : recommendation === 'MAYBE'
-                              ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-lg shadow-amber-500/20'
-                              : 'bg-rose-600 text-white border-rose-400 shadow-lg shadow-rose-600/20'
+                              ? 'bg-warning text-slate-950 border-warning shadow-lg shadow-warning/20'
+                              : 'bg-danger text-white border-danger shadow-lg shadow-danger/20'
                           }`}>
                             {recommendation}
                           </span>
@@ -909,7 +909,7 @@ export default function ManualJobAnalyzer() {
                         {recommendation === 'APPLY' && result.proposal && (
                           <button
                             onClick={() => setActiveTab('proposal')}
-                            className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-500/20"
+                            className="px-4 py-2 bg-success hover:bg-success text-slate-950 rounded-xl text-xs font-bold transition-all shadow-md shadow-success/20"
                           >
                             View Verified Proposal →
                           </button>
@@ -926,7 +926,7 @@ export default function ManualJobAnalyzer() {
                       {/* Technical Fit */}
                       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-1 shadow-sm">
                         <div className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400">Technical Fit</div>
-                        <div className="text-2xl font-black text-amber-600 dark:text-amber-400">
+                        <div className="text-2xl font-black text-warning">
                           {result.scores?.technicalFit ?? 0}
                           <span className="text-xs text-slate-400 dark:text-slate-500 font-normal"> / 100</span>
                         </div>
@@ -938,7 +938,7 @@ export default function ManualJobAnalyzer() {
                       {/* Economic Quality */}
                       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-1 shadow-sm">
                         <div className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400">Economics</div>
-                        <div className="text-xl font-black text-emerald-600 dark:text-emerald-400">
+                        <div className="text-xl font-black text-success">
                           {result.economics?.status === 'OBSERVED' ? 'OBSERVED' : (result.economics?.status || 'ESTIMATED')}
                         </div>
                         <div className="text-[11px] text-slate-600 dark:text-slate-400 truncate">
@@ -951,7 +951,7 @@ export default function ManualJobAnalyzer() {
                         <div className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400">Client Risk</div>
                         <div className={`text-xl font-black ${
                           result.scores?.clientRisk === 'UNKNOWN' ? 'text-slate-500 dark:text-slate-400' :
-                          result.scores?.clientRisk === 'HIGH' ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'
+                          result.scores?.clientRisk === 'HIGH' ? 'text-danger' : 'text-success'
                         }`}>
                           {result.scores?.clientRisk || 'UNKNOWN'}
                         </div>
@@ -976,13 +976,13 @@ export default function ManualJobAnalyzer() {
                     <div className="space-y-4">
                       {/* WHY Drivers */}
                       <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl p-5 space-y-2 shadow-sm">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-success flex items-center gap-1.5">
                           <span>✓</span> Why This Recommendation:
                         </h4>
                         <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
                           {(result.positiveEvidence?.length > 0 ? result.positiveEvidence : result.reasons || [result.reason]).map((r: string, idx: number) => (
                             <li key={idx} className="flex items-start gap-2">
-                              <span className="text-emerald-600 dark:text-emerald-400 font-bold">•</span>
+                              <span className="text-success font-bold">•</span>
                               <span>{r}</span>
                             </li>
                           ))}
@@ -1008,14 +1008,14 @@ export default function ManualJobAnalyzer() {
 
                       {/* RISKS Card */}
                       {result.risks && result.risks.length > 0 && (
-                        <div className="bg-white dark:bg-slate-900/90 border border-rose-300 dark:border-rose-500/20 rounded-xl p-5 space-y-2 shadow-sm">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
+                        <div className="bg-white dark:bg-slate-900/90 border border-rose-300 dark:border-danger/20 rounded-xl p-5 space-y-2 shadow-sm">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-danger flex items-center gap-1.5">
                             <span>⚠️</span> Project Risks & Watchouts:
                           </h4>
                           <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
                             {result.risks.map((risk: string, idx: number) => (
                               <li key={idx} className="flex items-start gap-2">
-                                <span className="text-rose-600 dark:text-rose-400 font-bold">•</span>
+                                <span className="text-danger font-bold">•</span>
                                 <span>{risk}</span>
                               </li>
                             ))}
@@ -1032,7 +1032,7 @@ export default function ManualJobAnalyzer() {
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/20">
+                          <span className="text-xs font-bold text-emerald-700 dark:text-success bg-success/10 px-2.5 py-0.5 rounded border border-success/20">
                             ✓ Anti-Hallucination Verified
                           </span>
                           <span className="text-xs text-slate-500 dark:text-slate-400">Strictly grounded in your portfolio</span>
@@ -1044,7 +1044,7 @@ export default function ManualJobAnalyzer() {
 
                       <button
                         onClick={copyProposalToClipboard}
-                        className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition-all shadow-md shadow-amber-500/10 flex items-center gap-1.5 self-start sm:self-auto"
+                        className="px-4 py-2 bg-warning hover:bg-warning text-slate-950 font-bold text-xs rounded-xl transition-all shadow-md shadow-warning/10 flex items-center gap-1.5 self-start sm:self-auto"
                       >
                         {copied ? '✓ Copied to Clipboard!' : '📋 Copy Proposal Text'}
                       </button>
@@ -1083,7 +1083,7 @@ export default function ManualJobAnalyzer() {
                       </div>
                       <Link
                         href={`/dashboard/traces/${result.opportunityId}`}
-                        className="text-xs text-amber-600 dark:text-amber-400 hover:underline font-semibold"
+                        className="text-xs text-warning hover:underline font-semibold"
                       >
                         View Full Trace Page →
                       </Link>
@@ -1100,7 +1100,7 @@ export default function ManualJobAnalyzer() {
                           <div className="flex items-center gap-4 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
                             {agent.durationMs && <span>⏱️ {agent.durationMs}ms</span>}
                             {agent.promptTokens && <span>🔤 {agent.promptTokens + (agent.completionTokens || 0)} tokens</span>}
-                            <span className="text-emerald-600 dark:text-emerald-400">✓ OK</span>
+                            <span className="text-success">✓ OK</span>
                           </div>
                         </div>
                       ))}

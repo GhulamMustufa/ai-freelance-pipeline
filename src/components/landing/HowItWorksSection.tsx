@@ -48,9 +48,9 @@ export default function HowItWorksSection() {
                 <div className="hidden lg:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-slate-700 to-transparent z-0 -translate-y-0.5" />
               )}
 
-              <div className="relative z-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 group-hover:border-amber-500/30 rounded-2xl p-5 h-full space-y-3 transition-all duration-200 hover:shadow-lg hover:shadow-amber-500/5">
+              <div className="relative z-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 group-hover:border-warning/30 rounded-2xl p-5 h-full space-y-3 transition-all duration-200 hover:shadow-lg hover:shadow-warning/5">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500 font-black text-sm font-mono">
+                  <div className="w-10 h-10 rounded-xl bg-warning/10 border border-warning/30 flex items-center justify-center text-warning font-black text-sm font-mono">
                     {s.number}
                   </div>
                 </div>
@@ -65,7 +65,7 @@ export default function HowItWorksSection() {
         <div className="text-center mt-12">
           <Link
             href="/dashboard/analyzer"
-            className="inline-flex items-center gap-2 px-7 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-base rounded-xl transition-all shadow-lg shadow-amber-500/25 hover:shadow-amber-400/35 hover:-translate-y-px"
+            className="inline-flex items-center gap-2 px-7 py-4 bg-warning hover:bg-warning text-slate-950 font-bold text-base rounded-xl transition-all shadow-lg shadow-warning/25 hover:shadow-warning/35 hover:-translate-y-px"
           >
             Try Your First Analysis
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

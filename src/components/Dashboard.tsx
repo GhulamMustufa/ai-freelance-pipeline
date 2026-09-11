@@ -102,7 +102,7 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
               <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-slate-400 px-2 py-1 rounded-md border border-slate-700">
                 {initialJobs.length} Tracked
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded-md border border-emerald-500/20">
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-success/10 text-success px-2 py-1 rounded-md border border-success/20">
                 {initialJobs.filter(j => j.proposalDraft?.status === 'submitted').length} Sent
               </span>
             </div>
@@ -117,7 +117,7 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
             </button>
             <button 
               onClick={() => setFilterType('GOLDEN')}
-              className={`flex-1 text-xs font-semibold py-1.5 rounded-md transition-all flex items-center justify-center ${filterType === 'GOLDEN' ? 'bg-slate-800 text-amber-400 shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}>
+              className={`flex-1 text-xs font-semibold py-1.5 rounded-md transition-all flex items-center justify-center ${filterType === 'GOLDEN' ? 'bg-slate-800 text-warning shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}>
               <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"></path></svg>
               Golden
             </button>
@@ -146,7 +146,7 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
               <div className="flex justify-between items-start mb-2">
                 <div className="flex gap-2">
                   <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm 
-                    ${job.isGolden ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>
+                    ${job.isGolden ? 'bg-warning/10 text-warning border border-warning/20' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>
                     {job.isGolden ? 'Golden' : 'Standard'}
                   </span>
                   {job.proposalDraft?.status === 'submitted' && (
@@ -163,7 +163,7 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
               <h3 className="font-medium text-slate-200 text-sm leading-snug line-clamp-2 mb-2">
                 {job.title}
               </h3>
-              <p className="text-xs text-emerald-400 font-semibold tracking-wide">
+              <p className="text-xs text-success font-semibold tracking-wide">
                 {job.budget ? `$${job.budget}` : (job.hourlyMin ? `$${job.hourlyMin} - $${job.hourlyMax}/hr` : 'Budget TBD')}
               </p>
             </div>
@@ -201,7 +201,7 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
               </div>
               
               <div className="flex flex-wrap gap-2 mb-6">
-                <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-md text-sm font-medium">
+                <span className="bg-success/10 text-success border border-success/20 px-3 py-1 rounded-md text-sm font-medium">
                   {selectedJob.budget ? `$${selectedJob.budget} Fixed` : (selectedJob.hourlyMin ? `$${selectedJob.hourlyMin} - $${selectedJob.hourlyMax}/hr` : 'Hourly')}
                 </span>
                 {selectedJob.score !== null && selectedJob.score !== undefined ? (
@@ -295,7 +295,7 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
                           <div className="flex gap-2">
                             <button 
                               onClick={() => handleUpdateClient(selectedJob.client.id, 'FAVORITE', selectedJob.client.notes || '')}
-                              className={`text-xs px-2.5 py-1 rounded-md border transition-colors ${selectedJob.client.status === 'FAVORITE' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'}`}
+                              className={`text-xs px-2.5 py-1 rounded-md border transition-colors ${selectedJob.client.status === 'FAVORITE' ? 'bg-warning/20 text-warning border-warning/50' : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'}`}
                             >
                               ⭐️ Favorite
                             </button>
@@ -337,13 +337,13 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
                             )}
                             {client.rating !== undefined && (
                               <div className="flex items-center text-sm text-slate-300">
-                                <svg className="w-4 h-4 mr-1 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                <svg className="w-4 h-4 mr-1 text-warning" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                                 {client.rating.toFixed(1)} / 5.0
                               </div>
                             )}
                             {client.total_hires !== undefined && (
                               <div className="flex items-center text-sm text-slate-300">
-                                <svg className="w-4 h-4 mr-1.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                <svg className="w-4 h-4 mr-1.5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                                 {client.total_hires} hires
                               </div>
                             )}
@@ -368,7 +368,7 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
                     
                     {selectedJob.clientFeedbackScore !== null && selectedJob.clientFeedbackScore !== undefined && (
                       <div className="flex items-center text-sm text-slate-300">
-                        <svg className="w-4 h-4 mr-1 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <svg className="w-4 h-4 mr-1 text-warning" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                         {selectedJob.clientFeedbackScore.toFixed(1)} / 5.0 ({selectedJob.clientFeedbackCount} reviews)
                       </div>
                     )}
@@ -382,8 +382,8 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
 
                     {/* Deep Client Metrics (if available) */}
                     {selectedJob.clientTotalSpend !== null && selectedJob.clientTotalSpend !== undefined && (
-                      <div className="flex items-center text-sm text-slate-200 font-semibold bg-emerald-500/10 px-2 py-1 rounded">
-                        <svg className="w-4 h-4 mr-1.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      <div className="flex items-center text-sm text-slate-200 font-semibold bg-success/10 px-2 py-1 rounded">
+                        <svg className="w-4 h-4 mr-1.5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Spend: ${selectedJob.clientTotalSpend.toLocaleString()}
                       </div>
                     )}
@@ -453,7 +453,7 @@ export default function Dashboard({ initialJobs }: { initialJobs: any[] }) {
             <div className="bg-slate-950/50 p-8 border border-slate-800/50 rounded-xl flex flex-col items-center justify-center text-center h-full min-h-[300px]">
               {selectedJob?.isGolden ? (
                 <>
-                  <svg className="w-10 h-10 text-amber-500/70 animate-spin-slow mb-4" fill="none" viewBox="0 0 24 24">
+                  <svg className="w-10 h-10 text-warning/70 animate-spin-slow mb-4" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>

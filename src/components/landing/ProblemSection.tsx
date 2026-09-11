@@ -14,7 +14,7 @@ export default function ProblemSection() {
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             The problem isn&apos;t finding freelance jobs.
             <br />
-            <span className="text-amber-400">It&apos;s knowing which ones deserve your time.</span>
+            <span className="text-warning">It&apos;s knowing which ones deserve your time.</span>
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
             Every time you evaluate an opportunity manually, you&apos;re making a costly bet with your most limited resource.
@@ -30,7 +30,7 @@ export default function ProblemSection() {
             {steps.map((s, i) => (
               <div key={i} className="flex items-center gap-4">
                 <div className={`w-14 text-right text-sm font-black shrink-0 ${
-                  s.time === '+' ? 'text-rose-400' : 'text-amber-400'
+                  s.time === '+' ? 'text-danger' : 'text-warning'
                 }`}>
                   {s.time}
                 </div>
@@ -40,7 +40,7 @@ export default function ProblemSection() {
             ))}
             <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <span className="text-sm text-slate-500 dark:text-slate-400">× dozens of opportunities per week</span>
-              <span className="text-rose-500 dark:text-rose-400 font-black text-sm">= hours lost</span>
+              <span className="text-danger font-black text-sm">= hours lost</span>
             </div>
           </div>
 
@@ -49,7 +49,7 @@ export default function ProblemSection() {
             <blockquote className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight">
               &ldquo;A bad opportunity doesn&apos;t just waste a proposal.
               It consumes the time you could have spent{' '}
-              <span className="text-amber-400">winning a better one.</span>&rdquo;
+              <span className="text-warning">winning a better one.</span>&rdquo;
             </blockquote>
 
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -57,7 +57,7 @@ export default function ProblemSection() {
               They&apos;re the best selectors. They know which jobs to pursue — and which to ignore.
             </p>
 
-            <div className="p-4 bg-amber-500/8 border border-amber-500/20 rounded-xl">
+            <div className="p-4 bg-warning/8 border border-warning/20 rounded-xl">
               <p className="text-amber-700 dark:text-amber-300 text-sm font-semibold">
                 OmniBid optimizes your most scarce resource — not your proposals, but your <span className="text-slate-900 dark:text-white">attention</span>.
               </p>

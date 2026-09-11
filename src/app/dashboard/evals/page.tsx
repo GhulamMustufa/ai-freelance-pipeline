@@ -46,10 +46,10 @@ interface EvalSummary {
 
 const CATEGORY_LABELS: Record<string, { name: string; color: string }> = {
   all: { name: 'All Cases (30)', color: 'border-slate-700 bg-slate-800 text-slate-200' },
-  excellent_match: { name: 'High Fit Roles', color: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300' },
-  poor_technical_match: { name: 'Dealbreaker Tech', color: 'border-rose-500/30 bg-rose-500/10 text-rose-300' },
+  excellent_match: { name: 'High Fit Roles', color: 'border-success/30 bg-success/10 text-emerald-300' },
+  poor_technical_match: { name: 'Dealbreaker Tech', color: 'border-danger/30 bg-danger/10 text-rose-300' },
   poor_client_excellent_technical_match: { name: 'Payment & Client Risk', color: 'border-purple-500/30 bg-purple-500/10 text-purple-300' },
-  excellent_client_poor_job: { name: 'Budget Deficit / Trivial', color: 'border-amber-500/30 bg-amber-500/10 text-amber-300' },
+  excellent_client_poor_job: { name: 'Budget Deficit / Trivial', color: 'border-warning/30 bg-warning/10 text-amber-300' },
   high_competition: { name: 'High Competition', color: 'border-blue-500/30 bg-blue-500/10 text-blue-300' },
   hallucination_trap: { name: 'Claim Verification', color: 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300' },
 };
@@ -102,17 +102,17 @@ export default function BenchmarkDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-amber-500 selection:text-slate-950 transition-colors duration-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-warning selection:text-slate-950 transition-colors duration-200">
       <Navigation />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
         {/* Header Title Section */}
         <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm dark:shadow-2xl relative overflow-hidden backdrop-blur-md">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-warning/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
           <div className="relative z-10 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30">
+              <span className="text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-full bg-warning/10 text-amber-700 dark:text-warning border border-warning/30">
                 🛡️ AI Audit & Benchmark Center
               </span>
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
@@ -137,7 +137,7 @@ export default function BenchmarkDashboardPage() {
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm dark:shadow-lg space-y-2">
             <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
               <span>Benchmark Coverage</span>
-              <span className="text-emerald-600 dark:text-emerald-400 text-xs">● 100% Ran</span>
+              <span className="text-success text-xs">● 100% Ran</span>
             </div>
             <div className="text-3xl font-black text-slate-900 dark:text-white">
               {summary?.evaluatedCases || 30} <span className="text-slate-400 dark:text-slate-500 text-lg font-normal">/ {summary?.totalCases || 30}</span>
@@ -151,9 +151,9 @@ export default function BenchmarkDashboardPage() {
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm dark:shadow-lg space-y-2">
             <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
               <span>Excluded Tech Guardrail</span>
-              <span className="text-amber-600 dark:text-amber-400 text-xs">Deterministic</span>
+              <span className="text-warning text-xs">Deterministic</span>
             </div>
-            <div className="text-3xl font-black text-amber-600 dark:text-amber-400">
+            <div className="text-3xl font-black text-warning">
               {summary?.guardrails?.excludedTechAccuracy ?? 100}%
             </div>
             <div className="text-xs text-slate-500 dark:text-slate-400">
@@ -165,9 +165,9 @@ export default function BenchmarkDashboardPage() {
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm dark:shadow-lg space-y-2">
             <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
               <span>Fraud & Scam Defense</span>
-              <span className="text-emerald-600 dark:text-emerald-400 text-xs">Zero Tolerance</span>
+              <span className="text-success text-xs">Zero Tolerance</span>
             </div>
-            <div className="text-3xl font-black text-emerald-600 dark:text-emerald-400">
+            <div className="text-3xl font-black text-success">
               {summary?.guardrails?.scamDetectionAccuracy ?? 100}%
             </div>
             <div className="text-xs text-slate-500 dark:text-slate-400">
@@ -205,7 +205,7 @@ export default function BenchmarkDashboardPage() {
                     onClick={() => setSelectedCategory(key)}
                     className={`text-xs font-bold px-3.5 py-1.5 rounded-xl border transition-all ${
                       isActive
-                        ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/20'
+                        ? 'bg-warning text-slate-950 border-warning shadow-md shadow-warning/20'
                         : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
@@ -222,7 +222,7 @@ export default function BenchmarkDashboardPage() {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search test case or skill..."
-                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-warning"
               />
             </div>
           </div>
@@ -233,7 +233,7 @@ export default function BenchmarkDashboardPage() {
           <span className="text-xs font-semibold text-slate-400">
             Showing {filteredCases.length} evaluated benchmark scenarios
           </span>
-          <span className="text-xs text-amber-400/90 font-medium flex items-center gap-1.5">
+          <span className="text-xs text-warning/90 font-medium flex items-center gap-1.5">
             <span>💡</span> Click any row to view complete prompt, client metrics & AI rationale
           </span>
         </div>
@@ -281,7 +281,7 @@ export default function BenchmarkDashboardPage() {
                       {/* Column 1: Case ID & Category */}
                       <td className="py-4 px-4 sm:px-6 align-top">
                         <div className="space-y-1">
-                          <span className="font-mono text-[11px] font-bold text-slate-500 dark:text-slate-400 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                          <span className="font-mono text-[11px] font-bold text-slate-500 dark:text-slate-400 group-hover:text-warning dark:group-hover:text-warning transition-colors">
                             {testCase.id}
                           </span>
                           <div>
@@ -295,13 +295,13 @@ export default function BenchmarkDashboardPage() {
                       {/* Column 2: Opportunity Title & Budget */}
                       <td className="py-4 px-4 align-top max-w-xs">
                         <div className="space-y-1">
-                          <div className="font-bold text-slate-900 dark:text-white text-xs line-clamp-1 group-hover:text-amber-600 dark:group-hover:text-amber-300 transition-colors">
+                          <div className="font-bold text-slate-900 dark:text-white text-xs line-clamp-1 group-hover:text-warning dark:group-hover:text-amber-300 transition-colors">
                             {testCase.title}
                           </div>
                           <div className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2">
                             {testCase.description}
                           </div>
-                          <div className="flex items-center gap-2 text-[10px] text-amber-700 dark:text-amber-400/90 font-medium">
+                          <div className="flex items-center gap-2 text-[10px] text-amber-700 dark:text-warning/90 font-medium">
                             {testCase.budget ? (
                               <span>Fixed: ${testCase.budget.toLocaleString()}</span>
                             ) : testCase.hourlyMin ? (
@@ -322,10 +322,10 @@ export default function BenchmarkDashboardPage() {
                       <td className="py-4 px-4 align-top text-center">
                         <span className={`inline-block text-[11px] font-extrabold px-2.5 py-1 rounded-lg border ${
                           testCase.expectedRecommendation === 'APPLY'
-                            ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30'
+                            ? 'bg-success/10 text-emerald-700 dark:text-emerald-300 border-success/30'
                             : testCase.expectedRecommendation === 'MAYBE'
-                            ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30'
-                            : 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30'
+                            ? 'bg-warning/10 text-amber-700 dark:text-amber-300 border-warning/30'
+                            : 'bg-danger/10 text-rose-700 dark:text-rose-300 border-danger/30'
                         }`}>
                           {testCase.expectedRecommendation}
                         </span>
@@ -336,10 +336,10 @@ export default function BenchmarkDashboardPage() {
                         <div className="space-y-1">
                           <span className={`inline-block text-[11px] font-extrabold px-2.5 py-1 rounded-lg border ${
                             testCase.actualRecommendation === 'APPLY'
-                              ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-black shadow-sm'
+                              ? 'bg-success text-slate-950 border-success font-black shadow-sm'
                               : testCase.actualRecommendation === 'MAYBE'
-                              ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-sm'
-                              : 'bg-rose-600 text-white border-rose-500 font-black shadow-sm'
+                              ? 'bg-warning text-slate-950 border-warning font-black shadow-sm'
+                              : 'bg-danger text-white border-danger font-black shadow-sm'
                           }`}>
                             {testCase.actualRecommendation}
                           </span>
@@ -352,16 +352,16 @@ export default function BenchmarkDashboardPage() {
                       {/* Column 5: Alignment Badge */}
                       <td className="py-4 px-4 align-top text-center">
                         {testCase.alignment === 'EXACT_MATCH' ? (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                            ✓ Exact Match
+                          <span className="inline-flex items-center gap-1 whitespace-nowrap text-[10px] font-bold px-2 py-0.5 rounded-md bg-success/10 text-emerald-700 dark:text-emerald-300 border border-success/30">
+                            <span>✓</span> Exact Match
                           </span>
                         ) : testCase.alignment === 'CONSERVATIVE_REVIEW' ? (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30">
-                            ⚡ Conservative
+                          <span className="inline-flex items-center gap-1 whitespace-nowrap text-[10px] font-bold px-2 py-0.5 rounded-md bg-warning/10 text-amber-700 dark:text-amber-300 border border-warning/30">
+                            <span>⚡</span> Conservative
                           </span>
                         ) : (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/30">
-                            🔍 Flagged Risk
+                          <span className="inline-flex items-center gap-1 whitespace-nowrap text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/30">
+                            <span>🔍</span> Flagged Risk
                           </span>
                         )}
                       </td>
@@ -381,7 +381,7 @@ export default function BenchmarkDashboardPage() {
                             e.stopPropagation();
                             handleInspectInAnalyzer(testCase);
                           }}
-                          className="text-xs font-bold text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-3.5 py-1.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 ml-auto group-hover:border-amber-500/60"
+                          className="text-xs font-bold text-amber-700 dark:text-warning hover:text-amber-800 dark:hover:text-amber-300 bg-warning/10 hover:bg-warning/20 border border-warning/30 px-3.5 py-1.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 ml-auto group-hover:border-warning/60"
                         >
                           <span>Test in Analyzer</span>
                           <span>→</span>
@@ -403,7 +403,7 @@ export default function BenchmarkDashboardPage() {
               <div className="flex items-start justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold text-amber-700 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+                    <span className="text-xs font-mono font-bold text-amber-700 dark:text-warning bg-warning/10 border border-warning/30 px-2.5 py-0.5 rounded-full">
                       {activeModalCase.id}
                     </span>
                     <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full border bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700">
@@ -433,10 +433,10 @@ export default function BenchmarkDashboardPage() {
                     <div className="flex items-center gap-2 mt-1">
                       <span className={`text-base font-black px-3 py-1 rounded-xl border ${
                         activeModalCase.expectedRecommendation === 'APPLY'
-                          ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30'
+                          ? 'bg-success/10 text-emerald-700 dark:text-emerald-300 border-success/30'
                           : activeModalCase.expectedRecommendation === 'MAYBE'
-                          ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30'
-                          : 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30'
+                          ? 'bg-warning/10 text-amber-700 dark:text-amber-300 border-warning/30'
+                          : 'bg-danger/10 text-rose-700 dark:text-rose-300 border-danger/30'
                       }`}>
                         {activeModalCase.expectedRecommendation}
                       </span>
@@ -450,10 +450,10 @@ export default function BenchmarkDashboardPage() {
                     <div className="flex items-center gap-2 mt-1">
                       <span className={`text-base font-black px-3 py-1 rounded-xl border ${
                         activeModalCase.actualRecommendation === 'APPLY'
-                          ? 'bg-emerald-500 text-slate-950 border-emerald-400'
+                          ? 'bg-success text-slate-950 border-success'
                           : activeModalCase.actualRecommendation === 'MAYBE'
-                          ? 'bg-amber-500 text-slate-950 border-amber-400'
-                          : 'bg-rose-600 text-white border-rose-500'
+                          ? 'bg-warning text-slate-950 border-warning'
+                          : 'bg-danger text-white border-danger'
                       }`}>
                         {activeModalCase.actualRecommendation}
                       </span>
@@ -471,7 +471,7 @@ export default function BenchmarkDashboardPage() {
 
                 {/* AI Rationale */}
                 <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 space-y-2">
-                  <span className="text-[11px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="text-[11px] font-bold text-amber-700 dark:text-warning uppercase tracking-wider flex items-center gap-1.5">
                     <span>🧠</span> Multi-Agent Decision Rationale:
                   </span>
                   <p className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
@@ -520,7 +520,7 @@ export default function BenchmarkDashboardPage() {
 
                   <div>
                     <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-semibold">Feedback Score</span>
-                    <span className="text-sm font-bold text-amber-600 dark:text-amber-400">
+                    <span className="text-sm font-bold text-warning">
                       {activeModalCase.client?.feedbackScore !== undefined ? `★ ${activeModalCase.client.feedbackScore.toFixed(1)} / 5.0` : 'No reviews'}
                     </span>
                   </div>
@@ -553,7 +553,7 @@ export default function BenchmarkDashboardPage() {
                   <button
                     type="button"
                     onClick={() => handleInspectInAnalyzer(activeModalCase)}
-                    className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold text-xs shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-1.5"
+                    className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold text-xs shadow-lg shadow-warning/20 transition-all flex items-center justify-center gap-1.5"
                   >
                     <span>⚡ Run Live in Analyzer</span>
                     <span>→</span>

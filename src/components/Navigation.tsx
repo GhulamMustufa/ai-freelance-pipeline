@@ -30,7 +30,7 @@ export default function Navigation() {
                   className="object-cover"
                 />
               </div>
-              <span className="text-[15px] font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">
+              <span className="text-[15px] font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-warning transition-colors">
                 OmniBid
               </span>
             </Link>

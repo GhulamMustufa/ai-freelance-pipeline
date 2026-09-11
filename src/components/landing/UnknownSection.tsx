@@ -33,7 +33,7 @@ export default function UnknownSection() {
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Missing information shouldn&apos;t become
             <br />
-            <span className="text-amber-400">a fake red flag.</span>
+            <span className="text-warning">a fake red flag.</span>
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
             Many AI systems fill information gaps with assumptions.
@@ -51,16 +51,16 @@ export default function UnknownSection() {
               </div>
 
               {/* What a typical tool does */}
-              <div className="bg-rose-500/5 border border-rose-500/20 rounded-xl p-4">
-                <div className="text-[10px] font-bold uppercase tracking-widest text-rose-600 mb-1.5">
+              <div className="bg-danger/5 border border-danger/20 rounded-xl p-4">
+                <div className="text-[10px] font-bold uppercase tracking-widest text-danger mb-1.5">
                   Typical tool assumes:
                 </div>
-                <div className="text-sm text-rose-400 font-semibold">{e.bad}</div>
+                <div className="text-sm text-danger font-semibold">{e.bad}</div>
               </div>
 
               {/* What OmniBid does */}
-              <div className="bg-amber-50 dark:bg-slate-800/60 border border-amber-500/20 rounded-xl p-4">
-                <div className="text-[10px] font-bold uppercase tracking-widest text-amber-600 mb-1.5">
+              <div className="bg-amber-50 dark:bg-slate-800/60 border border-warning/20 rounded-xl p-4">
+                <div className="text-[10px] font-bold uppercase tracking-widest text-warning mb-1.5">
                   OmniBid preserves:
                 </div>
                 <div className={`text-sm font-black font-mono ${e.goodColor}`}>{e.good}</div>
@@ -71,7 +71,7 @@ export default function UnknownSection() {
 
         <div className="mt-12 text-center p-6 bg-slate-200/50 dark:bg-slate-800/30 border border-slate-300/60 dark:border-slate-700/60 rounded-2xl">
           <p className="text-slate-900 dark:text-white font-semibold text-lg">
-            The system tells you what it <span className="text-emerald-400">knows</span>,
+            The system tells you what it <span className="text-success">knows</span>,
             what it <span className="text-sky-400">estimates</span>, and
             what it <span className="text-slate-400">doesn&apos;t know</span>.
           </p>
