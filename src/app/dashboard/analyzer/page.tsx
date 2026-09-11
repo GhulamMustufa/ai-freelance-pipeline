@@ -127,6 +127,7 @@ export default function ManualJobAnalyzer() {
 
   // Profile state
   const [profile, setProfile] = useState<any>(null);
+  const [profileLoaded, setProfileLoaded] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileSkills, setProfileSkills] = useState('');
   const [profilePrimarySkills, setProfilePrimarySkills] = useState('');
@@ -159,9 +160,13 @@ export default function ManualJobAnalyzer() {
         setProfileMinBudget(String(data.profile.minProjectBudget || 1000));
         setProfileLocation(data.profile.location || '');
         setProfileAvailability(data.profile.availability || 'FULL_TIME');
+      } else {
+        setProfile(null);
       }
     } catch {
       console.warn('Could not load profile');
+    } finally {
+      setProfileLoaded(true);
     }
   }, []);
 
@@ -261,6 +266,7 @@ export default function ManualJobAnalyzer() {
     fetchProfile,
     hourlyMax,
     hourlyMin,
+    isSignedIn,
     profile,
     profileExcluded,
     profileMinBudget,
@@ -424,7 +430,12 @@ export default function ManualJobAnalyzer() {
           </div>
 
           {/* Active Profile Pill / Customizer */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            {profileLoaded && (!profile || profile.isDefault) && (
+              <div className="text-[11px] font-bold text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-3 py-2 rounded-xl border border-red-200 dark:border-red-800 flex items-center gap-2 shadow-sm animate-pulse">
+                ⚠️ WARNING: Using Fallback Profile Data. Please configure your profile!
+              </div>
+            )}
             <div className="bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 p-3 rounded-xl flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-warning/20 text-warning flex items-center justify-center font-bold text-sm border border-warning/30">
                 👤
@@ -432,7 +443,7 @@ export default function ManualJobAnalyzer() {
               <div className="text-left">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-semibold text-slate-900 dark:text-slate-200">
-                    {profile?.name || 'Loading Profile...'}
+                    {profile ? profile.name : (profileLoaded ? 'Default Profile' : 'Loading Profile...')}
                   </span>
                   <span className="text-[10px] font-mono font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 px-1.5 py-0.2 rounded">
                     v{profile?.version || 1}

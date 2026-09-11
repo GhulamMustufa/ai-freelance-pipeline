@@ -7,11 +7,11 @@ export async function GET() {
     const { userId } = await auth();
     
     // If authenticated, look for their profile. Otherwise, fallback to the default global profile.
-    let profileQuery = userId 
+    const profileQuery = userId 
       ? { userId } 
       : { isDefault: true };
 
-    let profile = await prisma.freelancerProfile.findFirst({
+    const profile = await prisma.freelancerProfile.findFirst({
       where: profileQuery,
       include: {
         evidenceItems: {
@@ -95,7 +95,7 @@ async function handleSaveProfile(req: NextRequest) {
     const data = await req.json();
 
     // Check if the user already has a profile
-    let existing = await prisma.freelancerProfile.findFirst({
+    const existing = await prisma.freelancerProfile.findFirst({
       where: { userId }
     });
     

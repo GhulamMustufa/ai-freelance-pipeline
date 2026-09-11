@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { Save, Loader2, CheckCircle2, UserCircle } from 'lucide-react';
+import Navigation from '@/components/Navigation';
 
 export default function ProfilePage() {
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -109,8 +110,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="flex-1 bg-slate-50 dark:bg-slate-950 p-4 sm:p-8 overflow-y-auto">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
+      <Navigation />
+      <div className="flex-1 p-4 sm:p-8 overflow-y-auto">
+        <div className="max-w-4xl mx-auto space-y-8">
         
         <div>
           <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
@@ -184,7 +187,7 @@ export default function ProfilePage() {
               </div>
             </div>
             <p className="mt-4 text-xs text-slate-500">
-              OmniBid uses these numbers to evaluate if a job is economically viable. If a job's budget is strictly below your minimum floor, it will trigger a deterministic SKIP.
+              OmniBid uses these numbers to evaluate if a job is economically viable. If a job&apos;s budget is strictly below your minimum floor, it will trigger a deterministic SKIP.
             </p>
           </div>
 
@@ -241,6 +244,7 @@ export default function ProfilePage() {
         </form>
 
       </div>
+    </div>
     </div>
   );
 }

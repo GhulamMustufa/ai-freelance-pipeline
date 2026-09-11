@@ -2,8 +2,10 @@ import { prisma } from '../../../../lib/prisma';
 import Link from 'next/link';
 import { FeedbackForm } from './FeedbackForm';
 import Navigation from '@/components/Navigation';
+import { auth } from '@clerk/nextjs/server';
 
 export default async function TraceDetailPage({ params }: { params: { id: string } }) {
+  await auth.protect();
   const { id } = await params;
   
   const opportunity = await prisma.opportunity.findUnique({
