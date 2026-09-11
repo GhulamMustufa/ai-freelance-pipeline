@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
       };
     }
 
-    const { userId } = auth();
+    const { userId } = await auth();
 
     const pipeline = new OpportunityPipeline();
     const result = await pipeline.processJob(payload, { 
