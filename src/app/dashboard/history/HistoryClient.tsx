@@ -22,6 +22,9 @@ interface Opportunity {
   score?: {
     skillMatch: number;
   };
+  proposal?: {
+    content: string;
+  };
 }
 
 export default function HistoryClient({ initialData }: { initialData: Opportunity[] }) {

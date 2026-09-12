@@ -32,8 +32,8 @@ export default function ProfileClient({ initialProfile, isFallback }: { initialP
     try {
       const payload = {
         ...formData,
-        primarySkills: formData.primarySkills.split(',').map(s => s.trim()).filter(Boolean),
-        excludedTechnologies: formData.excludedTechnologies.split(',').map(s => s.trim()).filter(Boolean),
+        primarySkills: formData.primarySkills.split(',').map((s: string) => s.trim()).filter(Boolean),
+        excludedTechnologies: formData.excludedTechnologies.split(',').map((s: string) => s.trim()).filter(Boolean),
         experienceYears: parseInt(formData.experienceYears, 10),
         targetHourlyRate: formData.targetHourlyRate ? parseFloat(formData.targetHourlyRate) : null,
         minProjectBudget: formData.minProjectBudget ? parseFloat(formData.minProjectBudget) : null,
