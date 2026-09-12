@@ -109,6 +109,7 @@ const jsonLd = {
 };
 
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from 'react-hot-toast';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -135,6 +136,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           <ClerkProvider>
             {children}
+            <Toaster position="bottom-right" />
           </ClerkProvider>
         </ThemeProvider>
       </body>

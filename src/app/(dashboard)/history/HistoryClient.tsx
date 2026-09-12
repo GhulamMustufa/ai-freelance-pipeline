@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import Navigation from '@/components/Navigation';
 import Link from 'next/link';
 
@@ -52,7 +53,7 @@ export default function HistoryClient({ initialData }: { initialData: Opportunit
       setOpportunities((prev) => prev.filter((opp) => opp.id !== id));
       if (expandedId === id) setExpandedId(null);
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setIsArchiving(null);
     }

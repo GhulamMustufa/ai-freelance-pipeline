@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { logOpportunityFeedback } from '@/app/actions';
+import toast from 'react-hot-toast';
 
 export function FeedbackForm({ opportunityId, initialOutcome, initialFeedback }: { 
   opportunityId: string, 
@@ -28,7 +29,7 @@ export function FeedbackForm({ opportunityId, initialOutcome, initialFeedback }:
 
     if (opportunityId === 'demo') {
       setTimeout(() => {
-        alert('Demo feedback saved! (No database changes made in demo mode)');
+        toast.success('Demo feedback saved! (No database changes made in demo mode)');
         setLoading(false);
       }, 500);
       return;
@@ -36,9 +37,9 @@ export function FeedbackForm({ opportunityId, initialOutcome, initialFeedback }:
 
     try {
       await logOpportunityFeedback(opportunityId, outcome, feedback);
-      alert('Feedback logged successfully!');
+      toast.success('Feedback logged successfully!');
     } catch {
-      alert('Failed to log feedback');
+      toast.error('Failed to log feedback');
     }
     setLoading(false);
   };
