@@ -82,10 +82,16 @@
 - **Runner (`runner.ts`):**
   - Generates `evals/results/LATEST_EVAL_REPORT.md` and timestamped JSON files.
 
-### 6. UI & Trace Telemetry
+### 6. UI, Performance & Trace Telemetry
+- **Server Component Refactor:** Migrated `Profile` and `History` pages from client-side `useEffect` fetching to Next.js **Server Components**, eliminating initial loading spinners and significantly improving page load performance and FCP (First Contentful Paint).
+- **Analyzer Simplification:** Removed bulky redundant Profile setting modals from the Analyzer page in favor of a clean, dedicated `/dashboard/profile` experience with fallback detection.
+- **Hydration & Progress UI:** Resolved React 19 / Next 15 `next-themes` hydration mismatches. Fixed trace execution progress bars to properly cap at 100%.
 - Enhanced `/dashboard/traces/[id]/page.tsx` with a top telemetry ribbon showing total pipeline latency, total token consumption, estimated USD cost, active policy version, and profile snapshot version.
 - Added visual 4-Tier Evidence Taxonomy card rendering color-coded badges for verified, inferred, unknown, and contradicted evidence items.
-- Enhanced `/dashboard/analyzer/page.tsx` with a profile version indicator and extended editing modal for primary skills, location, and availability.
+
+### 7. CI/CD & Pipeline Stability
+- **PostgreSQL Service Container:** Configured GitHub Actions to spin up a PostgreSQL service container (`postgres:15`) during the CI/CD type-checking phase to ensure Prisma client generation and TypeScript checks execute reliably without SQLite local file dependencies.
+- **Agent Telemetry Linkage:** Fixed `AgentExecutor` state loss by explicitly injecting `opportunityId` into the agent's context block, ensuring all tokens and latencies map perfectly to the specific job trace in the UI.
 
 ---
 
