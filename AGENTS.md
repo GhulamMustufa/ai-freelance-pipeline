@@ -1,12 +1,10 @@
-<!-- BEGIN:nextjs-agent-rules -->
+# Agent Validation Rules
 
-# This is NOT the Next.js you know
+When making code changes to this project, you MUST self-validate your work before committing to prevent breaking the build or failing CI/CD.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+## Pre-Commit Checklist
+Before executing any `git commit`, you must run:
+1. `npx tsc --noEmit`
+2. `npm run build`
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
-
-# Strict Type-Checking Protocol
-**CRITICAL**: Every time you modify TypeScript code, you MUST run a quick type-check (`npx tsc --noEmit`) to verify that the build is not broken before completing your task. NEVER assume code is bug-free just because it renders locally.
+Do NOT commit code if either of these commands fail. Fix the TypeScript or build errors first, then attempt to commit again.
