@@ -17,7 +17,8 @@
     "worker:ingestion": "npx tsx src/workers/ingestion.ts",
     "worker:pipeline": "npx tsx src/workers/pipelineProcessor.ts",
     "seed": "npx tsx scripts/seed-knowledge-base.ts",
-    "dev:all": "concurrently \"npm run dev\" \"npm run worker:ingestion\" \"npm run worker:pipeline\""
+    "dev:all": "concurrently \"npm run dev\" \"npm run worker:ingestion\" \"npm run worker:pipeline\"",
+    "prepare": "husky"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^2.0.62",
@@ -59,8 +60,16 @@
     "date-fns": "^4.4.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prisma": "^7.9.1",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "bash -c 'npx tsc --noEmit'"
+    ]
   }
 }

@@ -7,3 +7,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+# Strict Type-Checking Protocol
+**CRITICAL**: Every time you modify TypeScript code, you MUST run a quick type-check (`npx tsc --noEmit`) to verify that the build is not broken before completing your task. NEVER assume code is bug-free just because it renders locally.
