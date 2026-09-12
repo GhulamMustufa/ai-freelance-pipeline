@@ -71,8 +71,8 @@ When OmniBid writes a proposal for an `APPLY` job, its built-in **Claim Verifier
 
 ### 1. Install Dependencies
 ```bash
-git clone https://github.com/your-username/ai-freelance-pipeline.git
-cd ai-freelance-pipeline
+git clone https://github.com/your-username/omnibid.git
+cd omnibid
 npm install
 ```
 

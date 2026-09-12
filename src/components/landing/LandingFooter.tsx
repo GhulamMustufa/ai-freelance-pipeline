@@ -46,7 +46,7 @@ export default function LandingFooter() {
             <div className="space-y-2">
               {[
                 { label: 'FAQ', href: '#faq' },
-                { label: 'GitHub Repository', href: 'https://github.com/GhulamMustufa/ai-freelance-pipeline' },
+                { label: 'GitHub Repository', href: 'https://github.com/GhulamMustufa/omnibid' },
               ].map((l) => (
                 <div key={l.label}>
                   <a href={l.href} className="text-sm text-slate-600 hover:text-slate-900 dark:text-slate-500 dark:hover:text-slate-300 transition-colors" target={l.href.startsWith('http') ? '_blank' : undefined} rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
