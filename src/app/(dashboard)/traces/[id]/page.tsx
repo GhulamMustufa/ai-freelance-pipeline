@@ -14,6 +14,7 @@ export default async function TraceDetailPage({ params }: { params: { id: string
   let opportunity: any = null;
 
   if (id === 'demo') {
+    const baseTime = 1694500000000; // Fixed timestamp for purity
     opportunity = {
       id: 'demo',
       status: 'PROPOSAL_DRAFTED',
@@ -25,9 +26,9 @@ export default async function TraceDetailPage({ params }: { params: { id: string
         clientHistory: { totalSpend: 50000, feedbackScore: 4.9 }
       },
       pipelineRuns: [
-        { id: 'run-1', stage: 'JOB_INGESTION', status: 'COMPLETED', createdAt: new Date(Date.now() - 10000), startedAt: new Date(Date.now() - 10000), completedAt: new Date(Date.now() - 9000) },
-        { id: 'run-2', stage: 'EVALUATION', status: 'COMPLETED', createdAt: new Date(Date.now() - 9000), startedAt: new Date(Date.now() - 9000), completedAt: new Date(Date.now() - 5000) },
-        { id: 'run-3', stage: 'PROPOSAL_DRAFTING', status: 'COMPLETED', createdAt: new Date(Date.now() - 5000), startedAt: new Date(Date.now() - 5000), completedAt: new Date(Date.now() - 1000) }
+        { id: 'run-1', stage: 'JOB_INGESTION', status: 'COMPLETED', createdAt: new Date(baseTime - 10000), startedAt: new Date(baseTime - 10000), completedAt: new Date(baseTime - 9000) },
+        { id: 'run-2', stage: 'EVALUATION', status: 'COMPLETED', createdAt: new Date(baseTime - 9000), startedAt: new Date(baseTime - 9000), completedAt: new Date(baseTime - 5000) },
+        { id: 'run-3', stage: 'PROPOSAL_DRAFTING', status: 'COMPLETED', createdAt: new Date(baseTime - 5000), startedAt: new Date(baseTime - 5000), completedAt: new Date(baseTime - 1000) }
       ],
       agentRuns: [
         {
@@ -35,9 +36,9 @@ export default async function TraceDetailPage({ params }: { params: { id: string
           agentName: 'IngestionAgent',
           model: 'gpt-4o-mini',
           status: 'COMPLETED',
-          createdAt: new Date(Date.now() - 10000),
-          startedAt: new Date(Date.now() - 10000),
-          completedAt: new Date(Date.now() - 9000),
+          createdAt: new Date(baseTime - 10000),
+          startedAt: new Date(baseTime - 10000),
+          completedAt: new Date(baseTime - 9000),
           durationMs: 1000,
           schemaVersion: '1.0',
           retries: 0,
@@ -52,9 +53,9 @@ export default async function TraceDetailPage({ params }: { params: { id: string
           agentName: 'DecisionAgent',
           model: 'gpt-4o-mini',
           status: 'COMPLETED',
-          createdAt: new Date(Date.now() - 9000),
-          startedAt: new Date(Date.now() - 9000),
-          completedAt: new Date(Date.now() - 5000),
+          createdAt: new Date(baseTime - 9000),
+          startedAt: new Date(baseTime - 9000),
+          completedAt: new Date(baseTime - 5000),
           durationMs: 4000,
           schemaVersion: '1.0',
           retries: 0,
@@ -69,9 +70,9 @@ export default async function TraceDetailPage({ params }: { params: { id: string
           agentName: 'DraftingAgent',
           model: 'gpt-4o-mini',
           status: 'COMPLETED',
-          createdAt: new Date(Date.now() - 5000),
-          startedAt: new Date(Date.now() - 5000),
-          completedAt: new Date(Date.now() - 1000),
+          createdAt: new Date(baseTime - 5000),
+          startedAt: new Date(baseTime - 5000),
+          completedAt: new Date(baseTime - 1000),
           durationMs: 4000,
           schemaVersion: '1.0',
           retries: 0,
@@ -180,9 +181,9 @@ export default async function TraceDetailPage({ params }: { params: { id: string
 
         {/* Telemetry Overview Ribbon */}
         {(() => {
-          const totalDuration = opportunity.agentRuns.reduce((acc, r) => acc + (r.durationMs || 0), 0);
-          const totalTokens = opportunity.agentRuns.reduce((acc, r) => acc + (r.promptTokens || 0) + (r.completionTokens || 0), 0);
-          const totalCost = opportunity.agentRuns.reduce((acc, r) => acc + (r.estimatedCost || 0), 0);
+          const totalDuration = opportunity.agentRuns.reduce((acc: number, r: any) => acc + (r.durationMs || 0), 0);
+          const totalTokens = opportunity.agentRuns.reduce((acc: number, r: any) => acc + (r.promptTokens || 0) + (r.completionTokens || 0), 0);
+          const totalCost = opportunity.agentRuns.reduce((acc: number, r: any) => acc + (r.estimatedCost || 0), 0);
           
           return (
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 text-xs">
@@ -259,7 +260,7 @@ export default async function TraceDetailPage({ params }: { params: { id: string
         <div>
           <h2 className="text-xl font-bold mb-4 text-slate-900 dark:text-white">Pipeline Execution Trace</h2>
           <div className="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 dark:before:via-slate-700 before:to-transparent">
-            {opportunity.pipelineRuns.map((run, i) => (
+            {opportunity.pipelineRuns.map((run: any, i: number) => (
               <div key={run.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                 <div className={`flex items-center justify-center w-10 h-10 rounded-full border border-white dark:border-slate-800 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 ${
                   run.status === 'COMPLETED' ? 'bg-success' : run.status === 'FAILED' ? 'bg-danger' : 'bg-blue-500'
@@ -286,7 +287,7 @@ export default async function TraceDetailPage({ params }: { params: { id: string
         <div>
           <h2 className="text-xl font-bold mb-4 text-slate-900 dark:text-white">Agent Telemetry</h2>
           <div className="space-y-4">
-            {opportunity.agentRuns.map((agent) => (
+            {opportunity.agentRuns.map((agent: any) => (
               <div key={agent.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden">
                 <div className="bg-slate-50 dark:bg-slate-950/70 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
                   <h3 className="font-bold text-sm text-slate-900 dark:text-white">{agent.agentName}</h3>
