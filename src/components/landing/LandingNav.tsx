@@ -17,13 +17,13 @@ export default function LandingNav() {
   }, []);
 
   const isHome = pathname === "/";
-  const isAnalyzer = pathname.startsWith("/dashboard/analyzer");
-  const isEvals = pathname.startsWith("/dashboard/evals");
+  const isAnalyzer = pathname.startsWith("/analyzer");
+  const isEvals = pathname.startsWith("/evals");
 
   const links = [
     { label: "Home", href: "/" },
-    { label: "Analyzer", href: "/dashboard/analyzer" },
-    { label: "AI Benchmarks", href: "/dashboard/evals" },
+    { label: "Analyzer", href: "/analyzer" },
+    { label: "AI Benchmarks", href: "/evals" },
   ];
 
   return (
@@ -49,8 +49,8 @@ export default function LandingNav() {
             {links.map((l) => {
               const active =
                 (l.href === "/" && isHome) ||
-                (l.href === "/dashboard/analyzer" && isAnalyzer) ||
-                (l.href === "/dashboard/evals" && isEvals);
+                (l.href === "/analyzer" && isAnalyzer) ||
+                (l.href === "/evals" && isEvals);
 
               return (
                 <Link
@@ -69,7 +69,7 @@ export default function LandingNav() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <Link href="/dashboard/analyzer" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-warning hover:bg-warning text-slate-950 font-bold text-sm rounded-lg transition-all duration-150 shadow-md shadow-warning/20">
+            <Link href="/analyzer" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-warning hover:bg-warning text-slate-950 font-bold text-sm rounded-lg transition-all duration-150 shadow-md shadow-warning/20">
               Try OmniBid
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -89,8 +89,8 @@ export default function LandingNav() {
             {links.map((l) => {
               const active =
                 (l.href === "/" && isHome) ||
-                (l.href === "/dashboard/analyzer" && isAnalyzer) ||
-                (l.href === "/dashboard/evals" && isEvals);
+                (l.href === "/analyzer" && isAnalyzer) ||
+                (l.href === "/evals" && isEvals);
 
               return (
                 <Link
@@ -108,7 +108,7 @@ export default function LandingNav() {
               );
             })}
             <div className="pt-2 px-4">
-              <Link href="/dashboard/analyzer" className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-warning hover:bg-warning text-slate-950 font-bold text-sm rounded-lg transition-all" onClick={() => setMenuOpen(false)}>
+              <Link href="/analyzer" className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-warning hover:bg-warning text-slate-950 font-bold text-sm rounded-lg transition-all" onClick={() => setMenuOpen(false)}>
                 Try OmniBid →
               </Link>
             </div>

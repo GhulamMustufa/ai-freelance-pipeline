@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useUser, SignInButton } from '@clerk/nextjs';
 import { Save, Loader2, CheckCircle2, UserCircle } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 
@@ -10,8 +10,10 @@ export default function ProfileClient({ initialProfile, isFallback }: { initialP
   const [saving, setSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   
+  const [isEdited, setIsEdited] = useState(false);
+  
   const [formData, setFormData] = useState({
-    id: initialProfile?.id || '',
+    id: isFallback ? '' : (initialProfile?.id || ''),
     name: initialProfile?.name || '',
     headline: initialProfile?.headline || '',
     bio: initialProfile?.bio || '',
@@ -61,6 +63,7 @@ export default function ProfileClient({ initialProfile, isFallback }: { initialP
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    setIsEdited(true);
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
@@ -68,14 +71,6 @@ export default function ProfileClient({ initialProfile, isFallback }: { initialP
     return (
       <div className="flex-1 flex items-center justify-center p-8">
         <Loader2 className="w-8 h-8 animate-spin text-warning" />
-      </div>
-    );
-  }
-
-  if (!isSignedIn) {
-    return (
-      <div className="flex-1 flex items-center justify-center p-8">
-        <p className="text-slate-600 dark:text-slate-400">Please sign in to manage your profile.</p>
       </div>
     );
   }
@@ -96,7 +91,7 @@ export default function ProfileClient({ initialProfile, isFallback }: { initialP
           </p>
         </div>
 
-        {isFallback && (
+        {isFallback && !isEdited && (
           <div className="bg-amber-100 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 p-4 rounded-xl flex items-start gap-3">
             <span className="text-xl">⚠️</span>
             <div>
@@ -215,14 +210,25 @@ export default function ProfileClient({ initialProfile, isFallback }: { initialP
                 </>
               )}
             </div>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-6 py-3 rounded-xl bg-warning hover:bg-warning text-slate-950 font-bold shadow-lg shadow-warning/20 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-              Save Profile
-            </button>
+            {isSignedIn ? (
+              <button
+                type="submit"
+                disabled={saving}
+                className="px-6 py-3 rounded-xl bg-warning hover:bg-warning text-slate-950 font-bold shadow-lg shadow-warning/20 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                Save Profile
+              </button>
+            ) : (
+              <SignInButton mode="modal" fallbackRedirectUrl="/profile">
+                <button
+                  type="button"
+                  className="px-6 py-3 rounded-xl bg-slate-800 dark:bg-slate-100 hover:bg-slate-700 dark:hover:bg-white text-white dark:text-slate-900 font-bold transition-all flex items-center gap-2"
+                >
+                  Sign in to Save
+                </button>
+              </SignInButton>
+            )}
           </div>
         </form>
 

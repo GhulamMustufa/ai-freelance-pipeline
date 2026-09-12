@@ -64,7 +64,7 @@ export default function HowItWorksSection() {
 
         <div className="text-center mt-12">
           <Link
-            href="/dashboard/analyzer"
+            href="/analyzer"
             className="inline-flex items-center gap-2 px-7 py-4 bg-warning hover:bg-warning text-slate-950 font-bold text-base rounded-xl transition-all shadow-lg shadow-warning/25 hover:shadow-warning/35 hover:-translate-y-px"
           >
             Try Your First Analysis

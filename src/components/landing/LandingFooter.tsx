@@ -26,8 +26,8 @@ export default function LandingFooter() {
             <div className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-600">Product</div>
             <div className="space-y-2">
               {[
-                { label: 'Analyzer', href: '/dashboard/analyzer' },
-                { label: 'AI Benchmarks', href: '/dashboard/evals' },
+                { label: 'Analyzer', href: '/analyzer' },
+                { label: 'AI Benchmarks', href: '/evals' },
                 { label: 'How It Works', href: '#how-it-works' },
                 { label: 'Why OmniBid', href: '#why-omnibid' },
               ].map((l) => (
@@ -63,7 +63,7 @@ export default function LandingFooter() {
             © {new Date().getFullYear()} OmniBid. Built for freelancers who value their time.
           </p>
           <Link
-            href="/dashboard/analyzer"
+            href="/analyzer"
             className="text-xs px-4 py-2 bg-warning/10 border border-warning/30 text-slate-800 dark:text-warning hover:bg-warning/20 rounded-lg font-semibold transition-colors"
           >
             Try the Analyzer →

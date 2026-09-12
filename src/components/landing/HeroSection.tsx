@@ -153,7 +153,7 @@ export default function HeroSection() {
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
               <Link
-                href="/dashboard/analyzer"
+                href="/analyzer"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-warning hover:bg-warning text-slate-950 font-bold text-base rounded-xl transition-all shadow-lg shadow-warning/25 hover:shadow-warning/35 hover:-translate-y-px"
               >
                 Analyze a Job Free

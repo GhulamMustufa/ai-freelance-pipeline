@@ -44,17 +44,17 @@ export default function Navigation() {
             </Link>
 
             <nav className="hidden sm:flex items-center space-x-1">
-              <Link href="/dashboard/analyzer" className={navItemClass(pathname.startsWith('/dashboard/analyzer'))}>
+              <Link href="/analyzer" className={navItemClass(pathname.startsWith('/analyzer'))}>
                 Analyzer
               </Link>
-              <Link href="/dashboard/evals" className={navItemClass(pathname.startsWith('/dashboard/evals'))}>
+              <Link href="/evals" className={navItemClass(pathname.startsWith('/evals'))}>
                 Benchmarks
               </Link>
               <Show when="signed-in">
-                <Link href="/dashboard/history" className={navItemClass(pathname.startsWith('/dashboard/history'))}>
+                <Link href="/history" className={navItemClass(pathname.startsWith('/history'))}>
                   History
                 </Link>
-                <Link href="/dashboard/profile" className={navItemClass(pathname.startsWith('/dashboard/profile'))}>
+                <Link href="/profile" className={navItemClass(pathname.startsWith('/profile'))}>
                   Profile
                 </Link>
               </Show>
@@ -111,17 +111,17 @@ export default function Navigation() {
         {/* Mobile Dropdown */}
         {menuOpen && (
           <div className="sm:hidden py-3 border-t border-slate-100 dark:border-slate-800/60 space-y-1">
-            <Link href="/dashboard/analyzer" onClick={() => setMenuOpen(false)} className={mobileNavItemClass(pathname.startsWith('/dashboard/analyzer'))}>
+            <Link href="/analyzer" onClick={() => setMenuOpen(false)} className={mobileNavItemClass(pathname.startsWith('/analyzer'))}>
               Analyzer
             </Link>
-            <Link href="/dashboard/evals" onClick={() => setMenuOpen(false)} className={mobileNavItemClass(pathname.startsWith('/dashboard/evals'))}>
+            <Link href="/evals" onClick={() => setMenuOpen(false)} className={mobileNavItemClass(pathname.startsWith('/evals'))}>
               Benchmarks
             </Link>
             <Show when="signed-in">
-              <Link href="/dashboard/history" onClick={() => setMenuOpen(false)} className={mobileNavItemClass(pathname.startsWith('/dashboard/history'))}>
+              <Link href="/history" onClick={() => setMenuOpen(false)} className={mobileNavItemClass(pathname.startsWith('/history'))}>
                 History
               </Link>
-              <Link href="/dashboard/profile" onClick={() => setMenuOpen(false)} className={mobileNavItemClass(pathname.startsWith('/dashboard/profile'))}>
+              <Link href="/profile" onClick={() => setMenuOpen(false)} className={mobileNavItemClass(pathname.startsWith('/profile'))}>
                 Profile
               </Link>
             </Show>

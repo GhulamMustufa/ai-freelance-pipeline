@@ -10,27 +10,29 @@ async function seed() {
   const defaultProfile = await prisma.freelancerProfile.upsert({
     where: { id: 'default-profile' },
     update: {
-      name: 'Senior Full-Stack AI Engineer',
-      headline: 'Senior Full-Stack & AI Systems Engineer (Next.js, TypeScript, LLMs)',
-      bio: 'Senior Engineer with 8 years of experience building scalable SaaS applications, real-time web platforms, and multi-agent AI workflows. Specializes in Next.js App Router, TypeScript, Prisma/SQL, and anti-hallucination RAG pipelines.',
-      experienceYears: 8,
-      skills: 'Next.js, React, TypeScript, Node.js, PostgreSQL, Prisma, OpenAI, DeepSeek, Multi-Agent Systems, RAG, TailwindCSS, Docker, AWS',
-      preferredTechnologies: 'Next.js, TypeScript, PostgreSQL, Prisma, OpenAI, DeepSeek, Node.js',
+      name: 'Ghulam Mustafa',
+      headline: 'Senior Full-Stack & Mobile Engineer | AI Integration',
+      bio: 'Senior Full-Stack Engineer with 5+ years architecting and shipping production SaaS platforms and mobile applications. Proven track record across the entire stack. Currently integrating AI-driven features at Lumida Wealth. Expert across React, Next.js, React Native, Node.js, TypeScript, PostgreSQL, and Firebase.',
+      experienceYears: 5,
+      skills: 'React.js, Next.js, TypeScript, JavaScript, TailwindCSS, React Native, Node.js, NestJS, Express.js, GraphQL, RESTful APIs, Prisma, Supabase, PostgreSQL, MongoDB, Firebase, AWS, Docker, OpenAI API',
+      primarySkills: 'React.js, Next.js, TypeScript, JavaScript, TailwindCSS, React Native, Node.js, NestJS, Express.js, GraphQL, RESTful APIs, Prisma, Supabase, PostgreSQL, MongoDB, Firebase, AWS, Docker, OpenAI API',
+      preferredTechnologies: 'React.js, Next.js, React Native, Node.js, TypeScript, PostgreSQL, Firebase, OpenAI API',
       excludedTechnologies: 'PHP, WordPress, Ruby on Rails, Magento, Web3, Smart Contracts',
-      targetHourlyRate: 75,
+      targetHourlyRate: 50,
       minProjectBudget: 1000,
       isDefault: true,
     },
     create: {
       id: 'default-profile',
-      name: 'Senior Full-Stack AI Engineer',
-      headline: 'Senior Full-Stack & AI Systems Engineer (Next.js, TypeScript, LLMs)',
-      bio: 'Senior Engineer with 8 years of experience building scalable SaaS applications, real-time web platforms, and multi-agent AI workflows. Specializes in Next.js App Router, TypeScript, Prisma/SQL, and anti-hallucination RAG pipelines.',
-      experienceYears: 8,
-      skills: 'Next.js, React, TypeScript, Node.js, PostgreSQL, Prisma, OpenAI, DeepSeek, Multi-Agent Systems, RAG, TailwindCSS, Docker, AWS',
-      preferredTechnologies: 'Next.js, TypeScript, PostgreSQL, Prisma, OpenAI, DeepSeek, Node.js',
+      name: 'Ghulam Mustafa',
+      headline: 'Senior Full-Stack & Mobile Engineer | AI Integration',
+      bio: 'Senior Full-Stack Engineer with 5+ years architecting and shipping production SaaS platforms and mobile applications. Proven track record across the entire stack. Currently integrating AI-driven features at Lumida Wealth. Expert across React, Next.js, React Native, Node.js, TypeScript, PostgreSQL, and Firebase.',
+      experienceYears: 5,
+      skills: 'React.js, Next.js, TypeScript, JavaScript, TailwindCSS, React Native, Node.js, NestJS, Express.js, GraphQL, RESTful APIs, Prisma, Supabase, PostgreSQL, MongoDB, Firebase, AWS, Docker, OpenAI API',
+      primarySkills: 'React.js, Next.js, TypeScript, JavaScript, TailwindCSS, React Native, Node.js, NestJS, Express.js, GraphQL, RESTful APIs, Prisma, Supabase, PostgreSQL, MongoDB, Firebase, AWS, Docker, OpenAI API',
+      preferredTechnologies: 'React.js, Next.js, React Native, Node.js, TypeScript, PostgreSQL, Firebase, OpenAI API',
       excludedTechnologies: 'PHP, WordPress, Ruby on Rails, Magento, Web3, Smart Contracts',
-      targetHourlyRate: 75,
+      targetHourlyRate: 50,
       minProjectBudget: 1000,
       isDefault: true,
     }
@@ -46,53 +48,38 @@ async function seed() {
     {
       evidenceId: 'EV-001',
       type: 'PROJECT',
-      title: 'Autonomous Multi-Agent AI Pipeline & Decision Engine',
-      description: 'Architected and built an autonomous multi-agent pipeline using Next.js, TypeScript, DeepSeek, and OpenAI. Features automated opportunity evaluation, RAG semantic search, anti-hallucination claim verification, and SQLite/Prisma persistence.',
-      technologies: 'Next.js, TypeScript, DeepSeek, OpenAI, Prisma, SQLite, RAG, Multi-Agent Systems',
-      verification: 'Verified via GitHub Repository & Production Deployment',
-      url: 'https://github.com/GhulamMustufa/ai-freelance-pipeline'
+      title: 'Lumida Wealth - AI-Powered Wealth Management SaaS',
+      description: 'Architected and shipped investor-facing features including portfolio tracking, real-time data sync, and OAuth2 authentication across iOS, Android, and Web. Integrated LLM-powered insights and AI-driven data visualizations using OpenAI API.',
+      technologies: 'React Native, Node.js, OpenAI API, CI/CD, WCAG 2.1',
+      verification: 'Verified via Professional Experience (Aug 2025 – Jun 2026)',
+      url: ''
     },
     {
       evidenceId: 'EV-002',
       type: 'PROJECT',
-      title: 'Real-time Analytics Dashboard for E-Commerce',
-      description: 'Built a highly scalable real-time analytics dashboard that processes millions of events daily. Implemented using React on the frontend and Node.js/Express on the backend, with PostgreSQL for persistence and Redis for caching and pub/sub. Reduced data query latency by 40%.',
-      technologies: 'React, Node.js, TypeScript, PostgreSQL, Redis, Docker, AWS',
-      verification: 'Verified via GitHub commit history',
-      url: 'https://github.com/example/analytics-dashboard'
+      title: 'Udhaar Book - Pakistan\'s #1 Digital Ledger',
+      description: 'Owned end-to-end delivery of core ledger, credit management, and digital payment flows serving 100,000+ SMBs. Cut app load times by 40% through React Native lazy loading, FlatList virtualization, and Hermes engine tuning. Refactored data layer to WatermelonDB.',
+      technologies: 'React Native, WatermelonDB, Hermes, Flipper',
+      verification: 'Verified via Professional Experience (Jun 2022 – Jul 2025)',
+      url: ''
     },
     {
       evidenceId: 'EV-003',
       type: 'PROJECT',
-      title: 'Healthcare Patient Management System',
-      description: 'Developed a HIPAA-compliant patient management system for a mid-sized clinic. The application features role-based access control, secure messaging, and appointment scheduling. Built a custom scheduling algorithm that reduced double-bookings to zero.',
-      technologies: 'Next.js, TypeScript, Prisma, PostgreSQL, TailwindCSS',
-      verification: 'Verified via Upwork Contract (Client rated 5/5)',
-      url: 'https://upwork.com/example-contract'
+      title: 'Dastgyr - B2B E-Commerce Marketplace',
+      description: 'Built the picker app from scratch as sole developer; contributed to retailer and driver app features processing 10,000+ orders per day with sub-200ms UI response times. Optimised Node.js, NestJS and PostgreSQL backend services reducing API response times by 50%.',
+      technologies: 'React Native, Node.js, NestJS, PostgreSQL, Crashlytics',
+      verification: 'Verified via Professional Experience (Jun 2021 – May 2022)',
+      url: ''
     },
     {
       evidenceId: 'EV-004',
-      type: 'TECHNOLOGY',
-      title: 'Senior TypeScript & Node.js Developer',
-      description: '8+ years of production experience building REST APIs, microservices, and GraphQL endpoints with Node.js and TypeScript. Deep understanding of event loop mechanics, memory profiling, and asynchronous programming patterns.',
-      technologies: 'Node.js, TypeScript, Express, NestJS, Prisma',
-      verification: 'Verified via 15+ completed client contracts'
-    },
-    {
-      evidenceId: 'EV-005',
-      type: 'ACHIEVEMENT',
-      title: 'Cloud Infrastructure Optimization',
-      description: 'Led a cloud infrastructure migration from Heroku to AWS (ECS + RDS). Implemented IaC using Terraform and set up complete CI/CD pipelines using GitHub Actions. Reduced monthly hosting costs by 65% while improving uptime.',
-      technologies: 'AWS, Terraform, Docker, GitHub Actions, PostgreSQL',
-      verification: 'Verified via Client Testimonial'
-    },
-    {
-      evidenceId: 'EV-006',
       type: 'PROJECT',
-      title: 'AI Customer Support Copilot & RAG Retrieval',
-      description: 'Developed an intelligent support copilot using vector similarity search, streaming LLM completions, and automated escalation triggers. Integrated into Zendesk and Slack, resolving 42% of customer queries without human intervention.',
-      technologies: 'Next.js, OpenAI API, Vector Embeddings, LangChain, TailwindCSS',
-      verification: 'Verified via Live Production SaaS'
+      title: 'Unilever Pakistan - Roll B2B Retail Platform',
+      description: 'Maintained and scaled Roll, Unilever\'s mission-critical retail ordering app processing thousands of B2B transactions daily. Increased user engagement by 30% through targeted UX redesigns and sustained 99% app uptime via Sentry-based error monitoring.',
+      technologies: 'React Native, Sentry, UX Design',
+      verification: 'Verified via Client Project (Aug 2022 – Dec 2024)',
+      url: ''
     }
   ];
 

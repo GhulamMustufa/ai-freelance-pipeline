@@ -36,10 +36,10 @@ export default async function TraceDetailPage({ params }: { params: { id: string
       <Navigation />
       <div className="p-4 sm:p-8 max-w-6xl mx-auto">
         <div className="mb-6 flex items-center justify-between">
-          <Link href="/dashboard" className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-semibold">
-            ← Back to Dashboard
+          <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-semibold">
+            &larr; Back to Dashboard
           </Link>
-          <Link href="/dashboard/analyzer" className="text-warning hover:underline text-sm font-semibold">
+          <Link href="/analyzer" className="text-warning hover:underline text-sm font-semibold">
             ⚡ Analyze Another Job →
           </Link>
         </div>

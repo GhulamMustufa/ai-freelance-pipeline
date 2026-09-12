@@ -368,7 +368,7 @@ export default function ManualJobAnalyzer() {
           {profileLoaded && (!profile || profile.isDefault) && (
             <div className="text-[11px] font-bold text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-3 py-2 rounded-xl border border-red-200 dark:border-red-800 inline-flex items-center gap-2 shadow-sm animate-pulse mt-3">
               ⚠️ WARNING: Using Fallback Profile Data.
-              <Link href="/dashboard/profile" className="underline hover:text-red-900 dark:hover:text-red-300 ml-1">
+              <Link href="/profile" className="underline hover:text-red-900 dark:hover:text-red-300 ml-1">
                 Configure your profile
               </Link>
             </div>

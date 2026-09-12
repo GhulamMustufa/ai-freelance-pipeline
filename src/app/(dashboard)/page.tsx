@@ -39,7 +39,7 @@ export default async function DashboardOverview() {
 
           <div className="flex items-center gap-3">
             <Link
-              href="/dashboard/analyzer"
+              href="/analyzer"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-warning hover:bg-warning text-slate-950 font-semibold text-sm shadow-sm transition-all"
             >
               <span>⚡</span>
@@ -97,7 +97,7 @@ export default async function DashboardOverview() {
                           Use the Manual Job Analyzer to paste any job description and run the multi-agent AI pipeline.
                         </p>
                         <Link
-                          href="/dashboard/analyzer"
+                          href="/analyzer"
                           className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-warning text-slate-950 font-semibold text-xs shadow-sm hover:bg-warning transition"
                         >
                           <span>⚡</span> Try Manual Job Analyzer

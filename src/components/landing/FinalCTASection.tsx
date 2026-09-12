@@ -21,7 +21,7 @@ export default function FinalCTASection() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="/dashboard/analyzer"
+            href="/analyzer"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-warning hover:bg-warning text-slate-950 font-bold text-lg rounded-xl transition-all shadow-xl shadow-warning/25 hover:shadow-warning/35 hover:-translate-y-0.5"
           >
             Analyze a Job Free
