@@ -25,6 +25,15 @@ export function FeedbackForm({ opportunityId, initialOutcome, initialFeedback }:
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    if (opportunityId === 'demo') {
+      setTimeout(() => {
+        alert('Demo feedback saved! (No database changes made in demo mode)');
+        setLoading(false);
+      }, 500);
+      return;
+    }
+
     try {
       await logOpportunityFeedback(opportunityId, outcome, feedback);
       alert('Feedback logged successfully!');

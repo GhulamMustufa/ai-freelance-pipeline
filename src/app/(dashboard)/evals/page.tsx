@@ -45,13 +45,18 @@ interface EvalSummary {
 }
 
 const CATEGORY_LABELS: Record<string, { name: string; color: string }> = {
-  all: { name: 'All Cases (30)', color: 'border-slate-700 bg-slate-800 text-slate-200' },
-  excellent_match: { name: 'High Fit Roles', color: 'border-success/30 bg-success/10 text-emerald-300' },
-  poor_technical_match: { name: 'Dealbreaker Tech', color: 'border-danger/30 bg-danger/10 text-rose-300' },
-  poor_client_excellent_technical_match: { name: 'Payment & Client Risk', color: 'border-purple-500/30 bg-purple-500/10 text-purple-300' },
-  excellent_client_poor_job: { name: 'Budget Deficit / Trivial', color: 'border-warning/30 bg-warning/10 text-amber-300' },
-  high_competition: { name: 'High Competition', color: 'border-blue-500/30 bg-blue-500/10 text-blue-300' },
-  hallucination_trap: { name: 'Claim Verification', color: 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300' },
+  all: { name: 'All Cases (28)', color: 'border-slate-700 bg-slate-800 text-slate-200' },
+  strong_apply: { name: 'High Fit Roles', color: 'border-success/30 bg-success/10 text-emerald-300' },
+  excluded_technology: { name: 'Excluded Technology', color: 'border-danger/30 bg-danger/10 text-rose-300' },
+  scam_detection: { name: 'Scam Detection', color: 'border-purple-500/30 bg-purple-500/10 text-purple-300' },
+  budget_floor: { name: 'Budget Mismatch', color: 'border-warning/30 bg-warning/10 text-amber-300' },
+  severe_skill_mismatch: { name: 'Skill Mismatch', color: 'border-orange-500/30 bg-orange-500/10 text-orange-300' },
+  adversarial_injection: { name: 'Adversarial Defense', color: 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300' },
+  mixed_stack: { name: 'Mixed Stack', color: 'border-blue-500/30 bg-blue-500/10 text-blue-300' },
+  ambiguous_scope: { name: 'Ambiguous Scope', color: 'border-slate-500/30 bg-slate-500/10 text-slate-300' },
+  missing_budget: { name: 'Missing Budget', color: 'border-zinc-500/30 bg-zinc-500/10 text-zinc-300' },
+  jd_only_unknown_client: { name: 'Unknown Client', color: 'border-indigo-500/30 bg-indigo-500/10 text-indigo-300' },
+  seniority_mismatch: { name: 'Seniority Mismatch', color: 'border-red-500/30 bg-red-500/10 text-red-300' },
 };
 
 export default function BenchmarkDashboardPage() {
@@ -95,9 +100,9 @@ export default function BenchmarkDashboardPage() {
         hourlyMax: testCase.hourlyMax,
         client: testCase.client,
       }));
-      router.push('/dashboard/analyzer?source=benchmark');
+      router.push('/analyzer?source=benchmark');
     } catch {
-      router.push('/dashboard/analyzer');
+      router.push('/analyzer');
     }
   };
 
@@ -533,6 +538,39 @@ export default function BenchmarkDashboardPage() {
                   </span>
                   <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 leading-relaxed font-mono whitespace-pre-wrap max-h-48 overflow-y-auto">
                     {activeModalCase.description}
+                  </div>
+                </div>
+
+                {/* Pre-Computed Offline Evaluation Result */}
+                <div className="space-y-1.5 pt-2">
+                  <span className="text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">
+                    Offline Evaluation Result:
+                  </span>
+                  <div className="bg-slate-900 dark:bg-slate-950 p-4 rounded-2xl border border-slate-700 dark:border-slate-800 flex flex-col gap-3">
+                    <div className="flex gap-4 items-center">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-slate-400 uppercase font-semibold">Decision:</span>
+                        <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                          activeModalCase.actualRecommendation === 'APPLY' ? 'bg-green-500/20 text-green-400' :
+                          activeModalCase.actualRecommendation === 'SKIP' ? 'bg-rose-500/20 text-rose-400' :
+                          'bg-amber-500/20 text-amber-400'
+                        }`}>
+                          {activeModalCase.actualRecommendation}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-slate-400 uppercase font-semibold">Confidence:</span>
+                        <span className="text-xs font-bold text-white">
+                          {(activeModalCase.confidence * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase font-semibold block mb-1">Agent Rationale:</span>
+                      <p className="text-sm text-slate-300">
+                        {activeModalCase.reason}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>

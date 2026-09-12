@@ -198,9 +198,9 @@ export default async function DashboardOverview() {
                         </td>
 
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <Link
-                            href={`/dashboard/traces/${opp.id}`}
-                            className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold"
+                          <Link 
+                            href={`/traces/${opp.id}`}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
                           >
                             Trace <span aria-hidden="true">&rarr;</span>
                           </Link>

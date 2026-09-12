@@ -82,6 +82,7 @@ Budget is fixed at $800. Timeline is approximately 2 weeks.`,
 
 const DEMO_RESULT = {
   success: true,
+  opportunityId: 'demo',
   recommendation: 'APPLY',
   score: 85,
   decision: {
@@ -154,11 +155,13 @@ export default function ManualJobAnalyzer() {
     }
   }, []);
 
-  // Fetch active default profile and check for benchmark inspection on mount
+  // Fetch active default profile on mount
   useEffect(() => {
     fetchProfile();
+  }, [fetchProfile]);
 
-    try {
+  // Check for benchmark inspection
+  useEffect(() => {    try {
       const stored = sessionStorage.getItem('omnibid_inspect_job');
       if (stored) {
         const job = JSON.parse(stored);
@@ -240,7 +243,6 @@ export default function ManualJobAnalyzer() {
     clientRating,
     clientSpend,
     description,
-    fetchProfile,
     hourlyMax,
     hourlyMin,
     isSignedIn,
@@ -865,7 +867,7 @@ export default function ManualJobAnalyzer() {
                         </p>
                       </div>
                       <Link
-                        href={`/dashboard/traces/${result.opportunityId}`}
+                        href={`/traces/${result.opportunityId}`}
                         className="text-xs text-warning hover:underline font-semibold"
                       >
                         View Full Trace Page →

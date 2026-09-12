@@ -5,22 +5,120 @@ import Navigation from '@/components/Navigation';
 import { auth } from '@clerk/nextjs/server';
 
 export default async function TraceDetailPage({ params }: { params: { id: string } }) {
-  await auth.protect();
   const { id } = await params;
   
-  const opportunity = await prisma.opportunity.findUnique({
-    where: { id },
-    include: {
-      jobPosting: true,
-      pipelineRuns: { orderBy: { createdAt: 'asc' } },
-      agentRuns: { orderBy: { createdAt: 'asc' } },
-      decision: true,
-      score: true,
-      proposal: true,
-      outcome: true,
-      feedback: true
-    }
-  });
+  if (id !== 'demo') {
+    await auth.protect();
+  }
+
+  let opportunity: any = null;
+
+  if (id === 'demo') {
+    opportunity = {
+      id: 'demo',
+      status: 'PROPOSAL_DRAFTED',
+      jobPosting: {
+        title: 'Senior Next.js & AI Systems Engineer for SaaS Platform',
+        description: 'We are looking for a Senior Next.js developer to build an AI platform...',
+        budget: 15000,
+        url: 'https://upwork.com/jobs/demo',
+        clientHistory: { totalSpend: 50000, feedbackScore: 4.9 }
+      },
+      pipelineRuns: [
+        { id: 'run-1', stage: 'JOB_INGESTION', status: 'COMPLETED', createdAt: new Date(Date.now() - 10000), startedAt: new Date(Date.now() - 10000), completedAt: new Date(Date.now() - 9000) },
+        { id: 'run-2', stage: 'EVALUATION', status: 'COMPLETED', createdAt: new Date(Date.now() - 9000), startedAt: new Date(Date.now() - 9000), completedAt: new Date(Date.now() - 5000) },
+        { id: 'run-3', stage: 'PROPOSAL_DRAFTING', status: 'COMPLETED', createdAt: new Date(Date.now() - 5000), startedAt: new Date(Date.now() - 5000), completedAt: new Date(Date.now() - 1000) }
+      ],
+      agentRuns: [
+        {
+          id: 'ar-1',
+          agentName: 'IngestionAgent',
+          model: 'gpt-4o-mini',
+          status: 'COMPLETED',
+          createdAt: new Date(Date.now() - 10000),
+          startedAt: new Date(Date.now() - 10000),
+          completedAt: new Date(Date.now() - 9000),
+          durationMs: 1000,
+          schemaVersion: '1.0',
+          retries: 0,
+          promptTokens: 500,
+          completionTokens: 50,
+          inputPayload: JSON.stringify({ jobUrl: 'https://upwork.com/jobs/demo' }),
+          outputPayload: JSON.stringify({ extractedSkills: ['Next.js', 'AI', 'TypeScript'] }),
+          errorMessage: null,
+        },
+        {
+          id: 'ar-2',
+          agentName: 'DecisionAgent',
+          model: 'gpt-4o-mini',
+          status: 'COMPLETED',
+          createdAt: new Date(Date.now() - 9000),
+          startedAt: new Date(Date.now() - 9000),
+          completedAt: new Date(Date.now() - 5000),
+          durationMs: 4000,
+          schemaVersion: '1.0',
+          retries: 0,
+          promptTokens: 800,
+          completionTokens: 200,
+          inputPayload: JSON.stringify({ skills: ['Next.js', 'AI'] }),
+          outputPayload: JSON.stringify({ recommendation: 'APPLY', confidence: 0.95 }),
+          errorMessage: null,
+        },
+        {
+          id: 'ar-3',
+          agentName: 'DraftingAgent',
+          model: 'gpt-4o-mini',
+          status: 'COMPLETED',
+          createdAt: new Date(Date.now() - 5000),
+          startedAt: new Date(Date.now() - 5000),
+          completedAt: new Date(Date.now() - 1000),
+          durationMs: 4000,
+          schemaVersion: '1.0',
+          retries: 0,
+          promptTokens: 1200,
+          completionTokens: 350,
+          inputPayload: JSON.stringify({ decision: 'APPLY' }),
+          outputPayload: JSON.stringify({ proposal: 'Hi there, I noticed you are looking for an AI & Full-Stack Engineer...' }),
+          errorMessage: null,
+        }
+      ],
+      decision: {
+        recommendation: 'APPLY',
+        confidence: 0.95,
+        reason: 'This is a perfect match for your AI and Full-Stack background. The client has an excellent history and a realistic budget. It requires the exact stack you are an expert in (Next.js, TypeScript, AI APIs).',
+        flags: []
+      },
+      score: {
+        totalScore: 85,
+        skillMatchScore: 90,
+        clientQualityScore: 80,
+        budgetScore: 85,
+        competitionScore: 70
+      },
+      proposal: {
+        id: 'prop-1',
+        content: `Hi there,\n\nI noticed you're looking for an AI & Full-Stack Engineer to architect an autonomous agent workflow using Next.js and DeepSeek. This is exactly what I specialize in.\n\nRecently, I built a multi-agent orchestration pipeline using the Next.js App Router and Prisma, integrating OpenAI and DeepSeek to handle complex reasoning tasks and background verification loops. I understand the specific challenges around vector search, anti-hallucination guardrails, and managing streaming API states.\n\nGiven your requirements, I'd propose starting with a lightweight MVP to validate the multi-agent routing logic before scaling out the full feature set.\n\nI'd love to jump on a quick 15-minute call to discuss your specific architecture and see if I'm the right fit to bring this pipeline to life.\n\nBest,\nJane Doe`,
+        strategy: 'Focus on your specific experience with Next.js App Router and DeepSeek. Mention anti-hallucination loops explicitly since they asked for it. End with a soft call-to-action for a technical chat.',
+        status: 'DRAFT'
+      },
+      outcome: null,
+      feedback: null
+    };
+  } else {
+    opportunity = await prisma.opportunity.findUnique({
+      where: { id },
+      include: {
+        jobPosting: true,
+        pipelineRuns: { orderBy: { createdAt: 'asc' } },
+        agentRuns: { orderBy: { createdAt: 'asc' } },
+        decision: true,
+        score: true,
+        proposal: true,
+        outcome: true,
+        feedback: true
+      }
+    });
+  }
 
   if (!opportunity) {
     return (
@@ -47,7 +145,14 @@ export default async function TraceDetailPage({ params }: { params: { id: string
       <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 mb-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{opportunity.jobPosting?.title || 'Unknown Job'}</h1>
+            <div className="flex items-center flex-wrap gap-3">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{opportunity.jobPosting?.title || 'Unknown Job'}</h1>
+              {opportunity.id === 'demo' && (
+                <span className="px-2.5 py-0.5 bg-blue-500/20 border border-blue-500/50 text-blue-600 dark:text-blue-400 font-bold text-[10px] tracking-wider uppercase rounded-md shadow-sm">
+                  Demo Mode
+                </span>
+              )}
+            </div>
             <p className="text-slate-500 dark:text-slate-400 text-xs font-mono mt-1">Opportunity ID: {opportunity.id}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
