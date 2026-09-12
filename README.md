@@ -1,5 +1,8 @@
 # OmniBid Intelligence Engine (V1.1)
 
+**🚀 Live Application: [https://omnibid.ghulam-mustafa.com](https://omnibid.ghulam-mustafa.com)**
+
+
 > **An intelligent assistant for senior freelance developers that reads job postings, filters out scams and bad budgets, tells you honestly whether a job is worth your time, and writes tailor-made proposals.**
 
 ---
